@@ -1,0 +1,157 @@
+package com.bit.acc.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bit.acc.model.SysUser;
+import com.bit.acc.service.intfs.IUserService;
+import com.bit.common.util.CipherUtil;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+	private static final Logger log = LoggerFactory.getLogger(UserController.class);
+	
+    @Resource(name="userService")
+    private IUserService userService;
+    
+    @RequestMapping("/hello")
+    public String hello() {
+        SecurityUtils.getSubject().checkRole("admin");
+        return "user/list";
+    }
+
+    @RequestMapping("/login")
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
+    		Subject user = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		token.setRememberMe(true);
+		try {
+			user.login(token);
+			token.clear();
+		} catch (AuthenticationException e) {
+			log.error("登录失败错误信息:" + e);
+			return "user/login";
+		}
+//        return "redirect:/user/list";
+		return "/index";
+    }
+
+    @RequestMapping("/logout")
+    public String logout() {
+    	Subject user = SecurityUtils.getSubject();
+    	if (user.isAuthenticated()) {
+    		user.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
+			log.error("{}退出登录。", user.getPrincipal());
+    	}
+        return "redirect:/";//返回到根目录
+    }
+    
+    @RequestMapping(value="/count",method=RequestMethod.GET)
+    public ModelAndView userCount() {
+        int count = userService.findAll().size();
+        
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("userCount", count);
+        mv.setViewName("user/userCount");
+        return mv;
+    }
+
+    @RequiresRoles("admin")
+    @RequestMapping(value="/list",method=RequestMethod.GET)
+    public ModelAndView getUserlist(Model model){
+        
+        ModelAndView mv = new ModelAndView();
+        List<SysUser> userList = userService.findAll();
+        mv.addObject("userList", userList);
+        mv.setViewName("user/list");
+        return mv;
+    }
+    
+    @RequiresRoles("admin")
+    @RequestMapping(value="/all",method=RequestMethod.GET)
+    public ModelAndView getUsers(Model model){
+        
+        ModelAndView mv = new ModelAndView();
+        List<SysUser> userList = userService.queryAll();
+        mv.addObject("userList", userList);
+        mv.setViewName("user/all");
+        return mv;
+    }
+    
+    
+    @RequestMapping(value="/add",method=RequestMethod.GET)
+    public ModelAndView getAdd() throws Exception{
+    	//测试异常处理 if(true) throw new SQLException("SQL异常");
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("user/add");
+        mv.addObject(new SysUser());
+        return mv;
+    }
+    
+    @RequestMapping(value="/add",method=RequestMethod.POST)
+    public String add(@Valid @ModelAttribute("sysUser") SysUser sysUser, BindingResult result){
+    		if(result.hasErrors()) {
+            return "user/add";
+        }
+    	
+        String encrypted = CipherUtil.simpleHash("md5", sysUser.getPasswd(), null, 2, true);
+        sysUser.setPasswd(encrypted);
+        userService.persist(sysUser);
+        return "redirect:/user/list";
+    }
+    
+    @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
+    public ModelAndView show(@PathVariable long userid){
+    	SysUser userModel = userService.findById(userid);
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("user", userModel);
+        mv.setViewName("user/detail");
+        return mv;
+    }
+    
+    @RequestMapping(value="/del/{userid}",method=RequestMethod.DELETE)
+    public String del(@PathVariable Long userid){
+    	SysUser sysUser = new SysUser();
+    		sysUser.setId(userid);
+        userService.remove(sysUser);
+        
+        return "redirect:/user/list";
+    }
+    
+    @RequestMapping(value="/edit/{userid}",method=RequestMethod.GET)
+    public ModelAndView getEdit(@PathVariable long userid, Model model){
+    		SysUser sysUser = userService.findById(userid);
+        model.addAttribute("userAttribute", sysUser);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("user/edit");
+        return mv;
+    }
+    
+    @RequestMapping(value="/save/{userid}",method=RequestMethod.POST)
+    public String saveEdit(@ModelAttribute("userAttribute") SysUser userModel, @PathVariable int userid){
+        //userService.attachClean(userModel);
+    		userService.merge(userModel);
+        return "redirect:/user/list";
+    }
+}

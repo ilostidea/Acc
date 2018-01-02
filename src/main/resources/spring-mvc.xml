@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans     
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	">
+	
+	<!--通知spring使用cglib而不是jdk来生成代理方法, AOP可以拦截到Controller-->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<!--websocket 在线聊天-->
+	<context:component-scan base-package="com.bit.websocket"></context:component-scan>
+    
+	<!-- 启动自动扫描该包下所有的Bean(例如@Controller) -->
+	<context:component-scan base-package="com.bit.acc.controller,com.acc.common.exception" use-default-filters="false">
+       <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestControllerAdvice"/>
+	</context:component-scan>
+	<!--
+	<mvc:annotation-driven conversion-service="conversionService" />
+	
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.doje.XXX.web.DateConverter" />    
+            </list>
+        </property>
+    </bean> -->
+    
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找  -->
+				<value>classpath:validator-messages</value>
+				<!--<value>classpath:org/hibernate/validator/ValidationMessages</value>-->
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false"/>
+		<property name="fileEncodings" value="UTF-8"/>
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="cacheSeconds" value="120"/>
+	</bean>
+
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+		<!-- 如果不加下面这行，默认 使用classpath下的 ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource"/>
+		<property name="validationPropertyMap">
+			<map>
+				<!-- 只要有一个校验不通过，就返回错误信息，不必等到全部校验结束后返回所有的错误信息。参见normal工作方式。 -->
+				<entry key="hibernate.validator.fail_fast" value="true"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>
+    
+	<!-- 默认访问跳转到登录页面 -->
+    <!-- <mvc:view-controller path="/" view-name="forward:/login" /> -->
+    
+	<!-- 基于注释的事务，当注释中发现@Transactional时，使用id为“transactionManager”的事务管理器  -->
+	<!-- 如果没有设置transaction-manager的值，则spring以缺省默认的事务管理器来处理事务，默认事务管理器为第一个加载的事务管理器 --><!--
+	<tx:annotation-driven transaction-manager="transactionManager"/> -->
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jackson2HttpConverter"/>
+            </list>
+        </property>
+        <property name="webBindingInitializer">
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="conversionService" ref="conversionService" />
+				<property name="validator" ref="validator" />
+			</bean>
+        </property>
+    </bean>
+    
+    <bean id="jackson2HttpConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper">
+			<bean class="com.bit.common.jackson.HibernateAwareObjectMapper" />
+		</property>
+    </bean>
+    
+    <!-- web.xml设置detectAllHandlerExceptionResolvers为false，取消spring自动注册的异常解析器，自定义异常解析器。
+    	 DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver的bean作为异常解析器。
+		 见<param-name>detectAllHandlerExceptionResolvers</param-name>--><!-- 
+	<bean id="handlerExceptionResolver" class="com.bit.common.exception.AnnotationHandlerMethodExceptionResolver">
+		<property name="defaultErrorView" value="error"/> --><!-- 错误页面 --><!--
+		<property name="messageConverters">
+            <list>
+                <ref bean="jackson2HttpConverter"/>
+            </list>
+		</property>
+	</bean> -->
+	<!-- 
+	<bean id="exceptionHandler" class="com.bit.common.exception.SCMHandlerExceptionResolver"/>
+	-->
+    <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+    <!-- <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/html;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>-->
+    
+	<!-- 定义视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<!--
+	    shiro源代码中判断了filter是否为AuthorizationFilter，只有perms，roles，ssl，rest，port才是属于AuthorizationFilter，
+	             而anon，authcBasic，auchc，user是AuthenticationFilter，所以unauthorizedUrl设置后不起作用。
+	--><!--
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props> -->
+            	<!-- unauthorized will redirect to /jsp/unauthorized.jsp. See InternalResourceViewResolver bean definition. --><!--
+                <prop key="org.apache.shiro.authz.UnauthorizedException">unauthorized</prop>
+            </props>
+        </property>
+    </bean>-->
+
+	<!-- org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler，它会像一个检查员，对进入DispatcherServlet的URL进行筛查，
+		如果发现是静态资源的请求，就将该请求转由Web应用服务器默认的Servlet处理，如果不是静态资源的请求，才由DispatcherServlet继续处理。 
+		一般Web应用服务器默认的Servlet名称是"default"，因此DefaultServletHttpRequestHandler可以找到它。
+		如果你所有的Web应用服务器的默认Servlet名称不是"default"，则需要通过default-servlet-name属性显示指定： 
+		<mvc:default-servlet-handler default-servlet-name="所使用的Web服务器默认使用的Servlet名称" /> -->
+    <mvc:default-servlet-handler/>
+
+	<!--
+		<mvc:default-servlet-handler />将静态资源的处理经由Spring MVC框架交回Web应用服务器处理。而<mvc:resources />更进一步，
+		由Spring MVC框架自己处理静态资源，并添加一些有用的附加值功能。 
+		<mvc:resources />依据当前著名的Page Speed、YSlow等浏览器优化原则对静态资源提供优化。你可以通过cacheSeconds属性指定静态资源在浏览器端的缓存时间，
+		一般可将该时间设置为一年，以充分利用浏览器端的缓存。在输出静态资源时，会根据配置设置好响应报文头的Expires 和 Cache-Control值。 
+		将Web根路径"/"及类路径下 /META-INF/publicResources/ 的目录映射为/resources路径。假设Web根路径下拥有images、js这两个资源目录,在images下面有bg.gif图片，
+		在js下面有test.js文件，则可以通过/resources/images/bg.gif 和 /resources/js/test.js 访问这二个静态资源。 假设WebRoot还拥有images/bg1.gif 
+		及 js/test1.js，则也可以在网页中通过 /resources/images/bg1.gif 及 /resources/js/test1.js进行引用。 
+		<mvc:resources location="/,classpath:/META-INF/publicResources/" mapping="/resources/**"/> 
+		-->
+   
+</beans>

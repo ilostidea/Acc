@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app id="WebApp_ID" version="3.0"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>Acc</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/applicationContext.xml,
+			classpath:/spring-shiro.xml
+		</param-value>
+	</context-param>
+    
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- Shiro filter -->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>
+            org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+        	<!-- "targetFilterLifecycle"指明作用于filter的所有生命周期。
+        	DelegatingFilterProxy类是一个代理类，所有的请求都会首先发到这个filter代理，然后再按照"filter-name"委派到spring中的这个bean。 
+        	若spring bean实现了Filter接口，默认情况下，是由spring容器来管理其生命周期的(不是由tomcat这种服务器容器来管理)。
+        	如果设置"targetFilterLifecycle"为True，则spring来管理Filter.init()和Filter.destroy()；若为false，则这两个方法失效-->
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- 
+			请求都通过DelegatingFilterProxy类委派给shiroFilter bean，可以引用其他的bean，
+        <init-param>
+            <param-name>targetBeanName</param-name>
+            <param-value>Spring-bean-name</param-value>
+        </init-param>
+         -->
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- 配置spring管理OpenEntityManagerInViewFilter-->
+    <filter>
+        <filter-name>hibernateFilter</filter-name>
+        <filter-class>
+            org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+        </filter-class><!--
+        <init-param>-->
+        <!-- 指定org.springframework.orm.jpa.LocalEntityManagerFactoryBean在spring配置文件中的名称,默认值为entityManagerFactory。
+        	如果LocalEntityManagerFactoryBean在spring中的名称不是entityManager,该参数一定要指定,否则会出现找不到entityManager的例外 --><!--    
+            <param-name>entityManagerFactoryBeanName</param-name>    
+            <param-value>entityManager</param-value>    
+        </init-param>-->
+    </filter>
+    <filter-mapping>
+        <filter-name>hibernateFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+	<!-- 定义DispatcherServlet -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:spring-mvc.xml</param-value>
+		</init-param><!--
+		<init-param>-->
+			<!-- 设置为false取消其自动注册的异常解析器，可自定义异常解析器,DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver的bean作为异常解析器 --><!--
+			<param-name>detectAllHandlerExceptionResolvers</param-name>
+			<param-value>true</param-value>
+		</init-param>-->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- 拦截匹配的请求，这里所有请求采用名字为mvc-dispatcher的DispatcherServlet处理 -->
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

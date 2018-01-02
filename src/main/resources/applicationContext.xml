@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd
+			http://www.springframework.org/schema/aop
+			http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<context:property-placeholder location="classpath:persistence.properties" />
+	
+	<!--设置了生成bean的文件目录-->
+	<context:component-scan base-package="com.bit.acc.*,com.bit.common.*" use-default-filters="true">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ExceptionHandler"/>
+	</context:component-scan>
+    
+    <!-- 配置数据源，从上面配置文件读取-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${database.driverClassName}"/>
+		<property name="jdbcUrl" value="${database.url}"/>
+		<property name="user" value="${database.username}"/>
+		<property name="password" value="${database.password}"/>
+		<property name="initialPoolSize" value="${pool.initialPoolSize}"/>
+		<property name="minPoolSize" value="${pool.minPoolSize}"/>
+		<property name="maxPoolSize" value="${pool.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${pool.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${pool.acquireIncrement}"/>
+        <property name="idleConnectionTestPeriod" value="${pool.idleConnectionTestPeriod}" />  
+	</bean>
+	
+	<!--
+    <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+         <property name="showSql" value="true"/>
+         <property name="generateDdl" value="true"/>
+    </bean>
+    -->
+
+	<!--
+	<bean id="defaultPersistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+        <property name="persistenceXmlLocation" value="classpath:persistence.xml"/>-->
+        <!--  comment dataSourceLooup to use jndi --> <!--
+        <property name="dataSourceLookup">
+            <bean class="org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup"/>
+        </property>
+    </bean>
+    -->
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	    	<property name="dataSource" ref="dataSource"/>
+	    	<!--  
+        <property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence"/> 
+        <property name="persistenceUnitManager" ref="defaultPersistenceUnitManager"/>
+        <property name="persistenceUnitName" value="hibernatePU"/>
+        <property name="jpaVendorAdapter" ref="jpaVendor"/>--> 
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="databasePlatform" value="${hibernate.dialect}" />
+				<property name="generateDdl" value="${hibernate.generateDdl}"/>
+				<property name="showSql" value="${hibernate.show_sql}"/>
+			</bean>
+		</property>
+	    <property name="packagesToScan">
+	        <list>
+	            <value>com.bit.acc.model</value>
+	        </list>
+	    </property>
+	    <!--允许JPA 加载时修改相应的类文件。具体使用得参考相应的JPA规范实现厂商文档，如Hibernate就不需要指定loadTimeWeaver。-->
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.max_fetch_depth">${hibernate.max_fetch_depth}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.hibernate.connection.SetBigStringTryClob">${hibernate.hibernate.connection.SetBigStringTryClob}</prop>
+				<prop key="hibernate.hibernate.archive.autodetection">${hibernate.hibernate.archive.autodetection}</prop>
+				<prop key="hibernate.hibernate.connection.charSet">${hibernate.hibernate.connection.charSet}</prop>
+				<prop key="hibernate.hibernate.cache.use_query_cache">${hibernate.hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.hibernate.cache.use_second_level_cache">${hibernate.hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.hibernate.ejb.naming_strategy">${hibernate.hibernate.ejb.naming_strategy}</prop>
+			</props>  
+		</property>
+        <!--
+		<property name="jpaPropertyMap">  
+			<map>  
+				<entry key="showSql" value="true"/>
+				<entry key="generateDdl" value="false"/>  
+				<entry key="hibernate.format_sql" value="true"/>  
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>  
+			</map>  
+		</property>
+		-->
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    
+</beans>
