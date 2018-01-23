@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.FinancialReport;
-import com.bit.acc.model.FinancialReport;
 import com.bit.acc.service.intfs.IFinancialReportService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;

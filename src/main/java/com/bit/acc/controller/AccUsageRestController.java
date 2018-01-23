@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.AccUsage;
-import com.bit.acc.model.GeneralPrinciple;
 import com.bit.acc.service.intfs.IAccUsageService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;

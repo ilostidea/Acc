@@ -40,6 +40,7 @@ public class SpecificStandard implements java.io.Serializable {
 	private String title;
 	private String specifics;
 	private boolean status;
+	private boolean isPreface;
 	private Date createTime;
 	private Long creator;
 	private Date modifyTime;
@@ -51,6 +52,13 @@ public class SpecificStandard implements java.io.Serializable {
 	public SpecificStandard(long id, String title) {
 		this.id = id;
 		this.title = title;
+	}
+
+	public SpecificStandard(long id, boolean isPreface, String title, String specifics ) {
+		this.id = id;
+		this.isPreface = isPreface;
+		this.title = title;
+		this.specifics = specifics;
 	}
 
 	public SpecificStandard(long id, AccountingStandard accountingStandard,
@@ -114,6 +122,16 @@ public class SpecificStandard implements java.io.Serializable {
 
 	public void setSpecifics(String specifics) {
 		this.specifics = specifics;
+	}
+	
+	
+	@Column(name = "IsPreface", nullable = false)
+	public boolean isIsPreface() {
+		return isPreface;
+	}
+
+	public void setIsPreface(boolean isPreface) {
+		this.isPreface = isPreface;
 	}
 
 	@Column(name = "Status", nullable = false)

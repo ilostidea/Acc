@@ -1,6 +1,7 @@
 package com.bit.acc.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bit.acc.model.GeneralPrinciple;
 import com.bit.acc.model.SpecificStandard;
 import com.bit.acc.service.intfs.ISpecificStandardService;
 import com.bit.common.log.ControllerLog;
@@ -89,8 +89,8 @@ public class SpecificStandardRestController {
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的具体准则标题")
     public Response queryByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
-    	List<SpecificStandard> listSpecificStandard = specificStandardService.getTitlesByAccStandard(code, exeYear);
-        return new Response().success(listSpecificStandard);
+    	Map<String, Object> prefaceAndListSpecificStandardAndPreface = specificStandardService.getTitlesByAccStandard(code, exeYear);
+        return new Response().success( prefaceAndListSpecificStandardAndPreface );
     }
     
     @RequestMapping(value="/show/{spID}",method=RequestMethod.GET)

@@ -111,7 +111,9 @@ public class SpecificStandardDao extends AbstractDao<SpecificStandard> implement
 	public List<SpecificStandard> getTitlesByAccStandard(String accountingStandardCode, int exeYear) {
 		log.debug("getting SpecificStandard titles with accountingStandardCode" + accountingStandardCode + " and its exeYear" + exeYear);
 		try {
-			String jpql = "select new SpecificStandard(t.id, t.title) from " + SpecificStandard.class.getName() + " as t where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear";
+			String jpql = "select new SpecificStandard(t.id, t.isPreface, t.title, " + 
+					"CASE t.isPreface WHEN true THEN t.specifics ELSE null END " + 
+					") from " + SpecificStandard.class.getName() + " as t where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear";
 			Query query = entityManager.createQuery(jpql);
 			query.setParameter("accountingStandardCode", accountingStandardCode);
 			query.setParameter("exeYear", exeYear);
