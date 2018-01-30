@@ -41,20 +41,27 @@ public class UserController {
         return "user/list";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value="/login", method=RequestMethod.GET)
+    public String login() {
+		return "redirect:/jsp/signin.jsp";
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.POST)
     public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
-    		Subject user = SecurityUtils.getSubject();
+    	String successUrl = "/index";// 登录成功Shiro进行过滤，跳转到shiro的successUrl，并不会跳转到此URL
+    	Subject user = SecurityUtils.getSubject();
+    	if ( user.isAuthenticated() )
+    		return successUrl;//如果已经登录过，再次登录的时候，不需要进行验证，直接跳转到successUrl
 		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
 		token.setRememberMe(true);
 		try {
 			user.login(token);
 			token.clear();
 		} catch (AuthenticationException e) {
-			log.error("登录失败错误信息:" + e);
-			return "user/login";
+			log.error("登录失败错误信息:" + e);//throw new AuthenticationException(e);
+			return "redirect:/user/login";
 		}
-//        return "redirect:/user/list";
-		return "/index";
+		return successUrl;
     }
 
     @RequestMapping("/logout")
@@ -111,7 +118,7 @@ public class UserController {
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public String add(@Valid @ModelAttribute("sysUser") SysUser sysUser, BindingResult result){
-    		if(result.hasErrors()) {
+    	if(result.hasErrors()) {
             return "user/add";
         }
     	

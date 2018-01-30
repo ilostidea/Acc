@@ -70,7 +70,7 @@ public class AccStandardRestController {
         return new Response().success(accStandard);
     }
     
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部准则")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");

@@ -87,7 +87,7 @@ public class GeneralPrincipleRestController {
      */
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的基本准则")
-    public Response queryByStandardNameYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
+    public Response queryByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
     	GeneralPrinciple generalPrinciple = generalPrincipleService.queryByAccStandard(code, exeYear);
         return new Response().success(generalPrinciple);
     }

@@ -54,7 +54,7 @@
 				<ul class="dropdown-menu">
 					<li><a href="#"><i class="fa fa-user"></i>My Profile</a></li>
 					<li class="divider"></li>
-					<li><a href="Login.html"><i class="fa fa-key"></i>Log Out</a></li>
+					<li><a href="/user/logout"><i class="fa fa-key"></i>Log Out</a></li>
 				</ul>
 			</li>
 		  </ul>

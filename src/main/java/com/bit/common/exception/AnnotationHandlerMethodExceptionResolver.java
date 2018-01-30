@@ -92,7 +92,7 @@ public class AnnotationHandlerMethodExceptionResolver extends
 
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes", "resource" })
+	@SuppressWarnings({ "unchecked", "rawtypes"/*, "resource"*/ })
 	private ModelAndView handleResponseBody(ModelAndView mv,
 			HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handlerMethod, Exception exception)

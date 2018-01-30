@@ -32,19 +32,19 @@ public class RetryTimesLtdHashedCredentialsMatcher extends
         String username = (String) token.getPrincipal();
         AtomicInteger retryCount = passwordRetryCache.get(username);
         if(retryCount == null) {
-        		retryCount = new AtomicInteger(0);
+        	retryCount = new AtomicInteger(0);
             passwordRetryCache.put(username, retryCount);
         }
         if(retryCount.incrementAndGet() > IConstants.PASSWORD_RETRY_LIMIT_TIMES) {
-            //throw new ExcessiveAttemptsException();//TODO
+            //throw new ExcessiveAttemptsException();
         }
 
         boolean matches = super.doCredentialsMatch(token, info);
         //matches = true;//暂时用
         if(matches) {
             //clear retry count
-            //passwordRetryCache.remove(username);
-        		retryCount = null;
+            passwordRetryCache.remove(username);
+        	retryCount = null;
         }
         return matches;
     }

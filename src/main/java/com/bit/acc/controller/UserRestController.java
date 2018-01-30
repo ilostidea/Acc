@@ -1,5 +1,6 @@
 package com.bit.acc.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -91,8 +92,8 @@ public class UserRestController {
     @ControllerLog(value = "获得用户列表")
     public Response getUserEmployee() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<SysUser> userList = userService.findAll();
-        return new Response().success(userList);
+        List<SysUser> userList = userService.findAll();throw new SQLException("What ?");
+        //return new Response().success(userList);
     }
     
     /**

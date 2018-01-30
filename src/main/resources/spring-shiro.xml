@@ -24,7 +24,7 @@
     
     <!-- 凭据匹配器 -->
     <bean id="credentialsMatcher" class="com.bit.common.authorization.RetryTimesLtdHashedCredentialsMatcher">
-    		<constructor-arg ref="cacheManager"/>
+    	<constructor-arg ref="cacheManager"/>
         <property name="hashAlgorithmName" value="md5"/>
         <property name="hashIterations" value="2"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
@@ -41,6 +41,11 @@
         <property name="authorizationCachingEnabled" value="true"/>
         <property name="authorizationCacheName" value="authorizationCache"/>
 	</bean>
+	
+	<!-- configure admin and its password-->
+	<bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">  
+        <constructor-arg name="resourcePath"  value="classpath:/realm.ini"></constructor-arg>  
+    </bean>
 	
 	<!-- Session id generator  -->
     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
@@ -77,14 +82,46 @@
 	</bean>
 	
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="dbRealm" />
+	    <!-- 可设置一个Realm，也可设置多个Realm
+		<property name="realm" ref="dbRealm" /> -->
+		<property name="realms">
+            <list>
+                <ref bean="iniRealm" />
+                <ref bean="dbRealm"/>
+            </list>
+        </property>
+        <!-- <property name="authenticator" ref="authenticator"></property> -->
 	    <property name="sessionManager" ref="sessionManager"/>
 	    <property name="cacheManager" ref="cacheManager"/>
 		<!-- By default the servlet container sessions will be used.  Uncomment this line
 			 to use shiro's native sessions (see the JavaDoc for more): -->
 		<!-- <property name="sessionMode" value="native"/> -->
+		
+        <!-- 记住我 -->  
+        <property name="rememberMeManager" ref="rememberMeManager"/> 
 	</bean>
 	
+	<!-- 配置使用自定义认证器，可以实现多Realm认证，并且可以指定特定Realm处理特定类型的验证 -->
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <!-- 配置认证策略，只要有一个Realm认证成功即可，并且返回所有认证成功信息。shiro默认就是这样的。 -->
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"></bean>
+        </property>
+    </bean>
+
+	<!-- rememberMeManager管理器，写cookie，取出cookie生成用户信息 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+	
+	<!-- 记住我cookie -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<!-- rememberMe是cookie的名字 -->
+		<constructor-arg value="rememberMe" />
+		<!-- 记住我cookie生效时间30天 -->
+		<property name="maxAge" value="2592000" />
+	</bean> 
+
 	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
 	<!--
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -94,21 +131,24 @@
     -->
 
     <!-- 基于Form表单的身份验证过滤器 -->
-    <!-- 
+    <!--  -->
     <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
-        <property name="loginUrl" value="/jsp/user/login.jsp"/>
+        <property name="loginUrl" value="/user/login"/>
     </bean>
-    -->
+   
     
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/>
-		<property name="loginUrl" value="/jsp/user/login.jsp"/>
+		<!-- 如果没有认证将要跳转的登陆地址，http可访问的url，如果不在表单认证过虑器FormAuthenticationFilter中指定此地址就为身份认证地址 -->
+		<property name="loginUrl" value="/user/login"/>
 		<property name="unauthorizedUrl" value="/jsp/unauthorized.jsp"/>
-		<!-- override these for application-specific URLs if you like:
-			<property name="successUrl" value="/home.jsp"/> -->
+		<!-- override these for application-specific URLs if you like.
+		successUrl配置只是做为一种附加配置，只有session中没有用户请求地址时才会使用successUrl。系统默认的是认证成功后跳转到上一次请求的路径。
+		-->
+		<property name="successUrl" value="/"/>
 		<!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean defined 
 		     will be automatically acquired and available via its beanName in chain definitions, 
 		     but you can perform instance overrides or name aliases here if you like: -->
@@ -119,15 +159,28 @@
 			</property> -->
 		<property name="filterChainDefinitions">
 			<value>
-            # some example chain definitions:
-            #/admin/** = authc, roles[admin]
-            #/docs/** = authc, perms[document:read]
-            /index.jsp* = anon
-            /user/login = anon
-            /user/logout = anon
-            /user/add = anon
-            /user/* = authc, roles[admin]
-            # more URL-to-FilterChain definitions here
+			    # anon，authcBasic，auchc，user是认证过滤器，perms，roles，ssl，rest，port是授权过滤器
+				# <!-- authc：表示需要认证(登录)才能使用，没有参数 -->
+				# <!-- authcBasic：例如/admins/user/**=authcBasic，没有参数，表示httpBasic认证。 -->
+				# <!-- user：例如/admins/user/**=user，没有参数，表示必须存在用户，当登入操作时不做检查。 -->
+				# some example chain definitions:
+				# /docs/** = authc, perms[document:read] 
+				# <!-- perms[user:add:*]，参数可以写多个，多个时须加上引号，例如/admins/user/**=perms["user:add:*,user:modify:*"]，每个参数都通过才通过。-->
+				# /admin/** = authc, roles[admin] 
+				# <!-- roles["admin,guest"]，每个参数通过才算通过 -->
+				# <!-- ssl：例子/admins/user/**=ssl，没有参数，表示安全的url请求，协议为https。  -->
+				# <!-- rest：例子/admins/user/**=rest[user]，根据请求的方法，相当于/admins/user/**=perms[user:method] ,其中method为post，get，delete等。 -->
+				# <!-- port：例子/admins/user/**=port[8081]，当请求的url的端口不是8081时跳转到schemal://serverName:8081?queryString。 -->
+				/index.jsp* = anon
+				##################################### 无需登录，访问get方法的/user/login   ###########################
+				/user/login = anon
+				######  必须对登录的地址设置authc，否则不会执行FormAuthenticationFilter的登录方法，                                               #####
+				######  会记录登录前访问的地址，登录后跳转到这个地址，如果直接进入登录地址，则会进入/user/login的POST方法返回地址#####
+				/user/login = authc 
+				/user/logout = logout
+				/user/* = authc, roles[admin]                                                ################  一个星号只匹配一层路径
+				/**/admin/** = authc, roles[admin]                                        ################  两个星号匹配若干层路径
+				# more URL-to-FilterChain definitions here
 			</value>
 		</property>
 	</bean>
@@ -141,13 +194,13 @@
     
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 	
-	<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after the lifecycleBeanProcessor has run: -->
+	<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after the lifecycleBeanProcessor has run. -->
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor" />
 	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
 		<property name="securityManager" ref="securityManager" />
 	</bean>
 
-	<!-- 
+	<!-- 未授权异常的处理，进入/system/error.jsp
 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 		<property name="exceptionMappings">
 			<props>

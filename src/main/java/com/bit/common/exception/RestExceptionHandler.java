@@ -3,6 +3,7 @@
  */
 package com.bit.common.exception;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +28,16 @@ import com.bit.common.model.Response;
 @EnableWebMvc
 @ResponseBody
 public class RestExceptionHandler {
+	
+	/**
+     * 请求的资源不存在
+     * <p/>
+     */
+    @ExceptionHandler({FileNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response processNotFoundException(FileNotFoundException e) {
+        return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，请求的界面不存在！");
+    }
 	
 	/**
      * SQL异常

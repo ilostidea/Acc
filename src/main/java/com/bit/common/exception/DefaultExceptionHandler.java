@@ -7,16 +7,21 @@ import java.sql.SQLException;
 
 import javax.validation.ConstraintViolationException;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * @author Zhou Liang
- * 使用了ControllerAdvice后，RestControllerAdvice就不起作用
+ * 使用了ControllerAdvice后，RestControllerAdvice就不起作用，spring MVC配置文件中的bean也不起作用。bean配置如下：
+ * <bean id="exceptionHandler" class="com.bit.common.exception.AccHandlerExceptionResolver"/>
  */
 //@ControllerAdvice
 //@EnableWebMvc
@@ -24,7 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class DefaultExceptionHandler {
 	
 	/**
-     * 没有权限 异常
+     * SQL 异常
      * <p/>
      */
     @ExceptionHandler({SQLException.class})
@@ -56,11 +61,23 @@ public class DefaultExceptionHandler {
      */
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView processUnauthenticatedException(NativeWebRequest request, UnauthorizedException e) {
+    public ModelAndView processUnauthorizedException(NativeWebRequest request, UnauthorizedException e) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
         return mv;
     }
-    
+
+	/**
+     * 没有权限 异常
+     * <p/>
+     */
+    @ExceptionHandler({AuthenticationException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ModelAndView processUnauthenticatedException(NativeWebRequest request, AuthenticationException e) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("error", e);
+        mv.setViewName("error");
+        return mv;
+    }
 }

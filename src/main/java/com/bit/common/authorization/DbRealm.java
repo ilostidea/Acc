@@ -80,14 +80,14 @@ public class DbRealm extends AuthorizingRealm {
         //实际中可能会像上面注释的那样从数据库取得
         if(userList != null){
             //添加一个角色,不是配置意义上的添加,而是证明该用户拥有admin角色
-            simpleAuthorInfo.addRole("admin");
+            //simpleAuthorInfo.addRole("admin");
             //添加权限
-            simpleAuthorInfo.addStringPermission("admin:manage");
-    			logger.info("已为用户{}赋予了{}角色和{}权限",
-    				userList.get(0).getNickName(),
-    				String.valueOf( simpleAuthorInfo.getRoles() ),
-    				String.valueOf( simpleAuthorInfo.getStringPermissions() )
-    				);
+            //simpleAuthorInfo.addStringPermission("admin:manage");
+			logger.info("已为用户{}赋予了{}角色和{}权限",
+				userList.get(0).getNickName(),
+				String.valueOf( simpleAuthorInfo.getRoles() ),
+				String.valueOf( simpleAuthorInfo.getStringPermissions() )
+				);
             return simpleAuthorInfo;
         }
         //若该方法什么都不做直接返回null的话,就会导致任何用户访问/admin/listUser.jsp时都会自动跳转到unauthorizedUrl指定的地址
@@ -102,7 +102,7 @@ public class DbRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken authcToken) throws AuthenticationException {
 		AuthenticationInfo authcInfo = null;
 		//获取基于用户名和密码的令牌
-        //authcToken是从LoginController里面currentUser.login(token)传过来的  
+        //authcToken是从UserController里面user.login(token)传过来的
         //两个token的引用都是一样的
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         logger.info("当前Subject获取到token为{}", authcToken != null ? authcToken.getPrincipal() : "anon");

@@ -52,7 +52,7 @@ public class SpecificStandardService extends AbstractService<SpecificStandard> i
 		Map<String, Object> mapResult = new HashMap<String, Object>( );
 		
 		Map< String, String> mapPreface = new HashMap< String, String>();
-		mapPreface.put("titile", null);
+		mapPreface.put("title", null);
 		mapPreface.put("preface", null);
 		
 		mapResult.put( "preface", mapPreface );
@@ -60,12 +60,12 @@ public class SpecificStandardService extends AbstractService<SpecificStandard> i
 		
 		for( SpecificStandard specificStandard : listSpecificStandard ) {
 			if( specificStandard.isIsPreface() ) {
-				mapPreface.put( "titile", specificStandard.getTitle() );
+				mapPreface.put( "title", specificStandard.getTitle() );
 				mapPreface.put( "preface", specificStandard.getSpecifics() );
 			} else {
 				Map<String, Object> mapChapter = new HashMap<String, Object>();
 				mapChapter.put( "id", specificStandard.getId() );
-				mapChapter.put( "titile", specificStandard.getTitle() );
+				mapChapter.put( "title", specificStandard.getTitle() );
 				mapChapter.put( "specifics", specificStandard.getSpecifics() );
 				( (List< Map<String, Object> >) mapResult.get( "chapters" ) ).add( mapChapter );
 			}
