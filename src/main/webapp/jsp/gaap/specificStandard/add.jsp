@@ -188,7 +188,7 @@
 			var id = ${param.id != null ? param.id : -1 };
 			var accStandardID = ${param.accStandardID != null ? param.accStandardID : -1 };
 
-			$.get("/accStandard/list",function(responseTxt, status){
+			$.get("/accStandard/admin/list",function(responseTxt, status){
 				if(status == "success"){
 					var len = responseTxt.data.length;
 					var datas = responseTxt.data;
@@ -223,10 +223,10 @@
 				var _accStandardID = $("#standard").val();
 			    var url, data;
 			    if ( _id != -1 &&  _id != undefined && _id != null) {
-			    	url = "/sp/update";
+			    	url = "/sp/admin/update";
 			    	data = { title : _title , specifics : _specifics , status : _status , accountingStandard :  { id : _accStandardID } , id : _id };
 			    } else {alert("add");
-			    	url = "/sp/add";
+			    	url = "/sp/admin/add";
 			    	data = { title : _title , specifics : _specifics , status : _status , accountingStandard :  { id : _accStandardID } };
 			    }
 				$.ajax({

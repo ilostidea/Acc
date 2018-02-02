@@ -189,7 +189,7 @@
 			var id = ${param.id != null ? param.id : -1 };
 			var accStandardID = ${param.accStandardID != null ? param.accStandardID : -1 };
 
-			$.get("/accStandard/list",function(responseTxt, status){
+			$.get("/accStandard/admin/list",function(responseTxt, status){
 				if(status == "success"){
 					var len = responseTxt.data.length;
 					var datas = responseTxt.data;
@@ -224,10 +224,10 @@
 				var _accStandardID = $("#standard").val();
 			    var url, data;
 			    if ( _id != undefined && _id != null && _id != -1 ) {
-			    	url = "/rp/update";
+			    	url = "/rp/admin/update";
 			    	data = { name : _name , report : _report , status : _status , accountingStandard :  { id : _accStandardID } , id : _id };
 			    } else {
-			    	url = "/rp/add";
+			    	url = "/rp/admin/add";
 			    	data = { name : _name , report : _report , status : _status , accountingStandard :  { id : _accStandardID } };
 			    }
 				$.ajax({

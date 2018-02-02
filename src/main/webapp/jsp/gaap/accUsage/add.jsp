@@ -156,7 +156,7 @@
 	
 	function getCOA(){
 		var accStandardID = $("#standard").val();
-		$.get("/coa/queryBy",
+		$.get("/coa/admin/queryBy",
       		  { accStandardID : accStandardID },
       		  function(responseTxt, status){
 				if(status == "success"){
@@ -189,7 +189,7 @@
 	    var data, url;
 	    var contentType = "application/json";
 	    if (  _id != -1 && _id != "") {//如果ID不为空，说明是修改
-	    	url = "/accUsage/update";
+	    	url = "/accUsage/admin/update";
 	    	data = JSON.stringify({
 	                id: _id,
 	                coa: {
@@ -199,7 +199,7 @@
 	                status: _status
 	            });
 	    } else {//ID是空，说明是新增
-	    	url = "/accUsage/add";
+	    	url = "/accUsage/admin/add";
 	    	data = JSON.stringify( {
 	    		    coa: {
 	                    id: _coaID
@@ -272,7 +272,7 @@
 	        		  "json");
 		}
 		
-		$.get("/accStandard/list",function(responseTxt, status){
+		$.get("/accStandard/admin/list",function(responseTxt, status){
 			if(status == "success"){
 				var len = responseTxt.data.length;
 				var datas = responseTxt.data;

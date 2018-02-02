@@ -33,7 +33,7 @@ public class UserRestController {
     @Resource(name="userService")
     private IUserService userService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody SysUser sysUser, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -58,7 +58,7 @@ public class UserRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody SysUser sysUser, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -88,7 +88,7 @@ public class UserRestController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/all",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/all",method=RequestMethod.GET)
     @ControllerLog(value = "获得用户列表")
     public Response getUserEmployee() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
@@ -101,7 +101,7 @@ public class UserRestController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得用户列表")
     public Response getUsers() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");

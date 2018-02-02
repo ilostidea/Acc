@@ -152,7 +152,7 @@
 			var id = ${param.id != null ? param.id : -1 };
 			var accStandardID = ${param.accStandardID != null ? param.accStandardID : -1 };
 
-			$.get("/accStandard/list",function(responseTxt, status){
+			$.get("/accStandard/admin/list",function(responseTxt, status){
 				if(status == "success"){
 					var len = responseTxt.data.length;
 					var datas = responseTxt.data;
@@ -167,7 +167,7 @@
 			});
 			
 			if( id != -1 ){
-		    	$.get("/accElement/detail",
+		    	$.get("/accElement/admin/detail",
 		        		  { accElementID: id },
 		        		  function(responseTxt, status, xhr){
 		        			  var data = responseTxt.data;
@@ -187,10 +187,10 @@
 				var _accStandardID = $("#standard").val();
 			    var url, data;
 			    if ( _id != -1 && _id != null) {
-			    	url = "/accElement/update";
+			    	url = "/accElement/admin/update";
 			    	data = { name : _name , code : _code , status : _status , accountingStandard :  { id : _accStandardID } , id : _id };
 			    } else {alert("add");
-			    	url = "/accElement/add";
+			    	url = "/accElement/admin/add";
 			    	data = { name : _name , code : _code , status : _status , accountingStandard :  { id : _accStandardID } };
 			    }
 				$.ajax({

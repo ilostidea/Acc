@@ -167,7 +167,7 @@
 	}
 	
     function rm(id, rowId){
-    	$.post("/accUsage/del",
+    	$.post("/accUsage/admin/del",
       		  { coaID: id },
       		  function(data,status,xhr){
       			  var tr = $("#"+rowId);
@@ -201,7 +201,7 @@
 	
 	function getCOA(){
 		var accStandardID = $("#standard").val();
-		$.get("/coa/queryBy",
+		$.get("/coa/admin/queryBy",
       		  { accStandardID : accStandardID },
       		  function(responseTxt, status){
 				if(status == "success"){
@@ -261,7 +261,7 @@
 
 	$(document).ready(function(){
 		
-		$.get("/accStandard/list",function(responseTxt, status){
+		$.get("/accStandard/admin/list",function(responseTxt, status){
 			if(status == "success"){
 				var len = responseTxt.data.length;
 				var datas = responseTxt.data;

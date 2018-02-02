@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Add User</title>
 </head>
-<base href="<%=request.getContextPath()%>/user/add">
+<base href="<%=request.getContextPath()%>/user/admin/add">
 <body>
     <form:form modelAttribute="sysUser" method="post">
         <div style="line-height: 20px;position: relative;text-align: center;">

@@ -156,7 +156,7 @@
 	
 	function getGP(){
 		var accStandardID = $("#standard").val();
-		$.get("/gp/queryBy",
+		$.get("/gp/admin/queryBy",
       		  { accStandardID : accStandardID },
       		  function(responseTxt, status){
 				if(status == "success"){
@@ -188,14 +188,14 @@
 	    var data, url;
 	    var contentType = "application/x-www-form-urlencoded;charset=UTF-8";
 	    if( _generalPrinciple.length == 0 ){
-	    	url = "/gp/del";
+	    	url = "/gp/admin/del";
 	    	data = { gpID : _id };
 			$("#id").val("");
 			$("#title").val("");
 			$("#generalPrinciple-markdown-doc").val("");
 			$("#status").prop( "checked", false );
 	    } else  if ( _id != undefined && _id != null && _id != "") {
-	    	url = "/gp/update";
+	    	url = "/gp/admin/update";
 	    	contentType = "application/json";
 	    	data = JSON.stringify({
 	                id: _id,
@@ -208,7 +208,7 @@
 	            });
 	    	
 	    } else {
-	    	url = "/gp/add";
+	    	url = "/gp/admin/add";
 	    	contentType = "application/json";
 	    	data = JSON.stringify( {
 	                accountingStandard: {
@@ -253,14 +253,14 @@
 		    var url;
 		    var contentType = "application/x-www-form-urlencoded;charset=UTF-8";
 		    if( _generalPrinciple.length == 0 ){
-		    	url = "/gp/del";
+		    	url = "/gp/admin/del";
 		    	data = { gpID : _id };
 				$("#id").val("");
 				$("#title").val("");
 				$("#generalPrinciple").val("");
     			$("#status").prop( "checked", false );
 		    } else  if ( _id != undefined && _id != null && _id != "") {
-		    	url = "/gp/update";
+		    	url = "/gp/admin/update";
 		    	contentType = "application/json";
 		    	data = JSON.stringify({
 		                id: _id,
@@ -273,7 +273,7 @@
 		            });
 		    	
 		    } else {
-		    	url = "/gp/add";
+		    	url = "/gp/admin/add";
 		    	contentType = "application/json";
 		    	data = JSON.stringify( {
 		                accountingStandard: {
@@ -305,7 +305,7 @@
     });--%>
 
 	$(document).ready(function(){
-		$.get("/accStandard/list",function(responseTxt, status){
+		$.get("/accStandard/admin/list",function(responseTxt, status){
 			if(status == "success"){
 				var len = responseTxt.data.length;
 				var datas = responseTxt.data;

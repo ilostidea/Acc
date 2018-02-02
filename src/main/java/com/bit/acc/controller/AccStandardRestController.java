@@ -30,7 +30,7 @@ public class AccStandardRestController {
     @Resource(name="accountingStandardService")
     private IAccountingStandardService accountingStandardService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccountingStandard accountingStandard, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -41,7 +41,7 @@ public class AccStandardRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody AccountingStandard accountingStandard, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -52,10 +52,18 @@ public class AccStandardRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/del",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accStandardID") long accStandardID) throws Exception{
 		accountingStandardService.remove(accStandardID);
         return new Response().success();
+    }
+    
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
+    @ControllerLog(value = "获得全部准则")
+    public Response queryAll() throws Exception{
+    	//测试异常处理 if(true) throw new SQLException("SQL异常");
+        List<AccountingStandard> standardList = accountingStandardService.queryAll();
+        return new Response().success(standardList);
     }
     
     @RequestMapping(value="/show/{accStandardID}",method=RequestMethod.GET)
@@ -68,14 +76,6 @@ public class AccStandardRestController {
     public Response detail(@RequestParam("accStandardID") long accStandardID){
     	AccountingStandard accStandard = accountingStandardService.findById(accStandardID);
         return new Response().success(accStandard);
-    }
-    
-    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
-    @ControllerLog(value = "获得全部准则")
-    public Response queryAll() throws Exception{
-    	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<AccountingStandard> standardList = accountingStandardService.queryAll();
-        return new Response().success(standardList);
     }
     
     @RequestMapping(value="/getDistinctName",method=RequestMethod.GET)

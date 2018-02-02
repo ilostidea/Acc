@@ -16,6 +16,6 @@
     <c:out value="${user.nickName }"></c:out>
     <br>
     <c:out value="${user.status }"></c:out>
-    <a href="<%=request.getContextPath()%>/user/list">返回到列表</a>
+    <a href="<%=request.getContextPath()%>/user/admin/list">返回到列表</a>
 </body>
 </html>

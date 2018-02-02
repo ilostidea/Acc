@@ -178,10 +178,10 @@
 			    var url;
 				var data
 			    if ( _id != undefined && _id != null) {
-			    	url = "/accStandard/update";
+			    	url = "/accStandard/admin/update";
 			    	data = { name : _name , abbr : _abbr , code : _code , exeYear : _exeYear , status : _status, id : _id };
 			    } else {
-			    	url = "/accStandard/add";
+			    	url = "/accStandard/admin/add";
 			    	data = { name : _name , abbr : _abbr , code : _code , exeYear : _exeYear , status : _status };
 			    }
 				$.ajax({

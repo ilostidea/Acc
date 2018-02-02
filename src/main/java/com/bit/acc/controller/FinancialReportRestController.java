@@ -29,7 +29,7 @@ public class FinancialReportRestController {
     @Resource(name="financialReportService")
     private IFinancialReportService financialReportService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody FinancialReport financialReport, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -40,7 +40,7 @@ public class FinancialReportRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody FinancialReport financialReport, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -51,13 +51,13 @@ public class FinancialReportRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/del",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("rpID") long rpID) {
     	financialReportService.remove(rpID);
         return new Response().success();
     }
     
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部财务报表")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");

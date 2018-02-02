@@ -29,7 +29,7 @@ public class AccUsageRestController {
     @Resource(name="accUsageService")
     private IAccUsageService accUsageService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccUsage accUsage, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -40,7 +40,7 @@ public class AccUsageRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody AccUsage accUsage, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -51,13 +51,13 @@ public class AccUsageRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/del",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accUsageID") long accUsageID) {
     	accUsageService.remove(accUsageID);
         return new Response().success();
     }
     
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部科目使用方法")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");

@@ -130,7 +130,7 @@
          extraClasses: 'messenger-fixed messenger-theme-air messenger-on-bottom'
     }
     function rm(id, rowId){
-    	$.post("/accStandard/del",
+    	$.post("/accStandard/admin/del",
       		  { accStandardID: id },
       		  function(data,status,xhr){
       			  var tr = $("#"+rowId);
@@ -161,7 +161,7 @@
     }
     
 	$(document).ready(function(){
-		$.get("/accStandard/list",function(responseTxt, status){
+		$.get("/accStandard/admin/list",function(responseTxt, status){
 			if(status == "success"){
 				var len = responseTxt.data.length;
 				var datas = responseTxt.data;

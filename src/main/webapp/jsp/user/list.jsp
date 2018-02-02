@@ -25,8 +25,8 @@
                 <td>${userModel.email}</td>
                 <td>${userModel.nickName}</td>
                 <td><a href="show/${userModel.id}">详细</a></td>
-                <td><a href="edit/${userModel.id}">编辑</a></td>
-                <td><a href="del/${userModel.id}">删除</a></td>
+                <td><a href="admin/edit/${userModel.id}">编辑</a></td>
+                <td><a href="admin/del/${userModel.id}">删除</a></td>
                 <%
 
                 /** 

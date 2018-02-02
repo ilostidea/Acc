@@ -82,15 +82,15 @@
 	</bean>
 	
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-	    <!-- 可设置一个Realm，也可设置多个Realm
-		<property name="realm" ref="dbRealm" /> -->
+	    <!-- 可设置一个Realm，也可设置多个Realm 
+		<property name="realm" ref="dbRealm" />-->
 		<property name="realms">
             <list>
                 <ref bean="iniRealm" />
                 <ref bean="dbRealm"/>
             </list>
-        </property>
-        <!-- <property name="authenticator" ref="authenticator"></property> -->
+        </property><!-- 
+        <property name="authenticator" ref="authenticator"/>-->
 	    <property name="sessionManager" ref="sessionManager"/>
 	    <property name="cacheManager" ref="cacheManager"/>
 		<!-- By default the servlet container sessions will be used.  Uncomment this line
@@ -98,16 +98,22 @@
 		<!-- <property name="sessionMode" value="native"/> -->
 		
         <!-- 记住我 -->  
-        <property name="rememberMeManager" ref="rememberMeManager"/> 
+        <property name="rememberMeManager" ref="rememberMeManager"/>
 	</bean>
 	
-	<!-- 配置使用自定义认证器，可以实现多Realm认证，并且可以指定特定Realm处理特定类型的验证 -->
+	<!-- 配置使用自定义认证器，可以实现多Realm认证，并且可以指定特定Realm处理特定类型的验证
     <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
-        <!-- 配置认证策略，只要有一个Realm认证成功即可，并且返回所有认证成功信息。shiro默认就是这样的。 -->
+        <property name="realms">
+            <list>
+                <ref bean="iniRealm"/>
+                <ref bean="dbRealm"/>
+            </list>
+        </property> 
         <property name="authenticationStrategy">
-            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"></bean>
+            <!-/- 默认是AtLeastOneSuccessfulStrategy -/->
+            <bean class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy"></bean>
         </property>
-    </bean>
+    </bean> -->
 
 	<!-- rememberMeManager管理器，写cookie，取出cookie生成用户信息 -->
 	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
@@ -178,8 +184,10 @@
 				######  会记录登录前访问的地址，登录后跳转到这个地址，如果直接进入登录地址，则会进入/user/login的POST方法返回地址#####
 				/user/login = authc 
 				/user/logout = logout
-				/user/* = authc, roles[admin]                                                ################  一个星号只匹配一层路径
-				/**/admin/** = authc, roles[admin]                                        ################  两个星号匹配若干层路径
+				################  一个星号只匹配一层路径，千万不能把注释写在权限定义后面，否则权限定义不对 ####################
+				/user/* = authc, roles[admin]
+				################  两个星号匹配若干层路径，千万不能把注释写在权限定义后面，否则权限定义不对 ####################
+				/**/admin/** = authc, roles[admin]
 				# more URL-to-FilterChain definitions here
 			</value>
 		</property>

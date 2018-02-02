@@ -156,7 +156,7 @@
 	}
 	
     function rm(id, rowId){
-    	$.post("/sp/del",
+    	$.post("/sp/admin/del",
       		  { spID: id },
       		  function(data,status,xhr){
       			  var tr = $("#"+rowId);
@@ -189,7 +189,7 @@
 	
 	function getSP(){
 		var accStandardID = $("#standard").val();
-		$.get("/sp/queryBy",
+		$.get("/sp/admin/queryBy",
       		  { accStandardID : accStandardID },
       		  function(responseTxt, status){
       			if(status == "success"){
@@ -214,7 +214,7 @@
 	}
 
 	$(document).ready(function(){
-		$.get("/accStandard/list",function(responseTxt, status){
+		$.get("/accStandard/admin/list",function(responseTxt, status){
 			if(status == "success"){
 				var len = responseTxt.data.length;
 				var datas = responseTxt.data;

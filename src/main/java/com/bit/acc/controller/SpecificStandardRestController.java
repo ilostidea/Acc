@@ -30,7 +30,7 @@ public class SpecificStandardRestController {
     @Resource(name="specificStandardService")
     private ISpecificStandardService specificStandardService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody SpecificStandard specificStandard, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -41,7 +41,7 @@ public class SpecificStandardRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody SpecificStandard specificStandard, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -52,13 +52,13 @@ public class SpecificStandardRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/del",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("spID") long spID) {
     	specificStandardService.remove(spID);
         return new Response().success();
     }
     
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部具体准则")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
@@ -72,7 +72,7 @@ public class SpecificStandardRestController {
      * @return Response
      * @throws Exception
      */
-    @RequestMapping(value="/queryBy",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的具体准则")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
     	List<SpecificStandard> generalPrinciple = specificStandardService.queryByAccStandard(accStandardID);

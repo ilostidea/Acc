@@ -29,7 +29,7 @@ public class AccElementRestController {
     @Resource(name="accElementService")
     private IAccElementService accElementService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccElement accElement, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -40,7 +40,7 @@ public class AccElementRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/update",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody AccElement accElement, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -51,13 +51,13 @@ public class AccElementRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/del",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accElementID") long accElementID) {
     	accElementService.remove(accElementID);
         return new Response().success();
     }
     
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部科目分类")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
@@ -92,13 +92,13 @@ public class AccElementRestController {
         return new Response().success( listAccElement );
     }
     
-    @RequestMapping(value="/show/{accElementID}",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/show/{accElementID}",method=RequestMethod.GET)
     public Response show(@PathVariable long accElementID){
     	AccElement accStandard = accElementService.findById(accElementID);
         return new Response().success(accStandard);
     }
     
-    @RequestMapping(value="/detail",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/detail",method=RequestMethod.GET)
     public Response detail(@RequestParam("accElementID") long accElementID){
     	AccElement accStandard = accElementService.findById(accElementID);
         return new Response().success(accStandard);

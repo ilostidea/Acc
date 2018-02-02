@@ -74,6 +74,7 @@ public class UserController {
         return "redirect:/";//返回到根目录
     }
     
+    @RequiresRoles("admin")
     @RequestMapping(value="/count",method=RequestMethod.GET)
     public ModelAndView userCount() {
         int count = userService.findAll().size();
@@ -137,6 +138,7 @@ public class UserController {
         return mv;
     }
     
+    @RequiresRoles("admin")
     @RequestMapping(value="/del/{userid}",method=RequestMethod.DELETE)
     public String del(@PathVariable Long userid){
     	SysUser sysUser = new SysUser();

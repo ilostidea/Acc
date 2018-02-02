@@ -75,24 +75,24 @@ public class DbRealm extends AuthorizingRealm {
 		simpleAuthorInfo.addRoles(roleList);
 		simpleAuthorInfo.addStringPermissions(permissionList);*/
         
-        List<SysUser> userList = userService.findByAccount( currentAccount );
+       // List<SysUser> userList = userService.findByAccount( currentAccount );
         SimpleAuthorizationInfo simpleAuthorInfo = new SimpleAuthorizationInfo();
         //实际中可能会像上面注释的那样从数据库取得
-        if(userList != null){
+       // if(userList != null && userList.size()>0){
             //添加一个角色,不是配置意义上的添加,而是证明该用户拥有admin角色
             //simpleAuthorInfo.addRole("admin");
             //添加权限
             //simpleAuthorInfo.addStringPermission("admin:manage");
 			logger.info("已为用户{}赋予了{}角色和{}权限",
-				userList.get(0).getNickName(),
+				currentAccount,
 				String.valueOf( simpleAuthorInfo.getRoles() ),
 				String.valueOf( simpleAuthorInfo.getStringPermissions() )
 				);
             return simpleAuthorInfo;
-        }
+       // }
         //若该方法什么都不做直接返回null的话,就会导致任何用户访问/admin/listUser.jsp时都会自动跳转到unauthorizedUrl指定的地址
         //详见spring-shiro.xml中的<bean id="shiroFilter">的配置
-        return null;
+        //return null;
 	}
 
 	/**

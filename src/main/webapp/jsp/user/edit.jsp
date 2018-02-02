@@ -8,7 +8,7 @@
 <title>Edit User</title>
 </head>
 <body>
-<c:url var="saveUrl" value="/user/save/${userAttribute.id }" />
+<c:url var="saveUrl" value="/user/admin/save/${userAttribute.id }" />
     <form:form modelAttribute="userAttribute" action="${saveUrl}" method="post">
         <table>
             <tr>
