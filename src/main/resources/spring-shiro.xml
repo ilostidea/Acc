@@ -96,8 +96,6 @@
 		<!-- By default the servlet container sessions will be used.  Uncomment this line
 			 to use shiro's native sessions (see the JavaDoc for more): -->
 		<!-- <property name="sessionMode" value="native"/> -->
-		
-        <!-- 记住我 -->  
         <property name="rememberMeManager" ref="rememberMeManager"/>
 	</bean>
 	
@@ -170,24 +168,24 @@
 				# <!-- authcBasic：例如/admins/user/**=authcBasic，没有参数，表示httpBasic认证。 -->
 				# <!-- user：例如/admins/user/**=user，没有参数，表示必须存在用户，当登入操作时不做检查。 -->
 				# some example chain definitions:
-				# /docs/** = authc, perms[document:read] 
+				# /docs/** = authc, perms[document:read]
 				# <!-- perms[user:add:*]，参数可以写多个，多个时须加上引号，例如/admins/user/**=perms["user:add:*,user:modify:*"]，每个参数都通过才通过。-->
-				# /admin/** = authc, roles[admin] 
+				# /admin/** = authc, roles[admin]
 				# <!-- roles["admin,guest"]，每个参数通过才算通过 -->
 				# <!-- ssl：例子/admins/user/**=ssl，没有参数，表示安全的url请求，协议为https。  -->
 				# <!-- rest：例子/admins/user/**=rest[user]，根据请求的方法，相当于/admins/user/**=perms[user:method] ,其中method为post，get，delete等。 -->
 				# <!-- port：例子/admins/user/**=port[8081]，当请求的url的端口不是8081时跳转到schemal://serverName:8081?queryString。 -->
 				/index.jsp* = anon
-				##################################### 无需登录，访问get方法的/user/login   ###########################
+				###### 无需登录，访问get方法的/user/login   ##########################################################
 				/user/login = anon
-				######  必须对登录的地址设置authc，否则不会执行FormAuthenticationFilter的登录方法，                                               #####
-				######  会记录登录前访问的地址，登录后跳转到这个地址，如果直接进入登录地址，则会进入/user/login的POST方法返回地址#####
-				/user/login = authc 
+				###### 必须对登录的地址设置authc，否则不会执行FormAuthenticationFilter的登录方法，    ###########################
+				###### 会记录登录前访问的地址，登录后跳转到这个地址，如果直接进入登录地址，则会进入/user/login的POST方法返回地址 #####
+				/user/login = authc
 				/user/logout = logout
-				################  一个星号只匹配一层路径，千万不能把注释写在权限定义后面，否则权限定义不对 ####################
-				/user/* = authc, roles[admin]
-				################  两个星号匹配若干层路径，千万不能把注释写在权限定义后面，否则权限定义不对 ####################
-				/**/admin/** = authc, roles[admin]
+				###### 一个星号只匹配一层路径，千万不能把注释写在权限定义后面，否则权限定义不对  ##############################
+				# /user/* = authc, roles[admin]
+				###### 两个星号匹配若干层路径，千万不能把注释写在权限定义后面，否则权限定义不对  ##############################
+				# /**/admin/** = authc, roles[admin]
 				# more URL-to-FilterChain definitions here
 			</value>
 		</property>

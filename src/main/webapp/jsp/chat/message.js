@@ -57,7 +57,7 @@ var mseeage ={
     //初始化在线用户  
     initOnlineUsers : function(){  
         $.ajax({  
-            url:contextPath + "/sysUser/list",
+            url:contextPath + "/sysUser/admin/list",
             success :  function(result){
                 var $html ="";
                 var $content = "";

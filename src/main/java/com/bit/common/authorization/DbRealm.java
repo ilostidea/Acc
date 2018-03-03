@@ -36,6 +36,41 @@ public class DbRealm extends AuthorizingRealm {
     }
 
 	/**
+	 * @see org.apache.shiro.realm.AuthenticatingRealm#doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken)
+	 */
+	@Override
+	protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken authcToken) throws AuthenticationException {
+		AuthenticationInfo authcInfo = null;
+		//获取基于用户名和密码的令牌
+        //authcToken是从UserController里面user.login(token)传过来的
+        //两个token的引用都是一样的
+        UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+        logger.info("当前Subject获取到token为{}", authcToken != null ? authcToken.getPrincipal() : "anon");
+        String username = String.valueOf( token.getUsername() );
+        List<SysUser> userList = userService.findByAccount( username );
+        if (userList == null || userList.size() == 0 || userList.get(0) == null) {
+            throw new UnknownAccountException();
+        }
+        
+		SysUser sysUser = userList.get(0);
+		if( username.contains("@") ){
+			authcInfo = new SimpleAuthenticationInfo(
+					sysUser.getEmail(),
+					sysUser.getPasswd(),
+					getName()
+					);
+		}else{
+			authcInfo = new SimpleAuthenticationInfo(
+					sysUser.getMobile(),
+					sysUser.getPasswd(),
+					getName()
+					);
+		}
+		//this.setSession("currentUser", sysUser);
+		return authcInfo;
+	}
+	
+	/**
 	 * 每次访问需授权资源时都会执行该方法中的逻辑,默认并未启用AuthorizationCache
 	 * @see org.apache.shiro.realm.AuthorizingRealm#doGetAuthorizationInfo(org.apache.shiro.subject.PrincipalCollection)
 	 */
@@ -93,43 +128,6 @@ public class DbRealm extends AuthorizingRealm {
         //若该方法什么都不做直接返回null的话,就会导致任何用户访问/admin/listUser.jsp时都会自动跳转到unauthorizedUrl指定的地址
         //详见spring-shiro.xml中的<bean id="shiroFilter">的配置
         //return null;
-	}
-
-	/**
-	 * @see org.apache.shiro.realm.AuthenticatingRealm#doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken)
-	 */
-	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken authcToken) throws AuthenticationException {
-		AuthenticationInfo authcInfo = null;
-		//获取基于用户名和密码的令牌
-        //authcToken是从UserController里面user.login(token)传过来的
-        //两个token的引用都是一样的
-        UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        logger.info("当前Subject获取到token为{}", authcToken != null ? authcToken.getPrincipal() : "anon");
-        String username = String.valueOf( token.getUsername() );
-        List<SysUser> userList = userService.findByAccount( username );
-        if (userList == null || userList.size() == 0 || userList.get(0) == null) {
-            throw new UnknownAccountException();
-        }
-        
-		if (userList != null) {
-			SysUser sysUser = userList.get(0);
-			if( username.contains("@") ){
-				authcInfo = new SimpleAuthenticationInfo(
-						sysUser.getEmail(),
-						sysUser.getPasswd(),
-						getName()
-						);
-			}else{
-				authcInfo = new SimpleAuthenticationInfo(
-						sysUser.getMobile(),
-						sysUser.getPasswd(),
-						getName()
-						);
-			}
-			//this.setSession("currentUser", sysUser);
-		} 
-		return authcInfo;
 	}
 
 }

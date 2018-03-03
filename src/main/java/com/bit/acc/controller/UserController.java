@@ -142,7 +142,7 @@ public class UserController {
     @RequestMapping(value="/del/{userid}",method=RequestMethod.DELETE)
     public String del(@PathVariable Long userid){
     	SysUser sysUser = new SysUser();
-    		sysUser.setId(userid);
+    	sysUser.setId(userid);
         userService.remove(sysUser);
         
         return "redirect:/user/list";
@@ -150,7 +150,7 @@ public class UserController {
     
     @RequestMapping(value="/edit/{userid}",method=RequestMethod.GET)
     public ModelAndView getEdit(@PathVariable long userid, Model model){
-    		SysUser sysUser = userService.findById(userid);
+    	SysUser sysUser = userService.findById(userid);
         model.addAttribute("userAttribute", sysUser);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("user/edit");
@@ -160,7 +160,7 @@ public class UserController {
     @RequestMapping(value="/save/{userid}",method=RequestMethod.POST)
     public String saveEdit(@ModelAttribute("userAttribute") SysUser userModel, @PathVariable int userid){
         //userService.attachClean(userModel);
-    		userService.merge(userModel);
+    	userService.merge(userModel);
         return "redirect:/user/list";
     }
 }

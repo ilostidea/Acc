@@ -81,7 +81,7 @@ public class GeneralPrinciple implements java.io.Serializable {
 	}
 
 	public GeneralPrinciple(long id, AccountingStandard accountingStandard,
-			String generalPrinciple, boolean stauts) {
+			String generalPrinciple, boolean status) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.generalPrinciple = generalPrinciple;

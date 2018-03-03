@@ -69,8 +69,7 @@ public class FinancialReportDao extends AbstractDao<FinancialReport> implements 
 	public FinancialReport findById(long id) {
 		log.debug("getting FinancialReport instance with id: " + id);
 		try {
-			FinancialReport instance = entityManager.find(
-					FinancialReport.class, id);
+			FinancialReport instance = entityManager.find( FinancialReport.class, id);
 			log.debug("get successful");
 			return instance;
 		} catch (RuntimeException re) {

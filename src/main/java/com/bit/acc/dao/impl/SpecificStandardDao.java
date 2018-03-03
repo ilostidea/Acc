@@ -69,8 +69,7 @@ public class SpecificStandardDao extends AbstractDao<SpecificStandard> implement
 	public SpecificStandard findById(long id) {
 		log.debug("getting Specificstandard instance with id: " + id);
 		try {
-			SpecificStandard instance = entityManager.find(
-					SpecificStandard.class, id);
+			SpecificStandard instance = entityManager.find(SpecificStandard.class, id);
 			log.debug("get successful");
 			return instance;
 		} catch (RuntimeException re) {

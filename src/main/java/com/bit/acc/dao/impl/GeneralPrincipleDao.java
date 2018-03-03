@@ -69,8 +69,7 @@ public class GeneralPrincipleDao extends AbstractDao<GeneralPrinciple> implement
 	public GeneralPrinciple findById(long id) {
 		log.debug("getting Generalprinciple instance with id: " + id);
 		try {
-			GeneralPrinciple instance = entityManager.find(
-					GeneralPrinciple.class, id);
+			GeneralPrinciple instance = entityManager.find(GeneralPrinciple.class, id);
 			log.debug("get successful");
 			return instance;
 		} catch (RuntimeException re) {

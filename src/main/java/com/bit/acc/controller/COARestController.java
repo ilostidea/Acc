@@ -61,8 +61,8 @@ public class COARestController {
     @ControllerLog(value = "获得全部科目")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<COA> standardList = coaService.queryAll();
-        return new Response().success(standardList);
+        List<COA> listCOA = coaService.queryAll();
+        return new Response().success( listCOA );
     }
     
     /**
@@ -109,13 +109,13 @@ public class COARestController {
     
     @RequestMapping(value="/show/{coaID}",method=RequestMethod.GET)
     public Response show(@PathVariable long coaID){
-    	COA accStandard = coaService.findById(coaID);
-        return new Response().success(accStandard);
+    	COA coa = coaService.findById(coaID);
+        return new Response().success(coa);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
     public Response detail(@RequestParam("coaID") long coaID){
-    	COA accStandard = coaService.findById(coaID);
-        return new Response().success(accStandard);
+    	COA coa = coaService.findById(coaID);
+        return new Response().success(coa);
     }
 }

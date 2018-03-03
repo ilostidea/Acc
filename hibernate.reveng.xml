@@ -2,7 +2,12 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
-	<table-filter match-catalog="acc" match-name="accelement" />
+	<table-filter match-name="question" match-catalog="acc"></table-filter>
+	<table-filter match-name="answer" match-catalog="acc"></table-filter>
+	<table-filter match-name="pump" match-catalog="acc"></table-filter>
+	<table-filter match-name="questioncollected" match-catalog="acc"></table-filter>
+	<table-filter match-name="answercollected" match-catalog="acc"></table-filter>
+	<table-filter match-name="usersetting" match-catalog="acc"></table-filter>
 	<table catalog="acc" name="accelement" class="AccElement">
 		<column name="ID"></column>
 		<column name="AccountingStandardID"></column>
