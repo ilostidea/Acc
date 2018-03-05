@@ -24,7 +24,7 @@ import com.bit.common.model.Response;
  * @author Zhou Liang
  *
  */
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.bit.acc.controller")
 @EnableWebMvc
 @ResponseBody
 public class RestExceptionHandler {
@@ -67,6 +67,16 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response processConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据校验未通过！");
+    }
+
+	/**
+     * 数据约束校验 异常 
+     * <p/>
+     */
+    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Response processConstraintViolationException(NativeWebRequest request, org.hibernate.exception.ConstraintViolationException e) {
+        return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据已被引用！");
     }
     
 	/**

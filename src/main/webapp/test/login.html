@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登录</title>
+<script src="./jquery.min.js"></script>
+</head>
+<body>
+<!--
+<form action="127.0.0.1:8080/user/login" method="post" align="center">
+</form>
+-->
+
+用户名：<input type="text" id="username" name="username"><br/>
+密码：<input type="password" id="password" name="password"><br/>
+<input type="button" value="登录" id="login">
+	
+<table>
+  <caption></caption>
+  <thead>
+	<tr>
+	  <th>名称</th>
+	  <th>简称</th>
+	  <th>代码</th>
+	  <th>开始执行年份</th>
+	  <th>状态</th>
+	  <th>操作</th>
+	</tr>
+  </thead>
+  <tbody id="data-list">
+  <!-- 查询出来的数据显示在这里 -->
+  </tbody>
+</table>
+
+<script>
+
+	function getCOA(){alert("asf");
+		$.get("/accStandard/admin/list",
+      		  function(responseTxt, status){
+      			if(status == "success"){alert("aaa");
+					var len = responseTxt.data.length;
+					var datas = responseTxt.data;
+					for(var i = 0; i < len; i++){
+						var tr = $("<tr id=\"tr" + i + "\"></tr>");
+						var td0 = $("<td></td>").text(datas[i].name);
+						var td1 = $("<td></td>").text(datas[i].abbr);
+						var td2 = $("<td></td>").text(datas[i].code);
+						var td3 = $("<td></td>").text(datas[i].exeYear);
+						var td4 = $("<td></td>").text(datas[i].status?"执行中":"已废除");
+						var td5 = $("<td></td>").html("<a href=\"javascript:rm(" + datas[i].id + ", 'tr" + i + "');\" class=\"text-danger\"><i class=\"far fa-trash-alt fa-xs \" aria-hidden=\"true\"></i></a>" +
+																	 "&nbsp;&nbsp;" + 
+																	 "<a href=\"javascript:edit(" + datas[i].id + ");\" class=\"text-primary\"><i class=\"far fa-edit fa-xs \" aria-hidden=\"true\"></i></a>");
+						$(tr).append(td0, td1, td2, td3, td4, td5);
+						$("#data-list").append(tr);
+					}
+    			}
+		      },
+		     "json"
+		);
+	}
+
+	$(document).ready(function(){
+
+		$("#login").click(function(){
+			//getCOA();
+			var _name = $("#username").val();alert(_name);
+			var _password = $("#password").val();alert(_password);
+			//var data = { username : _name , password : _password };alert(JSON.stringify(data));
+			var data = "username=" + _name + "&password=" + _password
+			$.ajax({
+				type : "POST",
+				url : "/user/login",
+				data : data,
+				contentType : "application/x-www-form-urlencoded",
+				//dataType : "json",
+				success : function(){
+					alert("登录成功！");
+					getCOA();
+				}
+			});
+		});
+		
+	});
+</script>
+
+</body>
+</html>
