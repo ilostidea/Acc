@@ -13,6 +13,7 @@
     <link href="<%=request.getContextPath() %>/style/fontawesome-all.css" rel="stylesheet" >
     <link href="<%=request.getContextPath() %>/style/messenger.css" rel="stylesheet" >
     <link href="<%=request.getContextPath() %>/style/messenger-theme-air.css" rel="stylesheet" >
+	<link href="<%=request.getContextPath() %>/style/bootstrap-markdown.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -26,13 +27,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../../index.jsp">Acc Admin</a>
+          <a class="navbar-brand" href="../index.jsp">Acc Admin</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="../../index.jsp">统计</a></li>
-            <li class="active"><a href="#">财会</a></li>
-            <li><a href="../../qna/index.jsp">问答</a></li>
+            <li><a href="../gaap/index.jsp">财会</a></li>
+            <li class="active"><a href="index.jsp">问答</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -70,13 +71,8 @@
 
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
-            <a href="../standard/manage.jsp" class="list-group-item  active">准则制度</a>
-            <a href="../generalPrinciple/manage.jsp" class="list-group-item">基本准则</a>
-            <a href="../specificStandard/manage.jsp" class="list-group-item">具体准则</a>
-            <a href="../financialReport/manage.jsp" class="list-group-item">财务报表</a>
-            <a href="../accElement/manage.jsp" class="list-group-item">科目分类</a>
-            <a href="../coa/manage.jsp" class="list-group-item">会计科目</a>
-            <a href="../accUsage/manage.jsp" class="list-group-item">科目用法</a>
+            <a href="questionMngmt.jsp" class="list-group-item active">问题管理</a>
+            <a href="answerMngmt.jsp" class="list-group-item">回答管理</a>
           </div>
         </div><!--/.sidebar-offcanvas-->
           
@@ -86,47 +82,62 @@
           </p>
           <div class="row">
             <div class="col-xs-12 col-lg-12">
-            	<h3 align="center">新增会计准则或会计制度</h3>
-            	<hr>
-				 <div class="form-horizontal">
+              <h3 align="center">具体准则</h3>
+              	<div class="form-horizontal">
 					<div class="form-group">
-							<label class="col-sm-2 control-label" for="name">名称</label>
-							<div class="col-sm-4">
-							    <input type="text" class="form-control" id="name" name="name" placeholder="请输入名称">
+							<label class="col-sm-2 control-label" for="userName">提问人</label>
+							<div class="col-sm-3">
+							    <input type="text" class="form-control input-sm" id="userName" name="userName" placeholder="请输入昵称、手机号或邮箱">
 							</div>
-							
-							<label class="col-sm-2 control-label" for="abbr">简称</label>
-							<div class="col-sm-4">
-							    <input type="text" class="form-control" id="abbr" name="abbr" placeholder="请输入简称">
+							<label class="col-sm-2 control-label" for="question">内容</label>
+							<div class="col-sm-3">
+							    <input type="text" class="form-control input-sm" id="question" name="question" placeholder="问题内容中包含的字符">
 							</div>
-					</div>
-					<div class="form-group">
-							<label class="col-sm-2 control-label" for="code">代码</label>
-							<div class="col-sm-4">
-							    <input type="text" class="form-control" id="code" name="code" placeholder="请输入简称的拼音首字母">
-							</div>
-							
-							<label class="col-sm-2 control-label" for="exeYear">开始执行时间</label>
-							<div class="col-sm-4">
-							    <input type="number" class="form-control" id="exeYear" name="exeYear" placeholder="请输入开始执行年份">
-							</div>
-					</div>
+							<div class="col-sm-2"></div>
+				    </div>
 					<div class="form-group">
 							<label class="col-sm-2 control-label" for="status">状态</label>
-							<div class="col-sm-10">
-								<div class="checkbox">
-									<label><input type="checkbox" id="status" name="status">执行中</label>
-								</div>
+							<div class="col-sm-3">
+							    <select id="status" name="status input-sm" class="form-control input-sm">
+							        <option value="true">启用</option>
+							        <option value="false">停用</option>
+							    </select>
 							</div>
-					</div>
-					<div style="text-align: center;">
-						<input type="hidden" id="id" name="id">
-						<button type="button" class="btn btn-defalt" onclick="history.go(-1);">返回</button>
-						<button type="button" class="btn btn-success" id="save">提交</button>
-					</div>
-				</div>
+							<label class="col-sm-2 control-label" for="accused">是否被投诉</label>
+							<div class="col-sm-3">
+							    <select id="accused" name="accused" class="form-control input-sm">
+							        <option value="true">是</option>
+							        <option value="false">否</option>
+							    </select>
+					        </div>
+							<div class="col-sm-2">
+							    <a class="btn btn-success btn-sm pull-right" href="#" onclick="query()"><i class="fa fa-file"></i> 查询</a>
+							</div>
+				    </div>
+				    <hr>
+					<div class="form-group">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10">
+			               <table class="table table-striped">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>标题</th>
+							      <!-- th>开始执行年份</th> -->
+							      <th>问题</th>
+							      <th>统计</th>
+							    </tr>
+							  </thead>
+							  <tbody id="data-list">
+							  <!-- 查询出来的数据显示在这里 -->
+							  </tbody>
+							</table>
+						</div>
+						<div class="col-sm-1"></div>
+				    </div>
             </div>
           </div><!--/row-->
+          </div>
         </div><!--/.col-xs-12.col-sm-9-->
 
       </div><!--/row-->
@@ -146,64 +157,43 @@
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
     <script src="<%=request.getContextPath() %>/js/messenger.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.zh.js"></script>
+    <script src="<%=request.getContextPath() %>/js/marked.js"></script>
     <script>
 	$._messengerDefaults = {
-	         extraClasses: 'messenger-fixed messenger-theme-air messenger-on-bottom'
-	    };
-	$(document).ready(
-		function(){
-			var id = ${param.id != null ? param.id : -1 };
-			if( id != -1 ){
-		    	$.get("/accStandard/detail",
-		        		  { accStandardID: id },
-		        		  function(responseTxt, status, xhr){
-		        			  var data = responseTxt.data;
-		        			  $("#name").val( data.name );
-		        			  $("#abbr").val( data.abbr );
-		        			  $("#code").val( data.code );
-		        			  $("#exeYear").val( data.exeYear );
-		        			  $("#status").prop( "checked", data.status );
-		        			  $("#id").val( id );
-		        		  },
-		        		  "json");
-			}
-	        
-			$("#save").click(function(){
-			    var _name = $("#name").val();
-			    var _abbr = $("#abbr").val();
-			    var _code = $("#code").val();
-			    var _exeYear = $("#exeYear").val();
-			    var _status = $("#status").prop("checked") ;
-			    var _id = $("#id").val( );
-			    var url;
-				var data
-			    if ( _id != undefined && _id != null) {
-			    	url = "/accStandard/admin/update";
-			    	data = { name : _name , abbr : _abbr , code : _code , exeYear : _exeYear , status : _status, id : _id };
-			    } else {
-			    	url = "/accStandard/admin/add";
-			    	data = { name : _name , abbr : _abbr , code : _code , exeYear : _exeYear , status : _status };
-			    }
-				$.ajax({
-					type : "POST",
-					url : url,
-					data : JSON.stringify(data),
-					contentType : "application/json",
-					//dataType : "json",
-					success : function(){
-						Messenger().post({
-							message : "保存成功！即将跳转进入管理界面。",//提示信息
-		      				type : 'success',//消息类型。error、info、success
-		      				hideAfter : 2,//多长时间消失
-		      				showCloseButton : true,//是否显示关闭按钮
-		      				hideOnNavigate : false //是否隐藏导航
-		      		    });
-	      				setTimeout(function(){window.location.href="/jsp/gaap/standard/manage.jsp";}, 1000);
-				    }
-				});
-	    	});
-		}
-	);
+         extraClasses: 'messenger-fixed messenger-theme-air messenger-on-bottom'
+    }
+	
+	function query(){
+		var userName = $("#userName").val();
+		var question = $("#question").val();
+		var status = $("#status").val();
+		var accused = $("#accused").val();
+		$.get("/question/admin/question",
+	    		  { userName : userName, question:question, status : status, accused : accused },
+	    		  function(responseTxt, status){
+					if(status == "success"){
+						var len = responseTxt.data.length;
+						var datas = responseTxt.data;
+						for(var i = 0; i < len; i++){
+							var tr = $("<tr id=\"tr" + i + "\"></tr>");
+							var td0 = $("<td></td>").text(datas[i].title);
+							//var td1 = $("<td></td>").text(datas[i].exeYear);
+							var td2 = $("<td></td>").text(datas[i].question);
+							var td3 = $("<td></td>").text("回答数：" + datas[i].answerCount + "；收藏数：" + datas[i].collectedCount );
+							$(tr).append(td0, /* td1, */ td2, td3);
+							$("#data-list").append(tr);
+						}
+					}
+				},
+			   "json"
+	    );
+	}
+
+	$(document).ready(function(){
+		query();
+	});
 	</script>
 </body>
 </html>

@@ -34,7 +34,7 @@
           <ul class="nav navbar-nav">
             <li><a href="../../index.jsp">统计</a></li>
             <li class="active"><a href="#">财会</a></li>
-            <li><a href="#contact">问答</a></li>
+            <li><a href="../../qna/index.jsp">问答</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">

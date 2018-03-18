@@ -98,7 +98,7 @@ public class AnswerCollectedDao extends AbstractDao<AnswerCollected> implements 
 	public List<AnswerCollected> queryByUser( long userID ) {
 		log.debug("getting Answer instances with userID" + userID);
 		try {
-			String jpql = "select t from " + AnswerCollected.class.getName() + " as t where t.user.id = :userID";
+			String jpql = "select t from " + AnswerCollected.class.getName() + " as t join fetch t.answer a join fetch a.question where t.user.id = :userID";
 			Query query = entityManager.createQuery(jpql);
 			query.setParameter("userID", userID);
 			List<AnswerCollected> resultList = (List<AnswerCollected>) query.getResultList();

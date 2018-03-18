@@ -1,6 +1,8 @@
 package com.bit.acc.dao.impl;
 // Generated 2018-2-3 20:49:54 by Hibernate Tools 5.2.6.Final
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 
@@ -95,6 +98,119 @@ public class QuestionDao extends AbstractDao<Question> implements IQuestionDao{
 			Question instance = entityManager.find(Question.class, id);
 			log.debug("get successful");
 			return instance;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+	
+	public List<Question> queryForAdmin(String userName, String question, Boolean status, Boolean accused){
+		log.debug("getting Question instances ");
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Question> criteriaQuery = criteriaBuilder.createQuery(Question.class);
+			Root<Question> root = criteriaQuery.from(Question.class);
+
+			EntityType<Question> qestionModel = root.getModel();
+			criteriaQuery.select( criteriaBuilder.construct( Question.class,
+					root.get( qestionModel.getSingularAttribute( "id", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "user", SysUser.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "title", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "question", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAnonymous", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "approveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "disapproveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAccused", Boolean.class ) ),
+					root.get( qestionModel.getSingularAttribute( "status", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "createTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "creator", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifyTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifier", Long.class ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
+					) );
+			Predicate condition = null;
+			if( userName != null && userName.length() > 0 ) {
+				condition = criteriaBuilder.or( criteriaBuilder.equal( root.get( "user" ).get("mobile"), userName),
+						criteriaBuilder.equal( root.get( "user" ).get("email"), userName ), 
+						criteriaBuilder.equal( root.get( "user" ).get("nickName"), userName ) );
+			}
+			if( question != null && question.length() > 0 ) {
+				Predicate questionContainsChar =  criteriaBuilder.like( root.get( "question" ), "%" + question + "%");
+				if(condition != null)
+					condition = criteriaBuilder.and( condition, questionContainsChar);
+				else
+					condition = questionContainsChar;
+			}
+			if(status != null) {
+				Predicate isEnabled = null;
+				if( status )
+					isEnabled = criteriaBuilder.isTrue( root.get("status") );
+				else
+					isEnabled = criteriaBuilder.isFalse( root.get("status") );
+				if(condition != null)
+					condition = criteriaBuilder.and( condition, isEnabled);
+				else
+					condition = isEnabled;
+			}
+			if(accused != null) {
+				Predicate isAccused = null;
+				if ( accused )
+					isAccused = criteriaBuilder.isTrue( root.get("isAccused") );
+				else
+					isAccused = criteriaBuilder.isFalse( root.get("isAccused") );
+				if(condition != null)
+					condition = criteriaBuilder.and( condition, isAccused);
+				else
+					condition = isAccused;
+			}
+            if( condition != null )
+            	criteriaQuery.where( condition );
+			criteriaQuery.groupBy(root.get("id"));
+			criteriaQuery.orderBy( criteriaBuilder.desc( root.get("createTime") ) );
+			TypedQuery<Question> result = entityManager.createQuery(criteriaQuery);
+			List<Question> resultList = (List<Question>) result.getResultList();
+			log.debug("get successful");
+			return resultList;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+		
+	}
+
+	public List<Question> queryRecent( ) {
+		log.debug("getting recent Question instances ");
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Question> criteriaQuery = criteriaBuilder.createQuery(Question.class);
+			Root<Question> root = criteriaQuery.from(Question.class);
+
+			EntityType<Question> qestionModel = root.getModel();
+			criteriaQuery.select( criteriaBuilder.construct( Question.class,
+					root.get( qestionModel.getSingularAttribute( "id", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "user", SysUser.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "title", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "question", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAnonymous", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "approveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "disapproveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAccused", Boolean.class ) ),
+					root.get( qestionModel.getSingularAttribute( "status", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "createTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "creator", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifyTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifier", Long.class ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
+					) );
+			//criteriaQuery.where( );
+			criteriaQuery.groupBy(root.get("id"));
+			criteriaQuery.orderBy( criteriaBuilder.desc( root.get("createTime") ) );
+			TypedQuery<Question> result = entityManager.createQuery(criteriaQuery);
+			List<Question> resultList = (List<Question>) result.getResultList();
+			log.debug("get successful");
+			return resultList;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;
@@ -235,22 +351,101 @@ public class QuestionDao extends AbstractDao<Question> implements IQuestionDao{
 		}
 	}
 	
-	public Question getQuesstionAndAnswersById(long id) {
-		log.debug("getting Question and its Answers instance with id: " + id);
+	public Question getQuesstionAndAnswersPumpCountById(long id) {
+		log.debug("getting Question and its Answers and Answer's pump count instance with id: " + id);
 		try {
-			/*//Question instance = entityManager.find(Question.class, id);
+			
+			/*EntityGraph graph = this.em.createEntityGraph(Question.class);
+			Subgraph answersGraph = graph.addSubgraph("answers");
+			Map<String, Object> props = new HashMap<>();
+			props.put("javax.persistence.loadgraph", graph);
+			Question question = entityManager.find(Question.class, id, props);*/
+			
+			/*CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery q = criteriaBuilder.createQuery( Question.class );
+			Root root = q.from( Question.class );
+			q.where( criteriaBuilder.equal( root.get("id"), id) );
+			EntityGraph graph = entityManager.getEntityGraph("question.answers.pumpscount");
+			Question dept = (Question) entityManager.createQuery(q).setHint("javax.persistence.fetchgraph", graph).getSingleResult();*/
+			
+
+			/*CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Question> criteriaQuery = criteriaBuilder.createQuery(Question.class);
+			Root<Question> root = criteriaQuery.from(Question.class);
+			//root.fetch( root.getModel().getSet("answers"), JoinType.LEFT);
+
+			EntityType<Question> qestionModel = root.getModel();
+			criteriaQuery.select( criteriaBuilder.construct( Question.class,
+					root.get( qestionModel.getSingularAttribute( "id", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "user", SysUser.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "title", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "question", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAnonymous", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "approveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "disapproveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAccused", Boolean.class ) ),
+					root.get( qestionModel.getSingularAttribute( "status", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "createTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "creator", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifyTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifier", Long.class ) ),
+					root.join( qestionModel.getSet( "answers"), JoinType.LEFT ),
+					criteriaBuilder.count( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
+					) );
+			criteriaQuery.where( criteriaBuilder.equal( root.get("id"), id) );
+			criteriaQuery.groupBy(root.get("id"));
+			TypedQuery<Question> result = entityManager.createQuery(criteriaQuery);
+			Question question = result.getSingleResult();
+			
+			log.debug("get successful");
+			return question;*/
+			
+			//String jpql = "select new Question(q.id, q.user, q.title, q.question, q.isAnonymous, q.approveCount, q.disapproveCount, q.isAccused, q.status, q.createTime, q.creator, q.modifyTime, q.modifier, "
+			//		+ " ( List( (select a1 from Answer a1 where a1.question.id = q.id) as answers ) ) , count(a) as answerCount, count(c) as collectedCount)  from " + Question.class.getName() + " as q left join q.answers a left join q.questionCollecteds c where q.id = :id group by q.id";
+			/*String jpql = "select new Question(q,"
+					+ " count(a) as answerCount, count(c) as collectedCount )"
+					+ " from  Question as q left join fetch q.answers a left join q.questionCollecteds c"
+					+ " where q.id = :id group by q.id";
+			Query query = entityManager.createQuery(jpql);
+			query.setParameter("id", id);*/
+			
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Question> criteriaQuery = criteriaBuilder.createQuery(Question.class);
 			Root<Question> root = criteriaQuery.from(Question.class);
-			//Join<Question, Answer> leftJoin = root.join("answers", JoinType.LEFT);
-			//root.fetch("answers", JoinType.LEFT);
-			//criteriaQuery.where(criteriaBuilder.equal( leftJoin.get("question").get( "id" ), id) );
 			EntityType<Question> qestionModel = root.getModel();
-			root.fetch( qestionModel.getSet("answers"), JoinType.LEFT );
-			//Join<Question, Answer> join = root.join( qestionModel.getSet("answers", Answer.class), JoinType.LEFT );
-			criteriaQuery.select( root );
-			criteriaQuery.where( criteriaBuilder.equal( root.get( qestionModel.getSingularAttribute("id", Long.class) ), 1) );
-			TypedQuery<Question> result = entityManager.createQuery(criteriaQuery);*/
+			criteriaQuery.select( criteriaBuilder.construct( Question.class,
+					root.get( qestionModel.getSingularAttribute( "id", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "user", SysUser.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "title", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "question", String.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAnonymous", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "approveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "disapproveCount", Integer.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "isAccused", Boolean.class ) ),
+					root.get( qestionModel.getSingularAttribute( "status", Boolean.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "createTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "creator", Long.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifyTime", Date.class ) ), 
+					root.get( qestionModel.getSingularAttribute( "modifier", Long.class ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
+					criteriaBuilder.count( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
+					) );
+			criteriaQuery.where( criteriaBuilder.equal( root.get( "id" ), id) );
+			criteriaQuery.groupBy(root.get("id"));
+			TypedQuery<Question> result = entityManager.createQuery(criteriaQuery);
+			
+			log.debug("get successful");
+			return (Question) result.getSingleResult();
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+
+	public Question getQuesstionAndAnswersById(long id) {
+		log.debug("getting Question and its Answers instance with id: " + id);
+		try {
 			
 			String jpql = "select t from " + Question.class.getName() + " as t left join fetch t.answers where t.id = :id";
 			Query query = entityManager.createQuery(jpql);

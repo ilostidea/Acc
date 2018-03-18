@@ -43,8 +43,6 @@ public class QuestionRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	question.setIsAccused(false);
-    	question.setStatus(true);
     	questionService.persist(question);
     	Map<String, Long> mId = new HashMap<String, Long>( );
     	mId.put("id", question.getId());
@@ -73,6 +71,20 @@ public class QuestionRestController {
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
         List<Question> listQuestion = questionService.queryAll();
+        return new Response().success( listQuestion );
+    }
+    
+    @RequestMapping(value="/admin/question",method=RequestMethod.GET)
+    @ControllerLog(value = "管理问题")
+    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("question") String question, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
+        List<Question> listQuestion = questionService.queryForAdmin( userName, question,  status, accused);
+        return new Response().success( listQuestion );
+    }
+    
+    @RequestMapping(value="/recent",method=RequestMethod.GET)
+    @ControllerLog(value = "获得最近问题及问题概况")
+    public Response queryRecent() throws Exception{
+        List<Question> listQuestion = questionService.queryRecent();
         return new Response().success( listQuestion );
     }
     
@@ -123,7 +135,8 @@ public class QuestionRestController {
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
     public Response detail(@RequestParam("questionID") long questionID){
-    	Question question = questionService.getQuesstionAndAnswersById(questionID);
+    	//Question question = questionService.getQuesstionAndAnswersById(questionID);
+    	Question question = questionService.getQuesstionAndAnswersPumpCountById( questionID );
         return new Response().success( question );
     }
     

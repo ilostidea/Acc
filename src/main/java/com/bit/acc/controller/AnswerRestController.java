@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.Answer;
+import com.bit.acc.model.Question;
 import com.bit.acc.service.intfs.IAnswerService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
@@ -43,8 +44,6 @@ public class AnswerRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	answer.setIsAccused(false);
-    	answer.setStatus(true);
     	answerService.persist(answer);
     	Map<String, Long> mId = new HashMap<String, Long>( );
     	mId.put("id", answer.getId());
@@ -74,6 +73,39 @@ public class AnswerRestController {
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
         List<Answer> listAnswer = answerService.queryAll();
         return new Response().success(listAnswer);
+    }
+    
+    @RequestMapping(value="/admin/answer",method=RequestMethod.GET)
+    @ControllerLog(value = "管理回答")
+    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("answer") String answer, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
+        List<Answer> listAnswer = answerService.queryForAdmin(userName, answer, status, accused);
+        return new Response().success(listAnswer);
+    }
+    
+    /**
+     * 通过用户ID获得该用户的回答
+     * @param userID
+     * @return Response
+     * @throws Exception
+     */
+    @RequestMapping(value="/queryByUser",method=RequestMethod.GET)
+    @ControllerLog(value = "通过用户ID获得该用户的回答")
+    public Response queryByUser(@RequestParam("userID") long userID) throws Exception{
+    	List<Answer> listQuestion = answerService.queryByUser(userID);
+        return new Response().success( listQuestion );
+    }
+    
+    /**
+     * 通过用户ID获得该用户收藏的回答
+     * @param userID
+     * @return Response
+     * @throws Exception
+     */
+    @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
+    @ControllerLog(value = "通过用户ID获得该用户收藏的回答")
+    public Response queryByCollectedUser(@RequestParam("userID") long userID) throws Exception{
+    	List<Answer> listQuestion = answerService.queryByCollectedUser(userID);
+        return new Response().success( listQuestion );
     }
     
     /**

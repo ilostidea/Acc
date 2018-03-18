@@ -29,7 +29,7 @@
           <ul class="nav navbar-nav">
             <li><a href="../index.jsp">统计</a></li>
             <li class="active"><a href="#">财会</a></li>
-            <li><a href="#contact">问答</a></li>
+            <li><a href="../qna/index.jsp">问答</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -67,7 +67,7 @@
 
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
-            <a href="standard/manage.jsp" class="list-group-item active">准则制度</a>
+            <a href="standard/manage.jsp" class="list-group-item">准则制度</a>
             <a href="generalPrinciple/manage.jsp" class="list-group-item">基本准则</a>
             <a href="specificStandard/manage.jsp" class="list-group-item">具体准则</a>
             <a href="financialReport/manage.jsp" class="list-group-item">财务报表</a>
@@ -83,39 +83,7 @@
           </p>
           <div class="row">
             <div class="col-xs-6 col-lg-12">
-              <table class="table table-striped">
-				  <caption>会计制度或准则
-				  <a class="btn btn-success btn-sm pull-right" href="#"><i class="fa fa-file"></i> 新增准则</a>
-				  </caption>
-				  <thead>
-				    <tr>
-				      <th>名称</th>
-				      <th>开始执行年份</th>
-				      <th>状态</th>
-				      <th>操作</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <td>Tanmay</td>
-				      <td>Bangalore</td>
-				      <td>560001</td>
-				      <td><i class="fa fa-trash fa-xs" aria-hidden="true"></i>&nbsp;&nbsp; <i class="fa fa-edit fa-xs" aria-hidden="true"></i> </td>
-				    </tr>
-				    <tr>
-				      <td>Sachin</td>
-				      <td>Mumbai</td>
-				      <td>400003</td>
-				      <td><i class="fa fa-trash fa-xs" aria-hidden="true"></i>&nbsp;&nbsp; <i class="fa fa-edit fa-xs" aria-hidden="true"></i> </td>
-				    </tr>
-				    <tr>
-				      <td>Uma</td>
-				      <td>Pune</td>
-				      <td>411027</td>
-				      <td><i class="fa fa-trash fa-xs" aria-hidden="true"></i>&nbsp;&nbsp; <i class="fa fa-edit fa-xs" aria-hidden="true"></i> </td>
-				    </tr>
-				  </tbody>
-				</table>
+              <!-- 右侧内容区 -->
             </div>
           </div><!--/row-->
         </div><!--/.col-xs-12.col-sm-9-->

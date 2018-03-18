@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -37,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "answer", catalog = "acc")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
+@JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier", "answerCollecteds"}/*, ignoreUnknown = true*/)
 public class Answer implements java.io.Serializable {
 
 	/**
@@ -58,7 +59,10 @@ public class Answer implements java.io.Serializable {
 	private Date modifyTime;
 	private Long modifier;
 	private Set<Pump> pumps = new HashSet<Pump>(0);
-	//private Set<AnswerCollected> answerCollecteds = new HashSet<AnswerCollected>(0);
+	private Set<AnswerCollected> answerCollecteds = new HashSet<AnswerCollected>(0);
+	
+	private String questionTitle;
+	private Long pumpCount;
 
 	public Answer() {
 	}
@@ -70,10 +74,49 @@ public class Answer implements java.io.Serializable {
 		this.isAnonymous = isAnonymous;
 		this.isAccused = isAccused;
 	}
+	
+	public Answer(long id, Question question, SysUser user, String answer, boolean isAnonymous, Integer approveCount,
+			Integer disapproveCount, boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
+			Long modifier, Long pumpCount) {
+		this.id = id;
+		this.question = question;
+		this.user = user;
+		this.answer = answer;
+		this.isAnonymous = isAnonymous;
+		this.approveCount = approveCount;
+		this.disapproveCount = disapproveCount;
+		this.isAccused = isAccused;
+		this.status = status;
+		this.createTime = createTime;
+		this.creator = creator;
+		this.modifyTime = modifyTime;
+		this.modifier = modifier;
+		this.pumpCount = pumpCount;
+	}
 
 	public Answer(long id, Question question, SysUser user, String answer, boolean isAnonymous, Integer approveCount,
 			Integer disapproveCount, boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-			Long modifier, Set<Pump> pumps/*, Set<AnswerCollected> answerCollecteds*/) {
+			Long modifier, Long pumpCount, String questionTitle) {
+		this.id = id;
+		this.question = question;
+		this.user = user;
+		this.answer = answer;
+		this.isAnonymous = isAnonymous;
+		this.approveCount = approveCount;
+		this.disapproveCount = disapproveCount;
+		this.isAccused = isAccused;
+		this.status = status;
+		this.createTime = createTime;
+		this.creator = creator;
+		this.modifyTime =modifyTime;
+		this.modifier = modifier;
+		this.pumpCount = pumpCount;
+		this.questionTitle = questionTitle;
+	}
+
+	public Answer(long id, Question question, SysUser user, String answer, boolean isAnonymous, Integer approveCount,
+			Integer disapproveCount, boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
+			Long modifier, Set<Pump> pumps, Set<AnswerCollected> answerCollecteds) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
@@ -88,7 +131,7 @@ public class Answer implements java.io.Serializable {
 		this.modifyTime = modifyTime;
 		this.modifier = modifier;
 		this.pumps = pumps;
-		//this.answerCollecteds = answerCollecteds;
+		this.answerCollecteds = answerCollecteds;
 	}
 
 	@Id
@@ -115,7 +158,7 @@ public class Answer implements java.io.Serializable {
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UserID", nullable = false)
 	public SysUser getUser() {
@@ -231,14 +274,32 @@ public class Answer implements java.io.Serializable {
 		this.pumps = pumps;
 	}
 
-	/*@OneToMany(fetch = FetchType.LAZY, mappedBy = "answer")
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "answer")
+	@Fetch(FetchMode.SUBSELECT)
 	public Set<AnswerCollected> getAnswerCollecteds() {
 		return this.answerCollecteds;
 	}
 
 	public void setAnswerCollecteds(Set<AnswerCollected> answerCollecteds) {
 		this.answerCollecteds = answerCollecteds;
-	}*/
+	}
 
+	@Transient
+	public String getQuestionTitle() {
+		return questionTitle;
+	}
+
+	public void setQuestionTitle(String questionTitle) {
+		this.questionTitle = questionTitle;
+	}
+
+	@Transient
+	public Long getPumpCount() {
+		return pumpCount;
+	}
+
+	public void setPumpCount(Long pumpCount) {
+		this.pumpCount = pumpCount;
+	}
+	
 }
