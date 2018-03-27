@@ -23,7 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bit.acc.model.SysLog;
 import com.bit.acc.model.SysUser;
-import com.bit.acc.service.intfs.ISysLogService;
+import com.bit.acc.service.intfs.SysLogService;
 import com.bit.common.util.IConstants;
 
 @Aspect
@@ -32,7 +32,7 @@ public class LogAdvice{
 	
 	// 注入Service用于把日志保存数据库
 	@Resource(name="sysLogService")
-	private ISysLogService sysLogService;
+	private SysLogService sysLogService;
 	
 	// 本地异常日志记录对象
 	private static final Logger logger = LoggerFactory.getLogger(LogAdvice.class);

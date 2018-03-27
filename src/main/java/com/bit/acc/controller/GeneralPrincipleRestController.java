@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.GeneralPrinciple;
-import com.bit.acc.service.intfs.IGeneralPrincipleService;
+import com.bit.acc.service.intfs.GeneralPrincipleService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,7 +27,7 @@ import com.bit.common.validation.Third;
 public class GeneralPrincipleRestController {
 
     @Resource(name="generalPrincipleService")
-    private IGeneralPrincipleService generalPrincipleService;
+    private GeneralPrincipleService generalPrincipleService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody GeneralPrinciple generalPrinciple, BindingResult result) {
@@ -36,7 +36,7 @@ public class GeneralPrincipleRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        generalPrincipleService.persist(generalPrinciple);
+        generalPrincipleService.save(generalPrinciple);
         return new Response().success(generalPrinciple);
     }
     
@@ -47,13 +47,13 @@ public class GeneralPrincipleRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	generalPrincipleService.merge(generalPrinciple);
+    	generalPrincipleService.save(generalPrinciple);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("gpID") long gpID) {
-    	generalPrincipleService.remove(gpID);
+    	generalPrincipleService.deleteById(gpID);
         return new Response().success();
     }
     
@@ -61,7 +61,7 @@ public class GeneralPrincipleRestController {
     @ControllerLog(value = "获得全部基本准则")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<GeneralPrinciple> standardList = generalPrincipleService.queryAll();
+        List<GeneralPrinciple> standardList = generalPrincipleService.findAll();
         return new Response().success(standardList);
     }
     
@@ -74,7 +74,7 @@ public class GeneralPrincipleRestController {
     @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的基本准则")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
-    	GeneralPrinciple generalPrinciple = generalPrincipleService.queryByAccStandard(accStandardID);
+    	GeneralPrinciple generalPrinciple = generalPrincipleService.findByAccStandard(accStandardID);
         return new Response().success(generalPrinciple);
     }
     
@@ -88,7 +88,7 @@ public class GeneralPrincipleRestController {
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的基本准则")
     public Response queryByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
-    	GeneralPrinciple generalPrinciple = generalPrincipleService.queryByAccStandard(code, exeYear);
+    	GeneralPrinciple generalPrinciple = generalPrincipleService.findByAccStandard(code, exeYear);
         return new Response().success(generalPrinciple);
     }
     

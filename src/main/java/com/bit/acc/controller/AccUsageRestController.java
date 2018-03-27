@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.AccUsage;
-import com.bit.acc.service.intfs.IAccUsageService;
+import com.bit.acc.service.intfs.AccUsageService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,7 +27,7 @@ import com.bit.common.validation.Third;
 public class AccUsageRestController {
 
     @Resource(name="accUsageService")
-    private IAccUsageService accUsageService;
+    private AccUsageService accUsageService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccUsage accUsage, BindingResult result) {
@@ -36,7 +36,7 @@ public class AccUsageRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        accUsageService.persist(accUsage);
+        accUsageService.save(accUsage);
         return new Response().success();
     }
     
@@ -47,13 +47,13 @@ public class AccUsageRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	accUsageService.merge(accUsage);
+    	accUsageService.save(accUsage);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accUsageID") long accUsageID) {
-    	accUsageService.remove(accUsageID);
+    	accUsageService.deleteById(accUsageID);
         return new Response().success();
     }
     
@@ -61,7 +61,7 @@ public class AccUsageRestController {
     @ControllerLog(value = "获得全部科目使用方法")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<AccUsage> accUsageList = accUsageService.queryAll();
+        List<AccUsage> accUsageList = accUsageService.findAll();
         return new Response().success(accUsageList);
     }
     

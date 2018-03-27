@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.SpecificStandard;
-import com.bit.acc.service.intfs.ISpecificStandardService;
+import com.bit.acc.service.intfs.SpecificStandardService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -28,7 +28,7 @@ import com.bit.common.validation.Third;
 public class SpecificStandardRestController {
 
     @Resource(name="specificStandardService")
-    private ISpecificStandardService specificStandardService;
+    private SpecificStandardService specificStandardService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody SpecificStandard specificStandard, BindingResult result) {
@@ -37,7 +37,7 @@ public class SpecificStandardRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        specificStandardService.persist(specificStandard);
+        specificStandardService.save(specificStandard);
         return new Response().success();
     }
     
@@ -48,13 +48,13 @@ public class SpecificStandardRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	specificStandardService.merge(specificStandard);
+    	specificStandardService.save(specificStandard);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("spID") long spID) {
-    	specificStandardService.remove(spID);
+    	specificStandardService.deleteById(spID);
         return new Response().success();
     }
     
@@ -62,7 +62,7 @@ public class SpecificStandardRestController {
     @ControllerLog(value = "获得全部具体准则")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<SpecificStandard> standardList = specificStandardService.queryAll();
+        List<SpecificStandard> standardList = specificStandardService.findAll();
         return new Response().success(standardList);
     }
     
@@ -75,7 +75,7 @@ public class SpecificStandardRestController {
     @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的具体准则")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
-    	List<SpecificStandard> generalPrinciple = specificStandardService.queryByAccStandard(accStandardID);
+    	List<SpecificStandard> generalPrinciple = specificStandardService.findByAccStandard(accStandardID);
         return new Response().success(generalPrinciple);
     }
     

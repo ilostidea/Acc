@@ -36,7 +36,7 @@ public class QuestionCollected implements java.io.Serializable {
 	 * auto generated
 	 */
 	private static final long serialVersionUID = 5776512524829023852L;
-	private long id;
+	private Long id;
 	private Question question;
 	private SysUser user;
 	private Date createTime;
@@ -47,13 +47,13 @@ public class QuestionCollected implements java.io.Serializable {
 	public QuestionCollected() {
 	}
 
-	public QuestionCollected(long id, Question question, SysUser user) {
+	public QuestionCollected(Long id, Question question, SysUser user) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
 	}
 
-	public QuestionCollected(long id, Question question, SysUser user, Date createTime, Long creator, Date modifyTime,
+	public QuestionCollected(Long id, Question question, SysUser user, Date createTime, Long creator, Date modifyTime,
 			Long modifier) {
 		this.id = id;
 		this.question = question;
@@ -68,11 +68,11 @@ public class QuestionCollected implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

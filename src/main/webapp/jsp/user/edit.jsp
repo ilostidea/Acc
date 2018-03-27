@@ -8,7 +8,7 @@
 <title>Edit User</title>
 </head>
 <body>
-<c:url var="saveUrl" value="/user/admin/save/${userAttribute.id }" />
+<c:url var="saveUrl" value="/user/save/${userAttribute.id }" />
     <form:form modelAttribute="userAttribute" action="${saveUrl}" method="post">
         <table>
             <tr>
@@ -38,6 +38,6 @@
         </table>
         <input type="submit" value="Save">
     </form:form>
-    <a href="<%=request.getContextPath()%>/user/list">返回到列表</a>
+    <a href="<%=request.getContextPath()%>/user/admin/list">返回到列表</a>
 </body>
 </html>

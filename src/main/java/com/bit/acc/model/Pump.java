@@ -35,12 +35,12 @@ public class Pump implements java.io.Serializable {
 	 * auto generated
 	 */
 	private static final long serialVersionUID = -2512448693347432778L;
-	private long id;
+	private Long id;
 	private Answer answer;
 	private SysUser user;
 	private String content;
-	private boolean isAnonymous;
-	private boolean isAccused;
+	private Boolean isAnonymous;
+	private Boolean isAccused;
 	private Boolean status;
 	private Date createTime;
 	private Long creator;
@@ -50,7 +50,7 @@ public class Pump implements java.io.Serializable {
 	public Pump() {
 	}
 
-	public Pump(long id, Answer answer, SysUser user, boolean isAnonymous, boolean isAccused) {
+	public Pump(Long id, Answer answer, SysUser user, Boolean isAnonymous, Boolean isAccused) {
 		this.id = id;
 		this.answer = answer;
 		this.user = user;
@@ -58,7 +58,7 @@ public class Pump implements java.io.Serializable {
 		this.isAccused = isAccused;
 	}
 
-	public Pump(long id, Answer answer, SysUser user, String content, boolean isAnonymous, boolean isAccused,
+	public Pump(Long id, Answer answer, SysUser user, String content, Boolean isAnonymous, Boolean isAccused,
 			Boolean status, Date createTime, Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.answer = answer;
@@ -77,11 +77,11 @@ public class Pump implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -118,20 +118,20 @@ public class Pump implements java.io.Serializable {
 	}
 
 	@Column(name = "IsAnonymous", nullable = false)
-	public boolean isIsAnonymous() {
+	public Boolean isIsAnonymous() {
 		return this.isAnonymous;
 	}
 
-	public void setIsAnonymous(boolean isAnonymous) {
+	public void setIsAnonymous(Boolean isAnonymous) {
 		this.isAnonymous = isAnonymous;
 	}
 
 	@Column(name = "IsAccused", nullable = false)
-	public boolean isIsAccused() {
+	public Boolean isIsAccused() {
 		return this.isAccused;
 	}
 
-	public void setIsAccused(boolean isAccused) {
+	public void setIsAccused(Boolean isAccused) {
 		this.isAccused = isAccused;
 	}
 

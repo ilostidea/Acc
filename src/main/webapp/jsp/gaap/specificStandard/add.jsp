@@ -96,7 +96,13 @@
 							<div class="col-sm-4">
 							    <select id="standard" name="standard" class="form-control"></select>
 							</div>
-							<div class="col-sm-6"></div>
+							
+							<label class="col-sm-2 control-label" for="isPreface">是否前言</label>
+							<div class="col-sm-4">
+								<div class="checkbox">
+									<label><input type="checkbox" id="isPreface" name="isPreface">启用</label>
+								</div>
+					        </div>
 				    </div>
 					<div class="form-group">
 							<label class="col-sm-2 control-label" for="title">基本准则</label>
@@ -209,6 +215,7 @@
 		        			  var data = responseTxt.data;
 		        			  $("#title").val( data.title );
 		        			  $("#specifics-markdown-doc").val( data.specifics );
+		        			  $("#isPreface").prop( "checked", data.isPreface );
 		        			  $("#status").prop( "checked", data.status );
 		        			  $("#id").val( id );
 		        		  },
@@ -219,15 +226,16 @@
 			    var _title = $("#title").val();
 			    var _specifics = $("#specifics-markdown-doc").val();
 			    var _status = $("#status").prop("checked") ;
+			    var _isPreface = $("#isPreface").prop("checked") ;
 			    var _id = $("#id").val( );
 				var _accStandardID = $("#standard").val();
 			    var url, data;
 			    if ( _id != -1 &&  _id != undefined && _id != null) {
 			    	url = "/sp/admin/update";
-			    	data = { title : _title , specifics : _specifics , status : _status , accountingStandard :  { id : _accStandardID } , id : _id };
+			    	data = { title : _title , specifics : _specifics , isPreface : _isPreface , status : _status , accountingStandard :  { id : _accStandardID } , id : _id };
 			    } else {alert("add");
 			    	url = "/sp/admin/add";
-			    	data = { title : _title , specifics : _specifics , status : _status , accountingStandard :  { id : _accStandardID } };
+			    	data = { title : _title , specifics : _specifics , isPreface : _isPreface , status : _status , accountingStandard :  { id : _accStandardID } };
 			    }
 				$.ajax({
 					type : "POST",

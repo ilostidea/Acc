@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.AccElement;
-import com.bit.acc.service.intfs.IAccElementService;
+import com.bit.acc.service.intfs.AccElementService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,7 +27,7 @@ import com.bit.common.validation.Third;
 public class AccElementRestController {
 
     @Resource(name="accElementService")
-    private IAccElementService accElementService;
+    private AccElementService accElementService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccElement accElement, BindingResult result) {
@@ -36,7 +36,7 @@ public class AccElementRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	accElementService.persist(accElement);
+    	accElementService.save(accElement);
         return new Response().success();
     }
     
@@ -47,13 +47,13 @@ public class AccElementRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	accElementService.merge(accElement);
+    	accElementService.save(accElement);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accElementID") long accElementID) {
-    	accElementService.remove(accElementID);
+    	accElementService.deleteById(accElementID);
         return new Response().success();
     }
     
@@ -61,7 +61,7 @@ public class AccElementRestController {
     @ControllerLog(value = "获得全部科目分类")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<AccElement> standardList = accElementService.queryAll();
+        List<AccElement> standardList = accElementService.findAll();
         return new Response().success(standardList);
     }
     
@@ -74,7 +74,7 @@ public class AccElementRestController {
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的会计要素")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
-    	 List<AccElement>  listAccElement = accElementService.queryByAccStandard(accStandardID);
+    	 List<AccElement>  listAccElement = accElementService.findByAccStandard(accStandardID);
         return new Response().success( listAccElement );
     }
     
@@ -88,7 +88,7 @@ public class AccElementRestController {
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的会计要素")
     public Response queryByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
-    	List<AccElement> listAccElement = accElementService.queryByAccStandard(code, exeYear);
+    	List<AccElement> listAccElement = accElementService.findByAccStandard(code, exeYear);
         return new Response().success( listAccElement );
     }
     

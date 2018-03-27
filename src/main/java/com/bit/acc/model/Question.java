@@ -62,16 +62,16 @@ public class Question implements java.io.Serializable {
 	 * auto generated
 	 */
 	private static final long serialVersionUID = 116487971975059611L;
-	private long id;
+	private Long id;
 	private SysUser user;
 	private String title;
 	private String question;
 	private String tag;
-	private boolean isAnonymous;
+	private Boolean isAnonymous;
 	private Integer approveCount;
 	private Integer disapproveCount;
-	private boolean isAccused;
-	private boolean status;
+	private Boolean isAccused;
+	private Boolean status;
 	private Date createTime;
 	private Long creator;
 	private Date modifyTime;
@@ -105,7 +105,7 @@ public class Question implements java.io.Serializable {
 		this.collectedCount = collectedCount;
 	}
 
-	public Question(long id, SysUser user, String title, String question, boolean isAnonymous, boolean isAccused) {
+	public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Boolean isAccused) {
 		this.id = id;
 		this.user = user;
 		this.title = title;
@@ -114,8 +114,8 @@ public class Question implements java.io.Serializable {
 		this.isAccused = isAccused;
 	}
 
-	public Question(long id, SysUser user, String title, String question, boolean isAnonymous, Integer approveCount,
-			Integer disapproveCount, boolean isAccused, boolean status, Date createTime, Long creator, Date modifyTime,
+	public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Integer approveCount,
+			Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
 			Long modifier, Long answerCount, Long collectedCount) {
 		this.id = id;
 		this.user = user;
@@ -134,8 +134,8 @@ public class Question implements java.io.Serializable {
 		this.collectedCount = collectedCount;
 	}
 
-	public Question(long id, SysUser user, String title, String question, boolean isAnonymous, Integer approveCount,
-			Integer disapproveCount, boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
+	public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Integer approveCount,
+			Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
 			Long modifier, List<Answer> answers/*, Set<QuestionCollected> questionCollecteds*/, Long answerCount, Long collectedCount) {
 		this.id = id;
 		this.user = user;
@@ -160,11 +160,11 @@ public class Question implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -208,11 +208,11 @@ public class Question implements java.io.Serializable {
 	}
 
 	@Column(name = "IsAnonymous", nullable = false)
-	public boolean isIsAnonymous() {
+	public Boolean isIsAnonymous() {
 		return this.isAnonymous;
 	}
 
-	public void setIsAnonymous(boolean isAnonymous) {
+	public void setIsAnonymous(Boolean isAnonymous) {
 		this.isAnonymous = isAnonymous;
 	}
 
@@ -235,20 +235,20 @@ public class Question implements java.io.Serializable {
 	}
 
 	@Column(name = "IsAccused", nullable = false)
-	public boolean isIsAccused() {
+	public Boolean isIsAccused() {
 		return this.isAccused;
 	}
 
-	public void setIsAccused(boolean isAccused) {
+	public void setIsAccused(Boolean isAccused) {
 		this.isAccused = isAccused;
 	}
 
 	@Column(name = "Status")
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

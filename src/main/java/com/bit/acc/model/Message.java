@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
 public class Message implements java.io.Serializable {
 
-	private static final long serialVersionUID = 8569283491852258878L;
+	private static final Long serialVersionUID = 8569283491852258878L;
 
 	@Id
     @GeneratedValue(generator="idgen")
@@ -91,7 +91,7 @@ public class Message implements java.io.Serializable {
 	public Message() {
 	}
 
-	public Message(long id, int type, String content, SysUser receiver, SysUser sender) {
+	public Message(Long id, int type, String content, SysUser receiver, SysUser sender) {
 		this.id = id;
 		this.type = type;
 		this.content = content;
@@ -99,7 +99,7 @@ public class Message implements java.io.Serializable {
 		this.sender = sender;
 	}
 
-	public Message(long id, int type, String content, SysUser receiver, SysUser sender, Boolean hasRead, Date createTime,
+	public Message(Long id, int type, String content, SysUser receiver, SysUser sender, Boolean hasRead, Date createTime,
 			SysUser creator, Date modifyTime, SysUser modifier) {
 		this.id = id;
 		this.type = type;
@@ -113,11 +113,11 @@ public class Message implements java.io.Serializable {
 		this.modifier = modifier;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

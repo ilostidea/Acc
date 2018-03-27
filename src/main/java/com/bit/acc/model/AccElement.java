@@ -38,7 +38,7 @@ public class AccElement implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -5129490750992703568L;
 	
-	private long id;
+	private Long id;
 	private AccountingStandard accountingStandard;
 	private String name;
 	private String code;
@@ -51,14 +51,14 @@ public class AccElement implements java.io.Serializable {
 	public AccElement() {
 	}
 
-	public AccElement(long id, AccountingStandard accountingStandard, String name, String code) {
+	public AccElement(Long id, AccountingStandard accountingStandard, String name, String code) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.name = name;
 		this.code = code;
 	}
 
-	public AccElement(long id, AccountingStandard accountingStandard, String name, String code, Boolean status, Date createTime, Long creator,
+	public AccElement(Long id, AccountingStandard accountingStandard, String name, String code, Boolean status, Date createTime, Long creator,
 			Date modifyTime, Long modifier) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
@@ -75,11 +75,11 @@ public class AccElement implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

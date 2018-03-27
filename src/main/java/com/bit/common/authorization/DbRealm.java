@@ -22,17 +22,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bit.acc.model.SysUser;
-import com.bit.acc.service.impl.UserService;
-import com.bit.acc.service.intfs.IUserService;
+import com.bit.acc.service.intfs.UserService;
 
 public class DbRealm extends AuthorizingRealm {
 	private Logger logger = LoggerFactory.getLogger(DbRealm.class);
 	
-    @Resource(name="userService")
-    private IUserService userService;
+    @Resource(name="sysUserService")
+    private UserService sysUserService;
     
     public void setUserService(UserService userService) {
-        this.userService = userService;
+        this.sysUserService = userService;
     }
 
 	/**
@@ -47,7 +46,7 @@ public class DbRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         logger.info("当前Subject获取到token为{}", authcToken != null ? authcToken.getPrincipal() : "anon");
         String username = String.valueOf( token.getUsername() );
-        List<SysUser> userList = userService.findByAccount( username );
+        List<SysUser> userList = sysUserService.findByAccount( username );
         if (userList == null || userList.size() == 0 || userList.get(0) == null) {
             throw new UnknownAccountException();
         }

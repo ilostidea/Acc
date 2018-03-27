@@ -83,7 +83,7 @@ public class SysUser implements java.io.Serializable {
 	private String nickName;
 
 	@Column(name = "Status", nullable = false)
-	private boolean status;
+	private Boolean status;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, nullable = false, length = 19)
@@ -103,7 +103,7 @@ public class SysUser implements java.io.Serializable {
 	}
 
 	public SysUser(Long id, /*Employee employee,*/ String mobile, String passwd,
-			boolean status) {
+			Boolean status) {
 		this.id = id;
 		//this.employee = employee;
 		this.mobile = mobile;
@@ -112,7 +112,7 @@ public class SysUser implements java.io.Serializable {
 	}
 
 	public SysUser(Long id, /*Employee employee,*/ String mobile, String email,
-			String passwd, String nickName, boolean status) {
+			String passwd, String nickName, Boolean status) {
 		this.id = id;
 		this.mobile = mobile;
 		this.email = email;
@@ -164,11 +164,11 @@ public class SysUser implements java.io.Serializable {
 		this.nickName = nickName;
 	}
 
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

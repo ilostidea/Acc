@@ -46,7 +46,7 @@ public class COA implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	private long id;
+	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "AccountingStandardID", nullable = false)
@@ -62,7 +62,7 @@ public class COA implements java.io.Serializable {
 	private String elementCode;//会计要素名称，即科目分类名称
 	
 	@Column(name = "Status", nullable = false)
-	private boolean status;
+	private Boolean status;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, length = 19)
@@ -88,8 +88,8 @@ public class COA implements java.io.Serializable {
 	public COA() {
 	}
 
-	public COA(long id, AccountingStandard accountingStandard, String code,
-			String name, String elementCode, boolean status) {
+	public COA(Long id, AccountingStandard accountingStandard, String code,
+			String name, String elementCode, Boolean status) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.code = code;
@@ -98,8 +98,8 @@ public class COA implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public COA(long id, AccountingStandard accountingStandard, String code,
-			String name, String elementCode, boolean status, Date createTime, Long creator,
+	public COA(Long id, AccountingStandard accountingStandard, String code,
+			String name, String elementCode, Boolean status, Date createTime, Long creator,
 			Date modifyTime, Long modifier, Set<AccUsage> accUsages) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
@@ -114,11 +114,11 @@ public class COA implements java.io.Serializable {
 		this.accUsages = accUsages;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -154,11 +154,11 @@ public class COA implements java.io.Serializable {
 		this.elementCode = elementCode;
 	}
 
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

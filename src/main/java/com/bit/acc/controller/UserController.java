@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bit.acc.model.SysUser;
-import com.bit.acc.service.intfs.IUserService;
+import com.bit.acc.service.intfs.UserService;
 import com.bit.common.util.CipherUtil;
 
 @Controller
@@ -32,13 +32,13 @@ public class UserController {
 
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	
-    @Resource(name="userService")
-    private IUserService userService;
+    @Resource(name="sysUserService")
+    private UserService userService;
     
     @RequestMapping("/hello")
     public String hello() {
         SecurityUtils.getSubject().checkRole("admin");
-        return "user/list";
+        return "user/admin/list";
     }
 
     @RequestMapping(value="/login", method=RequestMethod.GET)
@@ -74,10 +74,10 @@ public class UserController {
         return "redirect:/";//返回到根目录
     }
     
-    @RequiresRoles("admin")
-    @RequestMapping(value="/count",method=RequestMethod.GET)
+    //@RequiresRoles("admin")
+    @RequestMapping(value="/admin/count",method=RequestMethod.GET)
     public ModelAndView userCount() {
-        int count = userService.findAll().size();
+        long count = userService.count();
         
         ModelAndView mv = new ModelAndView();
         mv.addObject("userCount", count);
@@ -85,8 +85,8 @@ public class UserController {
         return mv;
     }
 
-    @RequiresRoles("admin")
-    @RequestMapping(value="/list",method=RequestMethod.GET)
+    //@RequiresRoles("admin")
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     public ModelAndView getUserlist(Model model){
         
         ModelAndView mv = new ModelAndView();
@@ -96,19 +96,19 @@ public class UserController {
         return mv;
     }
     
-    @RequiresRoles("admin")
-    @RequestMapping(value="/all",method=RequestMethod.GET)
+    //@RequiresRoles("admin")
+    @RequestMapping(value="/admin/all",method=RequestMethod.GET)
     public ModelAndView getUsers(Model model){
         
         ModelAndView mv = new ModelAndView();
-        List<SysUser> userList = userService.queryAll();
+        List<SysUser> userList = userService.findAll();
         mv.addObject("userList", userList);
         mv.setViewName("user/all");
         return mv;
     }
     
     
-    @RequestMapping(value="/add",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/add",method=RequestMethod.GET)
     public ModelAndView getAdd() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
         ModelAndView mv = new ModelAndView();
@@ -117,7 +117,7 @@ public class UserController {
         return mv;
     }
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
+    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public String add(@Valid @ModelAttribute("sysUser") SysUser sysUser, BindingResult result){
     	if(result.hasErrors()) {
             return "user/add";
@@ -125,32 +125,32 @@ public class UserController {
     	
         String encrypted = CipherUtil.simpleHash("md5", sysUser.getPasswd(), null, 2, true);
         sysUser.setPasswd(encrypted);
-        userService.persist(sysUser);
+        userService.save(sysUser);
         return "redirect:/user/list";
     }
     
     @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
     public ModelAndView show(@PathVariable long userid){
-    	SysUser userModel = userService.findById(userid);
+    	SysUser userModel = userService.getOne(userid);
         ModelAndView mv = new ModelAndView();
         mv.addObject("user", userModel);
         mv.setViewName("user/detail");
         return mv;
     }
     
-    @RequiresRoles("admin")
-    @RequestMapping(value="/del/{userid}",method=RequestMethod.DELETE)
+    //@RequiresRoles("admin")
+    @RequestMapping(value="/admin/del/{userid}",method=RequestMethod.DELETE)
     public String del(@PathVariable Long userid){
     	SysUser sysUser = new SysUser();
     	sysUser.setId(userid);
-        userService.remove(sysUser);
+        userService.delete(sysUser);
         
         return "redirect:/user/list";
     }
     
     @RequestMapping(value="/edit/{userid}",method=RequestMethod.GET)
     public ModelAndView getEdit(@PathVariable long userid, Model model){
-    	SysUser sysUser = userService.findById(userid);
+    	SysUser sysUser = userService.getOne(userid);
         model.addAttribute("userAttribute", sysUser);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("user/edit");
@@ -160,7 +160,7 @@ public class UserController {
     @RequestMapping(value="/save/{userid}",method=RequestMethod.POST)
     public String saveEdit(@ModelAttribute("userAttribute") SysUser userModel, @PathVariable int userid){
         //userService.attachClean(userModel);
-    	userService.merge(userModel);
-        return "redirect:/user/list";
+    	userService.save(userModel);
+        return "redirect:/user/admin/list";
     }
 }

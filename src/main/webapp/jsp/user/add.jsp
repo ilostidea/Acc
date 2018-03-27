@@ -28,7 +28,7 @@
 		    <input type="hidden" name="status" value="1" />
 	        <input type="submit" value="提交">
 	        <br>
-    		<a href="<%=request.getContextPath()%>/user/list">返回到列表</a>
+    		<a href="<%=request.getContextPath()%>/user/admin/list">返回到列表</a>
         </div>
     </form:form>
 </body>

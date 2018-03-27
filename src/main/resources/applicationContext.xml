@@ -4,6 +4,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
     xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" 
     xsi:schemaLocation="http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/context
@@ -11,16 +12,28 @@
             http://www.springframework.org/schema/tx
             http://www.springframework.org/schema/tx/spring-tx.xsd
 			http://www.springframework.org/schema/aop
-			http://www.springframework.org/schema/aop/spring-aop.xsd">
+			http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/data/jpa
+			http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+	
+	<!-- 在spring中@Transaction是通过AOP实现的，而spring对AOP有两种实现方式，
+	一种是动态代理，它是通过接口方式实现的，要求所代理的类一定是实现了某一个接口，对一般的类就无法代理，spring默认是这种；
+	一种是通过设置proxy-target-class="true"，使用CGLIB实现AOP，CGLIB直接生成二进制码，使得普通类也可以实现AOP。
+	在没有设置proxy-target-class="true"时，使用动态代理，是一个临时生成的类，如proxy1，使用普通类时会出现错误。
+	对于是用来事物的类无效，只能其代理接口 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
 	
 	<context:property-placeholder location="classpath:persistence.properties" />
 	
-	<!--设置了生成bean的文件目录-->
+	<!--设置了生成bean的文件目录，排除@Controller @RestController @ExceptionHandler组件，该组件由SpringMVC配置文件扫描--><!-- -->
 	<context:component-scan base-package="com.bit.acc.*,com.bit.common.*" use-default-filters="true">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ExceptionHandler"/>
 	</context:component-scan>
+	
+	<!-- service包 -->
+    <context:component-scan base-package="your service package" />
     
     <!-- 配置数据源，从上面配置文件读取-->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -112,5 +125,7 @@
     </bean>
 	
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	<jpa:repositories base-package="com.bit.acc.dao" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
     
 </beans>

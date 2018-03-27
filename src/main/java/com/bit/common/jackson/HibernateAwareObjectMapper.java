@@ -19,7 +19,7 @@ public class HibernateAwareObjectMapper extends ObjectMapper {
 
 	public HibernateAwareObjectMapper() {
 		Hibernate5Module hm = new Hibernate5Module();
-		hm.disable(Feature.USE_TRANSIENT_ANNOTATION);//禁止jackson使用JPA的@Transient注解，从而忽略属性
+		hm.disable(Feature.USE_TRANSIENT_ANNOTATION);//禁止jackson使用JPA的@Transient注解，以免把带这个注解的属性忽略了，Json里面没有它
 		registerModule( hm );
 		configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);//避免将日期输出为数值
 		//configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

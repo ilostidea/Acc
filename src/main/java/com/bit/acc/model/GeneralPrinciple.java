@@ -43,7 +43,7 @@ public class GeneralPrinciple implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	private long id;
+	private Long id;
 
 	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@LazyToOne(LazyToOneOption.PROXY)
@@ -59,7 +59,7 @@ public class GeneralPrinciple implements java.io.Serializable {
 	private String generalPrinciple;
 
 	@Column(name = "Status", nullable = false)
-	private boolean status;
+	private Boolean status;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, length = 19)
@@ -80,16 +80,16 @@ public class GeneralPrinciple implements java.io.Serializable {
 	public GeneralPrinciple() {
 	}
 
-	public GeneralPrinciple(long id, AccountingStandard accountingStandard,
-			String generalPrinciple, boolean status) {
+	public GeneralPrinciple(Long id, AccountingStandard accountingStandard,
+			String generalPrinciple, Boolean status) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.generalPrinciple = generalPrinciple;
 		this.status = status;
 	}
 
-	public GeneralPrinciple(long id, AccountingStandard accountingStandard,
-			String title, String generalPrinciple, boolean status,
+	public GeneralPrinciple(Long id, AccountingStandard accountingStandard,
+			String title, String generalPrinciple, Boolean status,
 			Date createTime, Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
@@ -102,11 +102,11 @@ public class GeneralPrinciple implements java.io.Serializable {
 		this.modifier = modifier;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -134,11 +134,11 @@ public class GeneralPrinciple implements java.io.Serializable {
 		this.generalPrinciple = generalPrinciple;
 	}
 
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStauts(boolean status) {
+	public void setStauts(Boolean status) {
 		this.status = status;
 	}
 

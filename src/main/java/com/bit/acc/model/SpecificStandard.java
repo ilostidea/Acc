@@ -35,12 +35,12 @@ public class SpecificStandard implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8115220068759534373L;
 	
-	private long id;
+	private Long id;
 	private AccountingStandard accountingStandard;
 	private String title;
 	private String specifics;
-	private boolean status;
-	private boolean isPreface;
+	private Boolean status;
+	private Boolean isPreface;
 	private Date createTime;
 	private Long creator;
 	private Date modifyTime;
@@ -49,28 +49,28 @@ public class SpecificStandard implements java.io.Serializable {
 	public SpecificStandard() {
 	}
 
-	public SpecificStandard(long id, String title) {
+	public SpecificStandard(Long id, String title) {
 		this.id = id;
 		this.title = title;
 	}
 
-	public SpecificStandard(long id, boolean isPreface, String title, String specifics ) {
+	public SpecificStandard(Long id, Boolean isPreface, String title, String specifics ) {
 		this.id = id;
 		this.isPreface = isPreface;
 		this.title = title;
 		this.specifics = specifics;
 	}
 
-	public SpecificStandard(long id, AccountingStandard accountingStandard,
-			String specifics, boolean status) {
+	public SpecificStandard(Long id, AccountingStandard accountingStandard,
+			String specifics, Boolean status) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.specifics = specifics;
 		this.status = status;
 	}
 
-	public SpecificStandard(long id, AccountingStandard accountingStandard,
-			String title, String specifics, boolean status, Date createTime,
+	public SpecificStandard(Long id, AccountingStandard accountingStandard,
+			String title, String specifics, Boolean status, Date createTime,
 			Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
@@ -87,11 +87,11 @@ public class SpecificStandard implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -126,20 +126,20 @@ public class SpecificStandard implements java.io.Serializable {
 	
 	
 	@Column(name = "IsPreface", nullable = false)
-	public boolean isIsPreface() {
+	public Boolean isIsPreface() {
 		return isPreface;
 	}
 
-	public void setIsPreface(boolean isPreface) {
+	public void setIsPreface(Boolean isPreface) {
 		this.isPreface = isPreface;
 	}
 
 	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

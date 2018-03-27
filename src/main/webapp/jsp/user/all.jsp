@@ -24,9 +24,9 @@
                     <td>${userModel.email}</td>
                     <td>${userModel.nickName}</td>
                     <td>${userModel.employee.gender}</td>
-                    <td><a href="show/${userModel.id}">详细</a></td>
-                    <td><a href="admin/edit/${userModel.id}">编辑</a></td>
-                    <td><a href="admin/del/${userModel.id}">删除</a></td>
+                    <td><a href="<%=request.getContextPath() %>>/user/show/${userModel.id}">详细</a></td>
+                    <td><a href="<%=request.getContextPath() %>>/user/edit/${userModel.id}">编辑</a></td>
+                    <td><a href="<%=request.getContextPath() %>>/user/admin/del/${userModel.id}">删除</a></td>
                 
             </tr>
         </c:forEach>

@@ -43,7 +43,7 @@ public class AccUsage implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)	
-	private long id;
+	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COAID", nullable = false)
@@ -53,7 +53,7 @@ public class AccUsage implements java.io.Serializable {
 	private String usages;
 	
 	@Column(name = "Status", nullable = false)
-	private boolean status;
+	private Boolean status;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, length = 19)
@@ -74,14 +74,14 @@ public class AccUsage implements java.io.Serializable {
 	public AccUsage() {
 	}
 
-	public AccUsage(long id, COA coa, String usages, boolean status) {
+	public AccUsage(Long id, COA coa, String usages, Boolean status) {
 		this.id = id;
 		this.coa = coa;
 		this.usages = usages;
 		this.status = status;
 	}
 
-	public AccUsage(long id, COA coa, String usages, boolean status,
+	public AccUsage(Long id, COA coa, String usages, Boolean status,
 			Date createTime, Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.coa = coa;
@@ -93,11 +93,11 @@ public class AccUsage implements java.io.Serializable {
 		this.modifier = modifier;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -120,11 +120,11 @@ public class AccUsage implements java.io.Serializable {
 		this.usages = usages;
 	}
 
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

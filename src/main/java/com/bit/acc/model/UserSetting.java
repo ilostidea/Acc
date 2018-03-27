@@ -35,7 +35,7 @@ public class UserSetting implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6360678699247978343L;
-	private long id;
+	private Long id;
 	private SysUser user;
 	private String paramName;
 	private String paramValue;
@@ -48,14 +48,14 @@ public class UserSetting implements java.io.Serializable {
 	public UserSetting() {
 	}
 
-	public UserSetting(long id, SysUser user, String paramName, String paramValue) {
+	public UserSetting(Long id, SysUser user, String paramName, String paramValue) {
 		this.id = id;
 		this.user = user;
 		this.paramName = paramName;
 		this.paramValue = paramValue;
 	}
 
-	public UserSetting(long id, SysUser user, String paramName, String paramValue, String description, Date createTime,
+	public UserSetting(Long id, SysUser user, String paramName, String paramValue, String description, Date createTime,
 			Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.user = user;
@@ -72,11 +72,11 @@ public class UserSetting implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

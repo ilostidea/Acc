@@ -112,7 +112,8 @@
 							
 				    </div>
 					<div class="form-group">
-							<div id="usages" class="col-sm-12">
+							<div class="col-sm-1"></div>
+							<div id="usages" class="col-sm-10">
 								<!-- <textarea id="usages" name="usages" class="form-control" data-provide="markdown" data-iconlibrary="fa" rows="16"></textarea> -->
 								<textarea id="usages-markdown-doc" style="display:none;"></textarea>
 			                </div>

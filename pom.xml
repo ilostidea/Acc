@@ -11,6 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.12</junit.version>
 		<spring.version>5.0.0.RELEASE</spring.version>
+		<springdata.version>2.0.5.RELEASE</springdata.version>
 		<hibernate.version>5.2.10.Final</hibernate.version><!-- 4.3.5.Final -->
 		<hibernate.validator.version>6.0.0.Final</hibernate.validator.version>
 		<logback.version>1.2.2</logback.version>
@@ -23,6 +24,7 @@
 		<project.servlet.version>4.0.0</project.servlet.version>
 		<project.cglib.version>3.2.5</project.cglib.version>
 		<c3p0.version>0.9.5.2</c3p0.version>
+		<druid.version>1.1.9</druid.version>
 		<mchange.commons.version>0.2.14</mchange.commons.version>
 		<jstl.version>1.2</jstl.version>
 		<mysql.connector.version>5.1.38</mysql.connector.version>
@@ -111,6 +113,11 @@
 			<version>${c3p0.version}</version>
 		</dependency>
 		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>druid</artifactId>
+		    <version>${druid.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
@@ -166,6 +173,11 @@
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-messaging</artifactId>
 		    <version>${spring.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-jpa</artifactId>
+		    <version>${springdata.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>

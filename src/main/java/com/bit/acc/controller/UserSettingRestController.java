@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.UserSetting;
-import com.bit.acc.service.intfs.IUserSettingService;
+import com.bit.acc.service.intfs.UserSettingService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -32,7 +32,7 @@ import com.bit.common.validation.Third;
 public class UserSettingRestController {
 
     @Resource(name="userSettingService")
-    private IUserSettingService userSettingService;
+    private UserSettingService userSettingService;
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody UserSetting userSetting, BindingResult result) {
@@ -41,7 +41,7 @@ public class UserSettingRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	userSettingService.persist(userSetting);
+    	userSettingService.save(userSetting);
         return new Response().success(userSetting);
     }
     
@@ -52,13 +52,13 @@ public class UserSettingRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	userSettingService.merge(userSetting);
+    	userSettingService.save(userSetting);
         return new Response().success();
     }
     
     @RequestMapping(value="/del",method=RequestMethod.POST)
     public Response del(@RequestParam("userSettingID") long userSettingID) {
-    	userSettingService.remove( userSettingID );
+    	userSettingService.deleteById( userSettingID );
         return new Response().success();
     }
     
@@ -66,7 +66,7 @@ public class UserSettingRestController {
     @ControllerLog(value = "获得全部设置")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<UserSetting> listUserSetting = userSettingService.queryAll();
+        List<UserSetting> listUserSetting = userSettingService.findAll();
         return new Response().success( listUserSetting );
     }
     

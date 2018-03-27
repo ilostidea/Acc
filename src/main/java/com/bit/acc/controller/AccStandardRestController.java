@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.AccountingStandard;
-import com.bit.acc.service.intfs.IAccountingStandardService;
+import com.bit.acc.service.intfs.AccountingStandardService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,8 +27,8 @@ import com.bit.common.validation.Third;
 @RequestMapping("/accStandard")
 public class AccStandardRestController {
 
-    @Resource(name="accountingStandardService")
-    private IAccountingStandardService accountingStandardService;
+    @Resource(name="accStandardService")
+    private AccountingStandardService accountingStandardService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AccountingStandard accountingStandard, BindingResult result) {
@@ -37,7 +37,7 @@ public class AccStandardRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        accountingStandardService.persist(accountingStandard);
+        accountingStandardService.save(accountingStandard);
         return new Response().success();
     }
     
@@ -48,13 +48,13 @@ public class AccStandardRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	accountingStandardService.merge(accountingStandard);
+    	accountingStandardService.save(accountingStandard);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("accStandardID") long accStandardID) throws Exception{
-		accountingStandardService.remove(accStandardID);
+		accountingStandardService.deleteById(accStandardID);
         return new Response().success();
     }
     
@@ -62,7 +62,7 @@ public class AccStandardRestController {
     @ControllerLog(value = "获得全部准则")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<AccountingStandard> standardList = accountingStandardService.queryAll();
+        List<AccountingStandard> standardList = accountingStandardService.findAll();
         return new Response().success(standardList);
     }
     

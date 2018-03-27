@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.SysUser;
-import com.bit.acc.service.intfs.IUserService;
+import com.bit.acc.service.intfs.UserService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.util.CipherUtil;
@@ -30,8 +30,8 @@ import com.bit.common.validation.Third;
 @RequestMapping("/sysUser")
 public class UserRestController {
 
-    @Resource(name="userService")
-    private IUserService userService;
+    @Resource(name="sysUserService")
+    private UserService userService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody SysUser sysUser, BindingResult result) {
@@ -54,7 +54,8 @@ public class UserRestController {
     	
         String encrypted = CipherUtil.simpleHash("md5", sysUser.getPasswd(), null, 2, true);
         sysUser.setPasswd(encrypted);
-        userService.persist(sysUser);
+        sysUser.setStatus(true);
+        userService.save(sysUser);
         return new Response().success();
     }
     
@@ -79,7 +80,7 @@ public class UserRestController {
     	
         String encrypted = CipherUtil.simpleHash("md5", sysUser.getPasswd(), null, 2, true);
         sysUser.setPasswd(encrypted);
-        userService.merge(sysUser);
+        userService.saveAndFlush(sysUser);
         return new Response().success();
     }
     
@@ -92,8 +93,8 @@ public class UserRestController {
     @ControllerLog(value = "获得用户列表")
     public Response getUserEmployee() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<SysUser> userList = userService.findAll();throw new SQLException("What ?");
-        //return new Response().success(userList);
+        List<SysUser> userList = userService.findAll();//throw new SQLException("What ?");
+        return new Response().success(userList);
     }
     
     /**
@@ -105,7 +106,7 @@ public class UserRestController {
     @ControllerLog(value = "获得用户列表")
     public Response getUsers() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<SysUser> userList = userService.queryAll();
+        List<SysUser> userList = userService.findAll();
         return new Response().success(userList);
     }
     

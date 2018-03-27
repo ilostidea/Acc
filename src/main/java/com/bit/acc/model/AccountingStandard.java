@@ -42,7 +42,7 @@ public class AccountingStandard implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	private long id;
+	private Long id;
 	
 	@Column(name = "Name", nullable = false, length = 50)
 	private String name;
@@ -57,7 +57,7 @@ public class AccountingStandard implements java.io.Serializable {
 	private Integer exeYear;
 	
 	@Column(name = "Status", nullable = false)
-	private boolean status;
+	private Boolean status;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, length = 19)
@@ -90,7 +90,7 @@ public class AccountingStandard implements java.io.Serializable {
 	public AccountingStandard() {
 	}
 
-	public AccountingStandard(long id, String name, String abbr, String code, boolean status) {
+	public AccountingStandard(Long id, String name, String abbr, String code, Boolean status) {
 		this.id = id;
 		this.name = name;
 		this.abbr = abbr;
@@ -98,7 +98,7 @@ public class AccountingStandard implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public AccountingStandard(long id, String name, String abbr, String code, Integer exeYear, boolean status,
+	public AccountingStandard(Long id, String name, String abbr, String code, Integer exeYear, Boolean status,
 			Date createTime, Long creator, Date modifyTime, Long modifier,
 			Set<FinancialReport> financialReports,
 			Set<GeneralPrinciple> generalPrinciples,
@@ -119,11 +119,11 @@ public class AccountingStandard implements java.io.Serializable {
 		this.COAs = COAs;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -159,11 +159,11 @@ public class AccountingStandard implements java.io.Serializable {
 		this.exeYear = exeYear;
 	}
 	
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

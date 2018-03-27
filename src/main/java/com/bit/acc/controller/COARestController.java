@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.COA;
-import com.bit.acc.service.intfs.ICOAService;
+import com.bit.acc.service.intfs.COAService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,7 +27,7 @@ import com.bit.common.validation.Third;
 public class COARestController {
 
     @Resource(name="coaService")
-    private ICOAService coaService;
+    private COAService coaService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody COA coa, BindingResult result) {
@@ -36,7 +36,7 @@ public class COARestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        coaService.persist(coa);
+        coaService.save(coa);
         return new Response().success(coa);
     }
     
@@ -47,13 +47,13 @@ public class COARestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	coaService.merge(coa);
+    	coaService.save(coa);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("coaID") long coaID) {
-    	coaService.remove(coaID);
+    	coaService.deleteById(coaID);
         return new Response().success();
     }
     
@@ -61,7 +61,7 @@ public class COARestController {
     @ControllerLog(value = "获得全部科目")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<COA> listCOA = coaService.queryAll();
+        List<COA> listCOA = coaService.findAll();
         return new Response().success( listCOA );
     }
     
@@ -74,7 +74,7 @@ public class COARestController {
     @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的科目表")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
-    	List<COA> listCOA = coaService.queryByAccStandard(accStandardID);
+    	List<COA> listCOA = coaService.findByAccountingStandardId(accStandardID);
         return new Response().success(listCOA);
     }
     
@@ -88,7 +88,7 @@ public class COARestController {
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的科目")
     public Response queryByStandardNameYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
-    	List<COA> listCOA = coaService.queryByAccStandard(code, exeYear);
+    	List<COA> listCOA = coaService.findByAccStandard(code, exeYear);
         return new Response().success(listCOA);
     }
 
@@ -103,7 +103,7 @@ public class COARestController {
     @RequestMapping(value="/queryByStdCodeYearElement",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份、会计要素获得该准则的科目")
     public Response queryByStandardNameYearElement(@RequestParam("accStandardCode") String accStandardCode, @RequestParam("exeYear") int exeYear, @RequestParam("accElementCode") String elementCode) throws Exception{
-    	List<COA> listCOA = coaService.queryByAccStandardElement(accStandardCode, exeYear, elementCode);
+    	List<COA> listCOA = coaService.findByAccStandardElement(accStandardCode, exeYear, elementCode);
         return new Response().success(listCOA);
     }
     

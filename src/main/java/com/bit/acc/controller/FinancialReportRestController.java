@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.FinancialReport;
-import com.bit.acc.service.intfs.IFinancialReportService;
+import com.bit.acc.service.intfs.FinancialReportService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -27,7 +27,7 @@ import com.bit.common.validation.Third;
 public class FinancialReportRestController {
 
     @Resource(name="financialReportService")
-    private IFinancialReportService financialReportService;
+    private FinancialReportService financialReportService;
     
     @RequestMapping(value="/admin/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody FinancialReport financialReport, BindingResult result) {
@@ -36,7 +36,7 @@ public class FinancialReportRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-        financialReportService.persist(financialReport);
+        financialReportService.save(financialReport);
         return new Response().success();
     }
     
@@ -47,13 +47,13 @@ public class FinancialReportRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	financialReportService.merge(financialReport);
+    	financialReportService.save(financialReport);
         return new Response().success();
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
     public Response del(@RequestParam("rpID") long rpID) {
-    	financialReportService.remove(rpID);
+    	financialReportService.deleteById(rpID);
         return new Response().success();
     }
     
@@ -61,7 +61,7 @@ public class FinancialReportRestController {
     @ControllerLog(value = "获得全部财务报表")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<FinancialReport> standardList = financialReportService.queryAll();
+        List<FinancialReport> standardList = financialReportService.findAll();
         return new Response().success(standardList);
     }
     
@@ -74,7 +74,7 @@ public class FinancialReportRestController {
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的财务报表")
     public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
-    	List<FinancialReport> listFinancialReport = financialReportService.queryByAccStandard(accStandardID);
+    	List<FinancialReport> listFinancialReport = financialReportService.findByAccStandard(accStandardID);
         return new Response().success( listFinancialReport );
     }
     
@@ -88,7 +88,7 @@ public class FinancialReportRestController {
     @RequestMapping(value="/queryByCodeYear",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的财务报表")
     public Response queryByStandardNameYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
-    	List<FinancialReport> listFinancialReport = financialReportService.queryByAccStandard(code, exeYear);
+    	List<FinancialReport> listFinancialReport = financialReportService.findByAccStandard(code, exeYear);
         return new Response().success(listFinancialReport);
     }
     

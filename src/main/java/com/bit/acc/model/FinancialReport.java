@@ -37,11 +37,11 @@ public class FinancialReport implements java.io.Serializable {
 
 	private static final long serialVersionUID = -6188142822769146149L;
 	
-	private long id;
+	private Long id;
 	private AccountingStandard accountingStandard;
 	private String name;
 	private String report;
-	private boolean status;
+	private Boolean status;
 	private Date createTime;
 	private Long creator;
 	private Date modifyTime;
@@ -50,8 +50,8 @@ public class FinancialReport implements java.io.Serializable {
 	public FinancialReport() {
 	}
 
-	public FinancialReport(long id, AccountingStandard accountingStandard,
-			String name, String report, boolean status) {
+	public FinancialReport(Long id, AccountingStandard accountingStandard,
+			String name, String report, Boolean status) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
 		this.name = name;
@@ -59,8 +59,8 @@ public class FinancialReport implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public FinancialReport(long id, AccountingStandard accountingStandard,
-			String name, String report, boolean status, Date createTime,
+	public FinancialReport(Long id, AccountingStandard accountingStandard,
+			String name, String report, Boolean status, Date createTime,
 			Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.accountingStandard = accountingStandard;
@@ -77,11 +77,11 @@ public class FinancialReport implements java.io.Serializable {
     @GeneratedValue(generator="idgen")
 	@GenericGenerator(name="idgen", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -115,11 +115,11 @@ public class FinancialReport implements java.io.Serializable {
 	}
 
 	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
+	public Boolean isStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

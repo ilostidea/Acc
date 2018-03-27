@@ -1,4 +1,4 @@
-<%@page import="com.bit.acc.service.intfs.IUserService"%>
+<%@page import="com.bit.acc.service.intfs.UserService"%>
 <%@page import="org.apache.shiro.subject.PrincipalCollection"%>
 <%@page import="org.apache.shiro.SecurityUtils"%>
 <%@page import="com.bit.acc.model.SysUser"%>
@@ -14,7 +14,7 @@
 	<%
 		Subject subject = SecurityUtils.getSubject();
 		PrincipalCollection col = subject.getPrincipals();
-		IUserService userService = (IUserService) WebApplicationContextUtils.getRequiredWebApplicationContext( session.getServletContext() ).getBean("userService");
+		UserService userService = (UserService) WebApplicationContextUtils.getRequiredWebApplicationContext( session.getServletContext() ).getBean("sysUserService");
 		List<SysUser> userModel = userService.findByAccount( col == null || col.isEmpty() ? "" : String.valueOf( col.getPrimaryPrincipal() ) );
 	%>
 	<%=( userModel==null || userModel.size() ==0 ?"":userModel.get(0).getNickName() )%>
@@ -38,7 +38,7 @@
 	欢迎[<%=String.valueOf(col.getPrimaryPrincipal())%>]登录，
 	<a href="<%=request.getContextPath()%>/user/logout">点击退出</a>
 	<br />
-	<a href="<%=request.getContextPath()%>/user/list">点击查看用户列表</a>
+	<a href="<%=request.getContextPath()%>/user/admin/list">点击查看用户列表</a>
 	<%
 		}
 	%>
