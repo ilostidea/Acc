@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.Question;
-import com.bit.acc.service.intfs.IQuestionService;
+import com.bit.acc.service.intfs.QuestionService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -34,7 +34,7 @@ import com.bit.common.validation.Third;
 public class QuestionRestController {
 
     @Resource(name="questionService")
-    private IQuestionService questionService;
+    private QuestionService questionService;
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Question question, BindingResult result) {
@@ -43,7 +43,7 @@ public class QuestionRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	questionService.persist(question);
+    	questionService.save(question);
     	Map<String, Long> mId = new HashMap<String, Long>( );
     	mId.put("id", question.getId());
         return new Response().success( mId );
@@ -56,13 +56,13 @@ public class QuestionRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	questionService.merge(question);
+    	questionService.save(question);
         return new Response().success();
     }
     
     @RequestMapping(value="/del",method=RequestMethod.POST)
     public Response del(@RequestParam("questionID") long questionID) {
-    	questionService.remove( questionID );
+    	questionService.deleteById( questionID );
         return new Response().success();
     }
     
@@ -70,7 +70,7 @@ public class QuestionRestController {
     @ControllerLog(value = "获得全部问题")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<Question> listQuestion = questionService.queryAll();
+        List<Question> listQuestion = questionService.findAll();
         return new Response().success( listQuestion );
     }
     
@@ -145,5 +145,5 @@ public class QuestionRestController {
     	Map questionProfile = questionService.getQuestionProfileById(userID);
         return new Response().success( questionProfile );
     }
-    
+
 }

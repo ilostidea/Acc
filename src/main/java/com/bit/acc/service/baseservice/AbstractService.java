@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 public abstract class AbstractService<T extends Serializable, ID extends Serializable> implements Service<T, ID>{
 
-	protected abstract JpaRepository <T, ID> getDao();
+	protected abstract JpaRepository<T, ID> getDao();
 
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the

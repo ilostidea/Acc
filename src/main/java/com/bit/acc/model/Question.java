@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	@NamedEntityGraph(name = "question.answers.pumpscount", 
             attributeNodes = {//attributeNodes 来定义需要加载的关联属性
                 //@NamedAttributeNode("questionCollecteds"), 
-                @NamedAttributeNode(value = "answers", subgraph = "pumps"),
+                @NamedAttributeNode(value = "answers", subgraph = "pumps")
             },
             subgraphs = {//subgraphs 来定义关联对象的属性
                     @NamedSubgraph(name = "pumps", attributeNodes = @NamedAttributeNode("pumps"))/*,

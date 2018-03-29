@@ -173,6 +173,7 @@
 		$.get("/question/admin/question",
 	    		  { userName : userName, question:question, status : status, accused : accused },
 	    		  function(responseTxt, status){
+					$("#data-list").empty();
 					if(status == "success"){
 						var len = responseTxt.data.length;
 						var datas = responseTxt.data;

@@ -126,6 +126,10 @@
 	
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
-	<jpa:repositories base-package="com.bit.acc.dao" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
+	<jpa:repositories base-package="com.bit.acc.dao" 
+	                          repository-impl-postfix="Impl" 
+	                          query-lookup-strategy = "create-if-not-found" 
+	                          entity-manager-factory-ref="entityManagerFactory" 
+	                          transaction-manager-ref="transactionManager"/>
     
 </beans>

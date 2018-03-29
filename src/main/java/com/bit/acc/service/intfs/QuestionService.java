@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.bit.acc.model.Question;
-import com.bit.common.db.IOperations;
+import com.bit.acc.service.baseservice.Service;
 
-public interface IQuestionService extends IOperations<Question> {
+public interface QuestionService extends Service<Question, Long> {
 
 	public List<Question> queryRecent( );
 	
@@ -23,5 +23,5 @@ public interface IQuestionService extends IOperations<Question> {
 	public Question getQuesstionAndAnswersPumpCountById(long id) ;
 	
 	public Map getQuestionProfileById(long userID);
-	
+
 }
