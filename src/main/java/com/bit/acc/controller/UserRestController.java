@@ -111,14 +111,14 @@ public class UserRestController {
     }
     
     @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
-    public Response show(@PathVariable long userid){
+    public Response show(@PathVariable Long userid){
     	SysUser sysUser = userService.findById(userid);
         return new Response().success(sysUser);
     }
     
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("userid") long userid){
+    public Response detail(@RequestParam("userid") Long userid){
     	SysUser sysUser = userService.findById(userid);
         return new Response().success(sysUser);
     }

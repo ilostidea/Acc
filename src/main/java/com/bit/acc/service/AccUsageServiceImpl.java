@@ -22,8 +22,8 @@ public class AccUsageServiceImpl extends AbstractService<AccUsage, Long> impleme
 	}
 	
 	@Override
-	public List<AccUsage> queryByAcc(Long coaID) {
-		return dao.findByCoaId(coaID);
+	public List<AccUsage> queryByAcc(Long coaId) {
+		return dao.findByCoaId(coaId);
 	}
 
 }

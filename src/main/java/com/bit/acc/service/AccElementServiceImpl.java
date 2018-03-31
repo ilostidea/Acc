@@ -23,8 +23,8 @@ public class AccElementServiceImpl extends AbstractService<AccElement, Long> imp
 	}
 
 	@Override
-	public List<AccElement> findByAccStandard(Long accountingStandardID) {
-		return dao.findByAccountingStandardId(accountingStandardID);
+	public List<AccElement> findByAccStandard(Long accountingStandardId) {
+		return dao.findByAccountingStandardId(accountingStandardId);
 	}
 
 	@Override

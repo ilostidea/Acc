@@ -52,7 +52,7 @@ public class FinancialReportRestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("rpID") long rpID) {
+    public Response del(@RequestParam("rpID") Long rpID) {
     	financialReportService.deleteById(rpID);
         return new Response().success();
     }
@@ -73,7 +73,7 @@ public class FinancialReportRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的财务报表")
-    public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
+    public Response queryByAccStandard(@RequestParam("accStandardID") Long accStandardID) throws Exception{
     	List<FinancialReport> listFinancialReport = financialReportService.findByAccStandard(accStandardID);
         return new Response().success( listFinancialReport );
     }
@@ -93,13 +93,13 @@ public class FinancialReportRestController {
     }
     
     @RequestMapping(value="/show/{rpID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long rpID){
+    public Response show(@PathVariable Long rpID){
     	FinancialReport accStandard = financialReportService.findById(rpID);
         return new Response().success(accStandard);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("rpID") long rpID){
+    public Response detail(@RequestParam("rpID") Long rpID){
     	FinancialReport accStandard = financialReportService.findById(rpID);
         return new Response().success(accStandard);
     }

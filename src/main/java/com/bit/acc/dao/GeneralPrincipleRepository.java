@@ -8,7 +8,7 @@ import com.bit.acc.model.GeneralPrinciple;
 
 public interface GeneralPrincipleRepository extends JpaRepository<GeneralPrinciple, Long> {
 	
-	public List<GeneralPrinciple> findByAccountingStandardId(Long accountingStandardID);
+	public List<GeneralPrinciple> findByAccountingStandardId(Long accountingStandardId);
 	
 	public List<GeneralPrinciple> findByAccountingStandardCodeAndAccountingStandardExeYear(String accountingStandardCode, int exeYear);
 

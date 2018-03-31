@@ -77,7 +77,7 @@ public class UserController {
     //@RequiresRoles("admin")
     @RequestMapping(value="/admin/count",method=RequestMethod.GET)
     public ModelAndView userCount() {
-        long count = userService.count();
+        Long count = userService.count();
         
         ModelAndView mv = new ModelAndView();
         mv.addObject("userCount", count);
@@ -130,7 +130,7 @@ public class UserController {
     }
     
     @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
-    public ModelAndView show(@PathVariable long userid){
+    public ModelAndView show(@PathVariable Long userid){
     	SysUser userModel = userService.getOne(userid);
         ModelAndView mv = new ModelAndView();
         mv.addObject("user", userModel);
@@ -149,7 +149,7 @@ public class UserController {
     }
     
     @RequestMapping(value="/edit/{userid}",method=RequestMethod.GET)
-    public ModelAndView getEdit(@PathVariable long userid, Model model){
+    public ModelAndView getEdit(@PathVariable Long userid, Model model){
     	SysUser sysUser = userService.getOne(userid);
         model.addAttribute("userAttribute", sysUser);
         ModelAndView mv = new ModelAndView();

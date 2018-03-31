@@ -57,7 +57,7 @@ public class UserSettingRestController {
     }
     
     @RequestMapping(value="/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("userSettingID") long userSettingID) {
+    public Response del(@RequestParam("userSettingID") Long userSettingID) {
     	userSettingService.deleteById( userSettingID );
         return new Response().success();
     }
@@ -78,19 +78,19 @@ public class UserSettingRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的设置")
-    public Response queryByUser(@RequestParam("userID") long userID) throws Exception{
+    public Response queryByUser(@RequestParam("userID") Long userID) throws Exception{
     	List<UserSetting> listUserSetting = userSettingService.queryByUser(userID);
         return new Response().success( listUserSetting );
     }
     
     @RequestMapping(value="/show/{userSettingID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long userSettingID){
+    public Response show(@PathVariable Long userSettingID){
     	UserSetting userSetting = userSettingService.findById(userSettingID);
         return new Response().success(userSetting);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("userSettingID") long userSettingID){
+    public Response detail(@RequestParam("userSettingID") Long userSettingID){
     	UserSetting userSetting = userSettingService.findById(userSettingID);
         return new Response().success( userSetting );
     }

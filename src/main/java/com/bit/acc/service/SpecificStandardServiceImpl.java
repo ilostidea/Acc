@@ -25,8 +25,8 @@ public class SpecificStandardServiceImpl extends AbstractService<SpecificStandar
 		return this.dao;
 	}
 
-    public List<SpecificStandard> findByAccStandard(Long accountingStandardID) {
-    	return dao.findByAccountingStandardId(accountingStandardID);
+    public List<SpecificStandard> findByAccStandard(Long accountingStandardId) {
+    	return dao.findByAccountingStandardId(accountingStandardId);
     }
 	
 	public List<SpecificStandard> findByAccStandard(String accountingStandardCode, int exeYear) {

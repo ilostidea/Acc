@@ -22,7 +22,7 @@ public class QuestionRepositoryImpl {
 	@PersistenceContext
     private EntityManager entityManager;
 	
-	public List<Question> queryForAdmin(Specification<Question> querySpecific) {
+	public List<Question> findByCondition(Specification<Question> querySpecific) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Question> criteriaQuery = criteriaBuilder.createQuery(Question.class);
 		

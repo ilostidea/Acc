@@ -8,7 +8,7 @@ import com.bit.acc.model.AccElement;
 
 public interface AccElementRepository extends JpaRepository<AccElement, Long> {
 	
-	public List<AccElement> findByAccountingStandardId(Long accountingStandardID) ;
+	public List<AccElement> findByAccountingStandardId(Long accountingStandardId) ;
 	
 	public List<AccElement> findByAccountingStandardCodeAndAccountingStandardExeYear(String accountingStandardCode, int exeYear);
 

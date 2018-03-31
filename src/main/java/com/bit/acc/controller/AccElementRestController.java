@@ -52,7 +52,7 @@ public class AccElementRestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("accElementID") long accElementID) {
+    public Response del(@RequestParam("accElementID") Long accElementID) {
     	accElementService.deleteById(accElementID);
         return new Response().success();
     }
@@ -73,7 +73,7 @@ public class AccElementRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的会计要素")
-    public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
+    public Response queryByAccStandard(@RequestParam("accStandardID") Long accStandardID) throws Exception{
     	 List<AccElement>  listAccElement = accElementService.findByAccStandard(accStandardID);
         return new Response().success( listAccElement );
     }
@@ -93,13 +93,13 @@ public class AccElementRestController {
     }
     
     @RequestMapping(value="/admin/show/{accElementID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long accElementID){
+    public Response show(@PathVariable Long accElementID){
     	AccElement accStandard = accElementService.findById(accElementID);
         return new Response().success(accStandard);
     }
     
     @RequestMapping(value="/admin/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("accElementID") long accElementID){
+    public Response detail(@RequestParam("accElementID") Long accElementID){
     	AccElement accStandard = accElementService.findById(accElementID);
         return new Response().success(accStandard);
     }

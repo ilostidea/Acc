@@ -23,8 +23,8 @@ public class COAServiceImpl extends AbstractService<COA, Long> implements COASer
 	}
 
 	@Override
-	public List<COA> findByAccountingStandardId(Object accountingStandardID) {
-		return dao.findByAccountingStandardId(accountingStandardID);
+	public List<COA> findByAccountingStandardId(Object accountingStandardId) {
+		return dao.findByAccountingStandardId(accountingStandardId);
 	}
 
 	@Override

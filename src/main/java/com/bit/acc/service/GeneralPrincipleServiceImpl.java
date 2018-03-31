@@ -22,8 +22,8 @@ public class GeneralPrincipleServiceImpl extends AbstractService<GeneralPrincipl
 		return this.dao;
 	}
 
-	public GeneralPrinciple findByAccStandard(Long accountingStandardID) {
-		List<GeneralPrinciple> listGeneralPrinciple= dao.findByAccountingStandardId(accountingStandardID);
+	public GeneralPrinciple findByAccStandard(Long accountingStandardId) {
+		List<GeneralPrinciple> listGeneralPrinciple= dao.findByAccountingStandardId(accountingStandardId);
 		GeneralPrinciple generalPrinciple = null;
 		if(listGeneralPrinciple != null && listGeneralPrinciple.size() > 0)
 			generalPrinciple = listGeneralPrinciple.get(0);

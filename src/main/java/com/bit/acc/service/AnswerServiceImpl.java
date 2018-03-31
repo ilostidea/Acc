@@ -1,9 +1,7 @@
 package com.bit.acc.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,27 +14,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import com.bit.acc.dao.AnswerRepository;
-import com.bit.acc.dao.QuestionRepository;
 import com.bit.acc.model.Answer;
-import com.bit.acc.model.Question;
 import com.bit.acc.service.baseservice.AbstractService;
-import com.bit.acc.service.intfs.QuestionService;
+import com.bit.acc.service.intfs.AnswerService;
 
-@Service("questionService")
-public class QuestionServiceImpl extends AbstractService<Question, Long> implements QuestionService {
+@Service("answerService")
+public class AnswerServiceImpl extends AbstractService<Answer, Long> implements AnswerService {
 
-    @Autowired
-	private QuestionRepository dao;
+	@Autowired
+	private AnswerRepository dao;
 	
-    @Autowired
-	private AnswerRepository answerDao;
-    
-    protected JpaRepository<Question, Long> getDao( ) {
-    	return dao;
-    }
+	protected JpaRepository<Answer, Long> getDao() {
+		return dao;
+	}
 
     @Override
-    public <S extends Question> S save(S entity) {
+    public <S extends Answer> S save(S entity) {
     	if (entity.getId() == null) {
         	entity.setApproveCount(0);
         	entity.setDisapproveCount(0);
@@ -47,28 +40,28 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	}
     	return super.save(entity);
     }
-    
+
 	@Override
-	public List<Question> findRecent() {
-		return dao.findRecent( );
+	public List<Answer> findByQuestion(Long questionId) {
+		return dao.findByQuestion(questionId);
 	}
 
 	@Override
-	public List<Question> findByCondition(String userName, String question, Boolean status, Boolean accused) {
-		List<Question> resultList = null;
+	public List<Answer> findForAdmin(String userName, String answer, Boolean status, Boolean accused) {
+		List<Answer> resultList = null;
 		
         @SuppressWarnings("serial")
-		Specification<Question> querySpecifi = new Specification<Question>() {
+		Specification<Answer> querySpecifi = new Specification<Answer>() {
             @Override
-            public Predicate toPredicate(Root<Question> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<Answer> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if( userName != null && userName.length() > 0 ){
                     predicates.add( criteriaBuilder.or( criteriaBuilder.equal( root.get( "user" ).get("mobile"), userName),
     						criteriaBuilder.equal( root.get( "user" ).get("email"), userName ), 
     						criteriaBuilder.equal( root.get( "user" ).get("nickName"), userName ) ) );
                 }
-                if( question != null && question.length() > 0 ){
-                    predicates.add( criteriaBuilder.like( root.get( "question" ), "%" + question + "%") );
+                if( answer != null && answer.length() > 0 ){
+                    predicates.add( criteriaBuilder.like( root.get( "answer" ), "%" + answer + "%") );
                 }
                 if( status != null ){
                     predicates.add( status ? criteriaBuilder.isTrue( root.get("status") ) : criteriaBuilder.isFalse( root.get("status") ) );
@@ -82,40 +75,26 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
         };
         resultList =  dao.findByCondition(querySpecifi);
         return resultList;
-		//return dao.queryForAdmin(userName, question, status, accused);
 	}
 
 	@Override
-	public List<Question> findByUser(Long userId) {
+	public List<Answer> findByUser(Long userId) {
 		return dao.findByUser(userId);
 	}
 
 	@Override
-	public List<Question> findByAnsweredUser(Long userId) {
-		return dao.findByAnsweredUser(userId);
-	}
-
-	@Override
-	public List<Question> findByCollectedUser(Long userId) {
+	public List<Answer> findByCollectedUser(Long userId) {
 		return dao.findByCollectedUser(userId);
 	}
 
 	@Override
-	public Question getQuesstionAndAnswersById(Long id) {
-		return dao.getQuesstionAndAnswersById(id);
+	public void approve(Long id) {
+		dao.approve(id);
 	}
 
 	@Override
-	public Question getQuesstionAndAnswersPumpCountById(Long id) {
-		Question question = dao.getQuesstionAndAnswersPumpCountById(id);
-		 List<Answer> answers = answerDao.findByQuestion(id); 
-		 question.setAnswers(new HashSet<Answer>(answers) );
-		return question;
-	}
-
-	@Override
-	public Map getQuestionProfileById(Long userId) {
-		return dao.getQuestionProfileById(userId);
+	public void disapprove(Long id) {
+		dao.disapprove(id);
 	}
 
 }

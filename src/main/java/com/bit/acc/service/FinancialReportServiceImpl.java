@@ -23,8 +23,8 @@ public class FinancialReportServiceImpl extends AbstractService<FinancialReport,
 	}
 
 	@Override
-	public List<FinancialReport> findByAccStandard(Long accountingStandardID) {
-		return dao.findByAccountingStandardId(accountingStandardID);
+	public List<FinancialReport> findByAccStandard(Long accountingStandardId) {
+		return dao.findByAccountingStandardId(accountingStandardId);
 	}
 
 	@Override

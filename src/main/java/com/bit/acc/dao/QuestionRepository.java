@@ -19,24 +19,24 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 			+ "  ) from Question q ";
 	
 	@Query(queryQuestionAnswerCountCollectedTimes + " group by q.id order by q.createTime desc")
-	public List<Question> queryRecent( );
+	public List<Question> findRecent( );
 	
-	public List<Question> queryForAdmin(Specification<Question> querySpecific);
+	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
 	@Query(queryQuestionAnswerCountCollectedTimes + " where q.user.id = :userID group by q.id order by q.createTime desc")
-	public List<Question> queryByUser(@Param("userID") long userID);
+	public List<Question> findByUser(@Param("userID") Long userId);
 
 	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where a.user.id = :userID group by q.id order by q.createTime desc")
-	public List<Question> queryByAnsweredUser(@Param("userID") long userID);
+	public List<Question> findByAnsweredUser(@Param("userID") Long userId);
 	
 	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where qc.user.id = :userID group by q.id order by q.createTime desc")
-	public List<Question> queryByCollectedUser(@Param("userID") long userID);
+	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
 	@Query(queryQuestionAnswerCountCollectedTimes + " where q.id = :id group by q.id")
-	public Question getQuesstionAndAnswersPumpCountById(@Param("id") long id) ;
+	public Question getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
 	
 	@Query("select t from Question as t left join fetch t.answers where t.id = :id")
-	public Question getQuesstionAndAnswersById(@Param("id") long id);
+	public Question getQuesstionAndAnswersById(@Param("id") Long id);
 	
 	@Query("select new map( " + 
 					"(select count(q.id) from Question q where q.user.id = u.id) as myQuestion, " + 
@@ -49,6 +49,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 					"(select sum(q.disapproveCount) from Question q where q.user.id = u.id) + (select sum(a.disapproveCount) from Answer a where a.user.id = u.id) as disApproveCount " +
 					")  " +
 					"from SysUser u where u.id = :userID")
-	public Map getQuestionProfileById(@Param("userID") long userID);
+	public Map getQuestionProfileById(@Param("userID") Long userId);
 
 }

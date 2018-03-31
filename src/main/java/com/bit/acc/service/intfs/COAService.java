@@ -7,7 +7,7 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface COAService extends Service<COA, Long> {
 
-    public List<COA> findByAccountingStandardId(Object accountingStandardID);
+    public List<COA> findByAccountingStandardId(Object accountingStandardId);
 
 	public List<COA> findByAccStandard( String accountingStandardCode, int exeYear );
 

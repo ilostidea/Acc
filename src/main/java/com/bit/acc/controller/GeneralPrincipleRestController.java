@@ -52,7 +52,7 @@ public class GeneralPrincipleRestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("gpID") long gpID) {
+    public Response del(@RequestParam("gpID") Long gpID) {
     	generalPrincipleService.deleteById(gpID);
         return new Response().success();
     }
@@ -73,7 +73,7 @@ public class GeneralPrincipleRestController {
      */
     @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的基本准则")
-    public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
+    public Response queryByAccStandard(@RequestParam("accStandardID") Long accStandardID) throws Exception{
     	GeneralPrinciple generalPrinciple = generalPrincipleService.findByAccStandard(accStandardID);
         return new Response().success(generalPrinciple);
     }
@@ -93,13 +93,13 @@ public class GeneralPrincipleRestController {
     }
     
     @RequestMapping(value="/show/{gpID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long gpID){
+    public Response show(@PathVariable Long gpID){
     	GeneralPrinciple accStandard = generalPrincipleService.findById(gpID);
         return new Response().success(accStandard);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("gpID") long gpID){
+    public Response detail(@RequestParam("gpID") Long gpID){
     	GeneralPrinciple accStandard = generalPrincipleService.findById(gpID);
         return new Response().success(accStandard);
     }

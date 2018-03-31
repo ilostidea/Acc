@@ -7,7 +7,7 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface FinancialReportService extends Service<FinancialReport, Long> {
 	
-	public List<FinancialReport> findByAccStandard(Long accountingStandardID);
+	public List<FinancialReport> findByAccStandard(Long accountingStandardId);
 	
 	public List<FinancialReport> findByAccStandard(String accountingStandardCode, int exeYear);
 

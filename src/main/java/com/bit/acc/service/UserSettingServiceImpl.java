@@ -21,8 +21,8 @@ public class UserSettingServiceImpl extends AbstractService<UserSetting, Long> i
 		return this.dao;
 	}
 
-	public List<UserSetting> queryByUser(Long userID){
-		return dao.findByUserId(userID);
+	public List<UserSetting> queryByUser(Long userId){
+		return dao.findByUserId(userId);
 	}
 	
 }

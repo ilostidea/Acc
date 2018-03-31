@@ -52,7 +52,7 @@ public class COARestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("coaID") long coaID) {
+    public Response del(@RequestParam("coaID") Long coaID) {
     	coaService.deleteById(coaID);
         return new Response().success();
     }
@@ -73,7 +73,7 @@ public class COARestController {
      */
     @RequestMapping(value="/admin/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过准则ID获得该准则的科目表")
-    public Response queryByAccStandard(@RequestParam("accStandardID") long accStandardID) throws Exception{
+    public Response queryByAccStandard(@RequestParam("accStandardID") Long accStandardID) throws Exception{
     	List<COA> listCOA = coaService.findByAccountingStandardId(accStandardID);
         return new Response().success(listCOA);
     }
@@ -108,13 +108,13 @@ public class COARestController {
     }
     
     @RequestMapping(value="/show/{coaID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long coaID){
+    public Response show(@PathVariable Long coaID){
     	COA coa = coaService.findById(coaID);
         return new Response().success(coa);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("coaID") long coaID){
+    public Response detail(@RequestParam("coaID") Long coaID){
     	COA coa = coaService.findById(coaID);
         return new Response().success(coa);
     }

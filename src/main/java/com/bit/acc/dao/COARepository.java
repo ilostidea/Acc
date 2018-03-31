@@ -10,7 +10,7 @@ import com.bit.acc.model.COA;
 
 public interface COARepository extends JpaRepository<COA, Long> {
 	
-	public List<COA> findByAccountingStandardId(Object accountingStandardID);
+	public List<COA> findByAccountingStandardId(Object accountingStandardId);
 	
 	@Query("select t from COA  as t left join fetch t.accUsages where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear")
 	public List<COA> findByAccStandard(@Param("accountingStandardCode") String accountingStandardCode, @Param("exeYear") int exeYear);

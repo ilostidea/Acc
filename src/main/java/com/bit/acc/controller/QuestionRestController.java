@@ -61,7 +61,7 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("questionID") long questionID) {
+    public Response del(@RequestParam("questionID") Long questionID) {
     	questionService.deleteById( questionID );
         return new Response().success();
     }
@@ -77,14 +77,14 @@ public class QuestionRestController {
     @RequestMapping(value="/admin/question",method=RequestMethod.GET)
     @ControllerLog(value = "管理问题")
     public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("question") String question, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
-        List<Question> listQuestion = questionService.queryForAdmin( userName, question,  status, accused);
+        List<Question> listQuestion = questionService.findByCondition( userName, question,  status, accused);
         return new Response().success( listQuestion );
     }
     
     @RequestMapping(value="/recent",method=RequestMethod.GET)
     @ControllerLog(value = "获得最近问题及问题概况")
     public Response queryRecent() throws Exception{
-        List<Question> listQuestion = questionService.queryRecent();
+        List<Question> listQuestion = questionService.findRecent();
         return new Response().success( listQuestion );
     }
     
@@ -96,8 +96,8 @@ public class QuestionRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的提问")
-    public Response queryByUser(@RequestParam("userID") long userID) throws Exception{
-    	List<Question> listQuestion = questionService.queryByUser(userID);
+    public Response queryByUser(@RequestParam("userID") Long userID) throws Exception{
+    	List<Question> listQuestion = questionService.findByUser(userID);
         return new Response().success( listQuestion );
     }
     
@@ -109,8 +109,8 @@ public class QuestionRestController {
      */
     @RequestMapping(value="/queryByAnsweredUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户回答的问题")
-    public Response queryByAnsweredUser(@RequestParam("userID") long userID) throws Exception{
-    	List<Question> listQuestion = questionService.queryByAnsweredUser(userID);
+    public Response queryByAnsweredUser(@RequestParam("userID") Long userID) throws Exception{
+    	List<Question> listQuestion = questionService.findByAnsweredUser(userID);
         return new Response().success( listQuestion );
     }
     
@@ -122,26 +122,26 @@ public class QuestionRestController {
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的问题")
-    public Response queryByCollectedUser(@RequestParam("userID") long userID) throws Exception{
-    	List<Question> listQuestion = questionService.queryByCollectedUser(userID);
+    public Response queryByCollectedUser(@RequestParam("userID") Long userID) throws Exception{
+    	List<Question> listQuestion = questionService.findByCollectedUser(userID);
         return new Response().success( listQuestion );
     }
     
     @RequestMapping(value="/show/{questionID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long questionID){
+    public Response show(@PathVariable Long questionID){
     	Question question = questionService.findById(questionID);
         return new Response().success(question);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("questionID") long questionID){
+    public Response detail(@RequestParam("questionID") Long questionID){
     	//Question question = questionService.getQuesstionAndAnswersById(questionID);
     	Question question = questionService.getQuesstionAndAnswersPumpCountById( questionID );
         return new Response().success( question );
     }
     
     @RequestMapping(value="/profile",method=RequestMethod.GET)
-    public Response profile(@RequestParam("userID") long userID){
+    public Response profile(@RequestParam("userID") Long userID){
     	Map questionProfile = questionService.getQuestionProfileById(userID);
         return new Response().success( questionProfile );
     }

@@ -8,6 +8,6 @@ import com.bit.acc.model.UserSetting;
 
 public interface UserSettingRepository extends JpaRepository<UserSetting, Long> {
 
-	public List<UserSetting> findByUserId( long userID);
+	public List<UserSetting> findByUserId( Long userId);
 	
 }

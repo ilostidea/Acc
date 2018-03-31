@@ -52,7 +52,7 @@ public class AccUsageRestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("accUsageID") long accUsageID) {
+    public Response del(@RequestParam("accUsageID") Long accUsageID) {
     	accUsageService.deleteById(accUsageID);
         return new Response().success();
     }
@@ -73,19 +73,19 @@ public class AccUsageRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过科目ID获得该科目的使用方法")
-    public Response queryByAcc(@RequestParam("coaID") long coaID) throws Exception{
+    public Response queryByAcc(@RequestParam("coaID") Long coaID) throws Exception{
     	List<AccUsage> accUsage = accUsageService.queryByAcc(coaID);
         return new Response().success(accUsage);
     }
     
     @RequestMapping(value="/show/{accUsageID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long accUsageID){
+    public Response show(@PathVariable Long accUsageID){
     	AccUsage accStandard = accUsageService.findById(accUsageID);
         return new Response().success(accStandard);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("accUsageID") long accUsageID){
+    public Response detail(@RequestParam("accUsageID") Long accUsageID){
     	AccUsage accStandard = accUsageService.findById(accUsageID);
         return new Response().success(accStandard);
     }

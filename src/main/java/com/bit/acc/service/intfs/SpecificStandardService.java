@@ -8,7 +8,7 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface SpecificStandardService extends Service<SpecificStandard, Long> {
 
-    public List<SpecificStandard> findByAccStandard(Long accountingStandardID);
+    public List<SpecificStandard> findByAccStandard(Long accountingStandardId);
 	
 	public List<SpecificStandard> findByAccStandard(String accountingStandardCode, int exeYear);
 

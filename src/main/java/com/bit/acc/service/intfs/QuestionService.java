@@ -8,20 +8,20 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface QuestionService extends Service<Question, Long> {
 
-	public List<Question> queryRecent( );
+	public List<Question> findRecent( );
 	
-	public List<Question> queryForAdmin(String userName, String question, Boolean status, Boolean accused);
+	public List<Question> findByCondition(String userName, String question, Boolean status, Boolean accused);
 
-	public List<Question> queryByUser(long userID);
+	public List<Question> findByUser(Long userId);
 
-	public List<Question> queryByAnsweredUser(long userID);
+	public List<Question> findByAnsweredUser(Long userId);
 	
-	public List<Question> queryByCollectedUser(long userID);
+	public List<Question> findByCollectedUser(Long userId);
 	
-	public Question getQuesstionAndAnswersById(long id);
+	public Question getQuesstionAndAnswersById(Long id);
 	
-	public Question getQuesstionAndAnswersPumpCountById(long id) ;
+	public Question getQuesstionAndAnswersPumpCountById(Long id) ;
 	
-	public Map getQuestionProfileById(long userID);
+	public Map getQuestionProfileById(Long userID);
 
 }

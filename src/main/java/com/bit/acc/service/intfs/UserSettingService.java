@@ -7,6 +7,6 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface UserSettingService extends Service<UserSetting, Long> {
 
-	public List<UserSetting> queryByUser(Long userID);
+	public List<UserSetting> queryByUser(Long userId);
 	
 }

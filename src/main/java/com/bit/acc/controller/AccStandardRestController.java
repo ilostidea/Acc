@@ -53,7 +53,7 @@ public class AccStandardRestController {
     }
     
     @RequestMapping(value="/admin/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("accStandardID") long accStandardID) throws Exception{
+    public Response del(@RequestParam("accStandardID") Long accStandardID) throws Exception{
 		accountingStandardService.deleteById(accStandardID);
         return new Response().success();
     }
@@ -67,13 +67,13 @@ public class AccStandardRestController {
     }
     
     @RequestMapping(value="/show/{accStandardID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long accStandardID){
+    public Response show(@PathVariable Long accStandardID){
     	AccountingStandard accStandard = accountingStandardService.findById(accStandardID);
         return new Response().success(accStandard);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("accStandardID") long accStandardID){
+    public Response detail(@RequestParam("accStandardID") Long accStandardID){
     	AccountingStandard accStandard = accountingStandardService.findById(accStandardID);
         return new Response().success(accStandard);
     }

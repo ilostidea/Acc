@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.Pump;
-import com.bit.acc.service.intfs.IPumpService;
+import com.bit.acc.service.intfs.PumpService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
@@ -32,7 +32,7 @@ import com.bit.common.validation.Third;
 public class PumpRestController {
 
     @Resource(name="pumpService")
-    private IPumpService pumpService;
+    private PumpService pumpService;
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Pump pump, BindingResult result) {
@@ -41,9 +41,7 @@ public class PumpRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	pump.setIsAccused(false);
-    	pump.setIsAnonymous(false);
-    	pumpService.persist(pump);
+    	pumpService.save(pump);
         return new Response().success(pump);
     }
     
@@ -54,13 +52,13 @@ public class PumpRestController {
     		ObjectError error = errors.get(0);
     		return new Response().failure(error.getDefaultMessage());
         }
-    	pumpService.merge(pump);
+    	pumpService.save(pump);
         return new Response().success();
     }
     
     @RequestMapping(value="/del",method=RequestMethod.POST)
-    public Response del(@RequestParam("pumpID") long pumpID) {
-    	pumpService.remove(pumpID);
+    public Response del(@RequestParam("pumpID") Long pumpID) {
+    	pumpService.deleteById(pumpID);
         return new Response().success();
     }
     
@@ -68,7 +66,7 @@ public class PumpRestController {
     @ControllerLog(value = "获得全部追问")
     public Response queryAll() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<Pump> listPump = pumpService.queryAll();
+        List<Pump> listPump = pumpService.findAll();
         return new Response().success(listPump);
     }
     
@@ -80,19 +78,19 @@ public class PumpRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过问题ID获得该问题的追问")
-    public Response queryByAnswer(@RequestParam("answerID") long answerID) throws Exception{
-    	List<Pump> listPump = pumpService.queryByAnswer(answerID);
+    public Response queryByAnswer(@RequestParam("answerID") Long answerID) throws Exception{
+    	List<Pump> listPump = pumpService.findByAnswer(answerID);
         return new Response().success(listPump);
     }
     
     @RequestMapping(value="/show/{pumpID}",method=RequestMethod.GET)
-    public Response show(@PathVariable long pumpID){
+    public Response show(@PathVariable Long pumpID){
     	Pump pump = pumpService.findById(pumpID);
         return new Response().success(pump);
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("pumpID") long pumpID){
+    public Response detail(@RequestParam("pumpID") Long pumpID){
     	Pump pump = pumpService.findById(pumpID);
         return new Response().success(pump);
     }

@@ -7,7 +7,7 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface AccElementService extends Service<AccElement, Long> {
 	
-    public List<AccElement> findByAccStandard(Long accountingStandardID) ;
+    public List<AccElement> findByAccStandard(Long accountingStandardId) ;
 	
 	public List<AccElement> findByAccStandard(String accountingStandardCode, int exeYear) ;
 	

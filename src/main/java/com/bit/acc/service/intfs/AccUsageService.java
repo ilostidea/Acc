@@ -7,6 +7,6 @@ import com.bit.acc.service.baseservice.Service;
 
 public interface AccUsageService extends Service<AccUsage, Long> {
 	
-	public List<AccUsage> queryByAcc(Long coaID);
+	public List<AccUsage> queryByAcc(Long coaId);
 
 }

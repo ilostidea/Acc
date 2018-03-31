@@ -8,6 +8,6 @@ import com.bit.acc.model.AccUsage;
 
 public interface AccUsageRepository extends JpaRepository<AccUsage, Long> {
 	
-	public List<AccUsage> findByCoaId(Long coaID);
+	public List<AccUsage> findByCoaId(Long coaId);
 
 }

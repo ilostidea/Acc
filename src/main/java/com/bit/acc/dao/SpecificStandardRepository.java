@@ -10,7 +10,7 @@ import com.bit.acc.model.SpecificStandard;
 
 public interface SpecificStandardRepository extends JpaRepository<SpecificStandard, Long> {
 	
-	public List<SpecificStandard> findByAccountingStandardId(Long accountingStandardID);
+	public List<SpecificStandard> findByAccountingStandardId(Long accountingStandardId);
 	
 	public List<SpecificStandard> findByAccountingStandardCodeAndAccountingStandardExeYear(String accountingStandardCode, int exeYear);
 	
