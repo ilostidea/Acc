@@ -23,7 +23,7 @@
     </bean>
     
     <!-- 凭据匹配器 -->
-    <bean id="credentialsMatcher" class="com.bit.common.authorization.RetryTimesLtdHashedCredentialsMatcher">
+    <bean id="credentialsMatcher" class="com.bit.common.auth.RetryTimesLtdHashedCredentialsMatcher">
     	<constructor-arg ref="cacheManager"/>
         <property name="hashAlgorithmName" value="md5"/>
         <property name="hashIterations" value="2"/>
@@ -31,7 +31,7 @@
     </bean>
 	
 	<!-- Define the Shiro Realm implementation to connect to back-end security datasource. -->
-	<bean id="dbRealm" class="com.bit.common.authorization.DbRealm"><!--
+	<bean id="dbRealm" class="com.bit.common.auth.DbRealm"><!--
         <property name="userService" ref="userService"/>-->
         <property name="credentialsMatcher" ref="credentialsMatcher"/><!-- 
         <property name="cacheManager" ref="cacheManager"/> -->
@@ -53,16 +53,20 @@
 	<!-- Session cookie template -->
 	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 		<!--<constructor-arg value="sid"/>-->
-	    <property name="name" value="sid"/>
+	    <property name="name" value="SHAREDJSESSIONID"/>
 	    <property name="httpOnly" value="true"/>
 	    <property name="maxAge" value="180000"/>
 	</bean>
 	
-	<!-- 会话DAO -->
+	<!-- 会话DAO --><!-- 
     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
         <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
         <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+    </bean> -->
+    <bean id="sessionDAO" class="com.bit.common.auth.RedisSessionDao">
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"></property>
     </bean>
+    <bean id="redisManager" class="com.bit.common.auth.RedisManager"></bean>
 
     <!-- 会话验证调度器，1800000毫秒 -->
     <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
@@ -214,4 +218,34 @@
 			</props>
 		</property>
 	</bean> -->
+	
+	<!-- 以下是Redis 
+    <context:property-placeholder location="classpath:redis.properties"/>-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="30"></property>
+        <property name="maxTotal" value="100"></property>
+        <property name="maxWaitMillis" value="1000"></property>
+        <property name="testOnBorrow" value="true"></property>
+    </bean>
+
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="usePool" value="true"></property>
+        <property name="hostName" value="127.0.0.1"></property>
+        <property name="port" value="6379"></property>
+        <property name="poolConfig" ref="jedisPoolConfig"></property>
+    </bean>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"></property>
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        <!-- 解决读取int类型value值报错的问题 -->
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        <property name="hashKeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+    </bean>
+	
 </beans>

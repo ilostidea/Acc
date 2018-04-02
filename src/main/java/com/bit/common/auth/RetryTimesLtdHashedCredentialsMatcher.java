@@ -2,7 +2,7 @@
  * 2016年6月8日
  * @author Zhou Liang
  */
-package com.bit.common.authorization;
+package com.bit.common.auth;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

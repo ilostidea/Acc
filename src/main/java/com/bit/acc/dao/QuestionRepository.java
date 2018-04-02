@@ -45,10 +45,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 					"(select count(ac.id) from AnswerCollected ac where ac.user.id = u.id) as myCollectedAnswer, " + 
 					"(select count(qc.id) from QuestionCollected qc join Question q on qc.question.id = q.id where q.user.id = u.id) as myQuestionCollectedByOthers, " + 
 					"(select count(ac.id) from AnswerCollected ac join Answer a on ac.answer.id = a.id where a.user.id = u.id) as myAnswerCollectedByOthers, " + 
-					"(select sum(q.approveCount) from Question q where q.user.id = u.id) + (select sum(a.approveCount) from Answer a where a.user.id = u.id) as approveCount, " + 
-					"(select sum(q.disapproveCount) from Question q where q.user.id = u.id) + (select sum(a.disapproveCount) from Answer a where a.user.id = u.id) as disApproveCount " +
+					"(select Coalesce( sum(q.approveCount), 0 ) from Question q where q.user.id = u.id) + (select Coalesce( sum(a.approveCount), 0 ) from Answer a where a.user.id = u.id) as approveCount, " + 
+					"(select Coalesce( sum(q.disapproveCount), 0 ) from Question q where q.user.id = u.id) + (select Coalesce( sum(a.disapproveCount), 0 ) from Answer a where a.user.id = u.id) as disApproveCount " +
 					")  " +
 					"from SysUser u where u.id = :userID")
-	public Map getQuestionProfileById(@Param("userID") Long userId);
+	public Map<String, Long> getQuestionProfileById(@Param("userID") Long userId);
 
 }

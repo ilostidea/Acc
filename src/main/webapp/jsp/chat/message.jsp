@@ -1,4 +1,4 @@
-<%@page import="com.bit.acc.service.intfs.IUserService"%>
+<%@page import="com.bit.acc.service.intfs.UserService"%>
 <%@page import="org.apache.shiro.subject.PrincipalCollection"%>
 <%@page import="org.apache.shiro.SecurityUtils"%>
 <%@page import="com.bit.acc.model.SysUser"%>
@@ -105,7 +105,7 @@ var contextPath = "${request.contextPath}";
 	<%
 		Subject subject = SecurityUtils.getSubject();
 		PrincipalCollection col = subject.getPrincipals();
-		IUserService userService = (IUserService) WebApplicationContextUtils.getRequiredWebApplicationContext( session.getServletContext() ).getBean("userService");
+		UserService userService = (UserService) WebApplicationContextUtils.getRequiredWebApplicationContext( session.getServletContext() ).getBean("userService");
 		List<SysUser> userModel = userService.findByAccount( col == null || col.isEmpty() ? "" : String.valueOf( col.getPrimaryPrincipal() ) );
 	%>
 	

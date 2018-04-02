@@ -20,7 +20,7 @@
 	一种是动态代理，它是通过接口方式实现的，要求所代理的类一定是实现了某一个接口，对一般的类就无法代理，spring默认是这种；
 	一种是通过设置proxy-target-class="true"，使用CGLIB实现AOP，CGLIB直接生成二进制码，使得普通类也可以实现AOP。
 	在没有设置proxy-target-class="true"时，使用动态代理，是一个临时生成的类，如proxy1，使用普通类时会出现错误。
-	对于是用来事物的类无效，只能其代理接口 -->
+	对于使用了事物的类无效，只能其代理接口 -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	
 	<context:property-placeholder location="classpath:persistence.properties" />
@@ -35,7 +35,7 @@
 	<!-- service包 -->
     <context:component-scan base-package="your service package" />
     
-    <!-- 配置数据源，从上面配置文件读取-->
+    <!-- 配置C3P0数据源，从上面配置文件读取--><!-- 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" value="${database.driverClassName}"/>
 		<property name="jdbcUrl" value="${database.url}"/>
@@ -46,7 +46,48 @@
 		<property name="maxPoolSize" value="${pool.maxPoolSize}"/>
 		<property name="maxIdleTime" value="${pool.maxIdleTime}"/>
 		<property name="acquireIncrement" value="${pool.acquireIncrement}"/>
-        <property name="idleConnectionTestPeriod" value="${pool.idleConnectionTestPeriod}" />  
+        <property name="idleConnectionTestPeriod" value="${pool.idleConnectionTestPeriod}" />
+	</bean> -->
+	
+	<!-- Druid数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${database.driverClassName}" />
+        <property name="url" value="${database.url}" />
+        <property name="username" value="${database.username}" />
+        <property name="password" value="${database.password}" />
+        <property name="initialSize" value="${druid.initialSize}" />
+        <property name="maxActive" value="${druid.maxActive}" />
+        <property name="maxIdle" value="${druid.maxIdle}" />
+        <property name="minIdle" value="${druid.minIdle}" />
+        <property name="maxWait" value="${druid.maxWait}" />
+        <property name="removeAbandoned" value="${druid.removeAbandoned}" />
+        <property name="removeAbandonedTimeout" value="${druid.removeAbandonedTimeout}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+        <property name="validationQuery" value="${druid.validationQuery}" />
+        <property name="testWhileIdle" value="${druid.testWhileIdle}" />
+        <property name="testOnBorrow" value="${druid.testOnBorrow}" />
+        <property name="testOnReturn" value="${druid.testOnReturn}" />
+        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+        <!-- 关闭 abanded 连接时输出错误日志 -->
+        <property name="logAbandoned" value="${druid.logAbandoned}" />
+        <!-- 合并多个DruidDataSource的监控数据 -->
+        <property name="useGlobalDataSourceStat" value="true" />
+        <!-- filters和proxyFilters属性是组合关系的，不是替换的 
+        <property name="filters" value="${druid.filters}" />-->
+		<property name="proxyFilters">
+			<list>
+				<ref bean="statFilter" />
+			</list>
+		</property>
+    </bean>
+	
+	<bean id="statFilter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="mergeSql" value="true" />
+		<!-- 对执行超过500毫秒，即0.5秒的SQL通过日志输出 -->
+		<property name="slowSqlMillis" value="500" />
+		<property name="logSlowSql" value="true" />
 	</bean>
 	
 	<!--
@@ -67,12 +108,12 @@
     -->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-	    	<property name="dataSource" ref="dataSource"/>
-	    	<!--  
-        <property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence"/> 
+	    <property name="dataSource" ref="dataSource"/>
+	    <!--  
+        <property name="persistenceProvider" value="org.hibernate.ejb.HibernatePersistence"/>
         <property name="persistenceUnitManager" ref="defaultPersistenceUnitManager"/>
         <property name="persistenceUnitName" value="hibernatePU"/>
-        <property name="jpaVendorAdapter" ref="jpaVendor"/>--> 
+        <property name="jpaVendorAdapter" ref="jpaVendor"/>-->
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="databasePlatform" value="${hibernate.dialect}" />

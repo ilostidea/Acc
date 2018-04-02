@@ -114,7 +114,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 	}
 
 	@Override
-	public Map getQuestionProfileById(Long userId) {
+	public Map<String, Long> getQuestionProfileById(Long userId) {
 		return dao.getQuestionProfileById(userId);
 	}
 
