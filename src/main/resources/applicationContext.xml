@@ -89,13 +89,6 @@
 		<property name="slowSqlMillis" value="500" />
 		<property name="logSlowSql" value="true" />
 	</bean>
-	
-	<!--
-    <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-         <property name="showSql" value="true"/>
-         <property name="generateDdl" value="true"/>
-    </bean>
-    -->
 
 	<!--
 	<bean id="defaultPersistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
@@ -109,17 +102,17 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 	    <property name="dataSource" ref="dataSource"/>
-	    <!--  
-        <property name="persistenceProvider" value="org.hibernate.ejb.HibernatePersistence"/>
+	    <!-- 用于指定持久化实现厂商类；如Hibernate为org.hibernate.ejb.HibernatePersistence类。只要有jpaVendorAdapter即可
+        <property name="persistenceProvider" value="org.hibernate.ejb.HibernatePersistence"/> -->
+        <!--  用于获取JPA持久化单元，默认实现DefaultPersistenceUnitManager用于解决多配置文件情况
         <property name="persistenceUnitManager" ref="defaultPersistenceUnitManager"/>
-        <property name="persistenceUnitName" value="hibernatePU"/>
-        <property name="jpaVendorAdapter" ref="jpaVendor"/>-->
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="persistenceUnitName" value="hibernatePU"/>-->
+		<property name="jpaVendorAdapter" >
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"><!-- 
 				<property name="databasePlatform" value="${hibernate.dialect}" />
 				<property name="generateDdl" value="${hibernate.generateDdl}"/>
-				<property name="showSql" value="${hibernate.show_sql}"/>
-			</bean>
+				<property name="showSql" value="${hibernate.show_sql}"/>-->
+			</bean> 
 		</property>
 	    <property name="packagesToScan">
 	        <list>
@@ -130,23 +123,36 @@
         <property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
         </property>
+        <!-- 用于指定一些高级特性，如事务管理，获取具有事务功能的连接对象等，当指定jpaVendorAdapter属性时可以不指定jpaDialect，会自动设置相应的JpaDialect实现
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
-        </property>
+        </property>-->
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.generateDdl">${hibernate.generateDdl}</prop>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.max_fetch_depth">${hibernate.max_fetch_depth}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
 				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
 				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
-				<prop key="hibernate.hibernate.connection.SetBigStringTryClob">${hibernate.hibernate.connection.SetBigStringTryClob}</prop>
-				<prop key="hibernate.hibernate.archive.autodetection">${hibernate.hibernate.archive.autodetection}</prop>
-				<prop key="hibernate.hibernate.connection.charSet">${hibernate.hibernate.connection.charSet}</prop>
-				<prop key="hibernate.hibernate.cache.use_query_cache">${hibernate.hibernate.cache.use_query_cache}</prop>
-				<prop key="hibernate.hibernate.cache.use_second_level_cache">${hibernate.hibernate.cache.use_second_level_cache}</prop>
-				<prop key="hibernate.hibernate.ejb.naming_strategy">${hibernate.hibernate.ejb.naming_strategy}</prop>
+				<!-- 采用OracleLobHandler来处理oracle大字段（包括clob和blob），则在程序中不需要引用oracle的特殊类，从而能够保证支持代码支持多数据库 -->
+				<prop key="hibernate.connection.SetBigStringTryClob">${hibernate.connection.SetBigStringTryClob}</prop>
+				<!-- 告知Hibernate要自动扫描哪些元数据：被注解的类（class）和Hibernate XML映射文件（hbm） -->
+				<prop key="hibernate.archive.autodetection">${hibernate.archive.autodetection}</prop>
+				<prop key="hibernate.ejb.naming_strategy">${hibernate.ejb.naming_strategy}</prop>
+				<prop key="hibernate.connection.charSet">${hibernate.connection.charSet}</prop>
+				<!-- 1级和2级缓存都是根据对象id来查找，如果需要加载一个List的时候，就需要用到查询缓存 -->
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.cache.provider_configuration">classpath:ehcache.xml</prop>
+				<!-- 将hibernate的统计打开来看看到底是不是被缓存了，生成环境设置成false -->
+				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+				<!-- ENABLE_SELECTIVE不需要在实体内配置hibernate的 @cache标记，只要打上JPA的@cacheable标记即可默认开启该实体的2级缓存 -->
+				<prop key="javax.persistence.sharedCache.mode">ENABLE_SELECTIVE</prop>
 			</props>  
 		</property>
         <!--

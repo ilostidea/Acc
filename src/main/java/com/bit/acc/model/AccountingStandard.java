@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -31,6 +34,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @DynamicUpdate(true)
 @Table(name = "accountingStandard", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")
+@Cacheable(true)
 public class AccountingStandard implements java.io.Serializable {
 
 	/**
@@ -84,7 +89,11 @@ public class AccountingStandard implements java.io.Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingStandard")
 	private Set<SpecificStandard> specificStandards = new HashSet<SpecificStandard>(0);
 	
+	/**
+	   *注：如果一个实体需要二级缓存，若该实体含有<set...>，<list...>等属性时，也必须要指定缓存策略。
+	  */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingStandard")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<COA> COAs = new HashSet<COA>(0);
 
 	public AccountingStandard() {

@@ -39,6 +39,7 @@ public class DbRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken authcToken) throws AuthenticationException {
+        System.out.print("DbRealm.doGetAuthenticationInfo()");
 		AuthenticationInfo authcInfo = null;
 		//获取基于用户名和密码的令牌
         //authcToken是从UserController里面user.login(token)传过来的
@@ -75,6 +76,7 @@ public class DbRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        System.out.print("DbRealm.doGetAuthorizationInfo()");
 		/*获取当前登录的用户名,等价于(String)principals.fromRealm(this.getName()).iterator().next()
 		 * 当前的用户名是邮箱或者手机
 		 */

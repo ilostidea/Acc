@@ -4,6 +4,7 @@ package com.bit.acc.model;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,6 +34,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @DynamicUpdate(true)
 @Table(name = "accelement", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")
+@Cacheable(true)
 public class AccElement implements java.io.Serializable {
 
 	/**

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -38,6 +41,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @DynamicUpdate(true)
 @Table(name = "coa", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")
+@Cacheable(true)
 public class COA implements java.io.Serializable {
 
 	private static final long serialVersionUID = -9213504593573999655L;
@@ -82,6 +87,7 @@ public class COA implements java.io.Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "coa")
 	@Fetch(FetchMode.JOIN)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	//@JsonManagedReference
 	private Set<AccUsage> accUsages = new HashSet<AccUsage>(0);
 

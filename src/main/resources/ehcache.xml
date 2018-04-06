@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ehcache name="shirocache">
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+        name="shirocache">
 
-    <diskStore path="java.io.tmpdir"/>
+    <diskStore path="java.io.tmpdir/ehcache"/>
     
-	<defaultCache maxElementsInMemory="2"
+	<defaultCache maxElementsInMemory="1000" 
 			eternal="false"
 			timeToIdleSeconds="3600"
 			timeToLiveSeconds="0"
 			overflowToDisk="false"
 			memoryStoreEvictionPolicy="LRU" />
 
-    <!-- 登录记录缓存 锁定10分钟 -->
+    <!-- 登录记录缓存 锁定60分钟 -->
     <cache name="passwordRetryCache"
            maxEntriesLocalHeap="2000"
            eternal="false"
@@ -38,7 +40,7 @@
            statistics="true">
     </cache>
 
-    <cache name="shiro-activeSessionCache"
+    <cache name="shiroActiveSessionCache"
            maxEntriesLocalHeap="2000"
            eternal="false"
            timeToIdleSeconds="3600"
@@ -46,5 +48,14 @@
            overflowToDisk="false"
            statistics="true">
     </cache>
+
+	<cache name="accStandardCache"
+	           maxElementsInMemory="1000"
+	           eternal="true"
+	           timeToIdleSeconds="120"
+	           timeToLiveSeconds="120"
+	           overflowToDisk="false"
+	           memoryStoreEvictionPolicy="LRU" 
+	   />
 
 </ehcache>

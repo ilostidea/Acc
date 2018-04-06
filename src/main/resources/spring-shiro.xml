@@ -16,11 +16,16 @@
 	<!--设置了生成bean的文件目录
 	<context:component-scan base-package="com.bit.scm.*,com.bit.common"/>
 	-->
+
+	<bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+		<property name="shared" value="true"></property>
+	</bean>
 	
 	<!-- 缓存管理器 使用Ehcache实现 -->
-    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
-        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
-    </bean>
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManagerFactory" />
+	</bean>
     
     <!-- 凭据匹配器 -->
     <bean id="credentialsMatcher" class="com.bit.common.auth.RetryTimesLtdHashedCredentialsMatcher">
@@ -33,7 +38,8 @@
 	<!-- Define the Shiro Realm implementation to connect to back-end security datasource. -->
 	<bean id="dbRealm" class="com.bit.common.auth.DbRealm"><!--
         <property name="userService" ref="userService"/>-->
-        <property name="credentialsMatcher" ref="credentialsMatcher"/><!-- 
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+        <!--可不设置，使用SecurityManager中的cacheManager 
         <property name="cacheManager" ref="cacheManager"/> -->
         <property name="cachingEnabled" value="true"/>
         <property name="authenticationCachingEnabled" value="true"/>
@@ -53,7 +59,7 @@
 	<!-- Session cookie template -->
 	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 		<!--<constructor-arg value="sid"/>-->
-	    <property name="name" value="SHAREDJSESSIONID"/>
+	    <property name="name" value="ACCSESSIONID"/>
 	    <property name="httpOnly" value="true"/>
 	    <property name="maxAge" value="180000"/>
 	</bean>
@@ -63,24 +69,28 @@
         <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
         <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
     </bean> -->
-    <bean id="sessionDAO" class="com.bit.common.auth.RedisSessionDao">
+    <bean id="redisSessionDAO" class="com.bit.common.auth.RedisSessionDao">
+        <property name="activeSessionsCacheName" value="shiroActiveSessionCache"/>
         <property name="sessionIdGenerator" ref="sessionIdGenerator"></property>
     </bean>
-    <bean id="redisManager" class="com.bit.common.auth.RedisManager"></bean>
 
     <!-- 会话验证调度器，1800000毫秒 -->
     <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
         <property name="sessionValidationInterval" value="1800000"/>
         <property name="sessionManager" ref="sessionManager"/>
     </bean>
+    
+    <bean id="shiroSessionFactory" class="com.bit.common.auth.ShiroSessionFactory"/>
 	
-	<!-- 会话管理器 -->
-	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+	<!-- 会话管理器,WebSessionManager、SecurityManager、Realm都有cacheManager属性，只设置一个，其他几个是相同的，如果分别设置，就不同
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager"> -->
+	<bean id="sessionManager" class="com.bit.common.auth.ShiroSessionManager">
+		<property name="sessionFactory" ref="shiroSessionFactory"/>
 	    <property name="globalSessionTimeout" value="1800000"/>
 	    <property name="deleteInvalidSessions" value="true"/>
 	    <property name="sessionValidationSchedulerEnabled" value="true"/>
 	    <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
-	    <property name="sessionDAO" ref="sessionDAO"/>
+	    <property name="sessionDAO" ref="redisSessionDAO"/>
 	    <property name="sessionIdCookieEnabled" value="true"/>
 	    <property name="sessionIdCookie" ref="sessionIdCookie"/>
 	</bean>
