@@ -16,11 +16,11 @@ public interface COARepository extends JpaRepository<COA, Long> {
 	@QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value ="true") })
 	public List<COA> findByAccountingStandardId(Object accountingStandardId);
 	
-	@Query("select t from COA  as t left join fetch t.accUsages where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear and t.status is true")
+	@Query("select distinct t from COA  as t left join fetch t.accUsages u where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear and t.status is true and u.status is true")
 	@QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value ="true") })
 	public List<COA> findByAccStandard(@Param("accountingStandardCode") String accountingStandardCode, @Param("exeYear") int exeYear);
 	
-	@Query("select t from COA  as t left join fetch t.accUsages where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear and t.elementCode = :elementCode and t.status is true")
+	@Query("select distinct  t from COA  as t left join fetch t.accUsages u where t.accountingStandard.code = :accountingStandardCode and t.accountingStandard.exeYear = :exeYear and t.elementCode = :elementCode and t.status is true and u.status is true")
 	@QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value ="true") })
 	public List<COA> findByAccStandardElement(@Param("accountingStandardCode") String accountingStandardCode, @Param("exeYear") int exeYear, @Param("elementCode") String elementCode) ;
 

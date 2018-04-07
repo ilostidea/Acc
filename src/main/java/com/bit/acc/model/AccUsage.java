@@ -5,6 +5,7 @@ package com.bit.acc.model;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -35,6 +38,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "accUsage", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")//解决json循环嵌套的问题,加上了该注解，会导致反序列化子对象失败
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")
+@Cacheable(true)
 public class AccUsage implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8271420652646315441L;

@@ -1,6 +1,7 @@
 package com.bit.acc.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -89,6 +90,20 @@ public class AccElementRestController {
     @ControllerLog(value = "通过准则代码、执行年份获得该准则的会计要素")
     public Response queryByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
     	List<AccElement> listAccElement = accElementService.findByAccStandard(code, exeYear);
+        return new Response().success( listAccElement );
+    }
+    
+    /**
+     * 通过准则代码、执行年份获得该准则的会计要素下各科目及科目的用途
+     * @param accStandardID
+     * @param exeYear
+     * @return Response
+     * @throws Exception
+     */
+    @RequestMapping(value="/queryCoaUsagesByCodeYear",method=RequestMethod.GET)
+    @ControllerLog(value = "通过准则代码、执行年份获得该准则的会计要素下各科目及科目的用途")
+    public Response queryCoaUsagesByStandardCodeYear(@RequestParam("accStandardCode") String code, @RequestParam("exeYear") int exeYear) throws Exception{
+    	List<Map<String, ?>> listAccElement = accElementService.findCoaUsagesByAccountingStandard(code, exeYear);
         return new Response().success( listAccElement );
     }
     
