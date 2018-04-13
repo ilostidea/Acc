@@ -74,6 +74,7 @@
             <a href="#" class="list-group-item">留存率</a>
             <a href="#" class="list-group-item">客户偏好统计</a>
             <a href="#" class="list-group-item">使用情况分析</a>
+            <a href="<%=request.getContextPath()%>/admin/druid/*" class="list-group-item" target="_blank">数据池</a>
           </div>
         </div><!--/.sidebar-offcanvas-->
           

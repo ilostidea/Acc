@@ -12,6 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -38,7 +42,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "answer", catalog = "acc")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier", "answerCollecteds"}/*, ignoreUnknown = true*/)
+@JsonIgnoreProperties(value={"creator", "modifyTime", "modifier", "answerCollecteds"}/*, ignoreUnknown = true*/)
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = "answer.user",  
+	    attributeNodes = @NamedAttributeNode("user")  
+	)
+})
 public class Answer implements java.io.Serializable {
 
 	/**

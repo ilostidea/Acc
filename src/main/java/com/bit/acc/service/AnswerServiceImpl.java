@@ -67,7 +67,7 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
                     predicates.add( status ? criteriaBuilder.isTrue( root.get("status") ) : criteriaBuilder.isFalse( root.get("status") ) );
                 }
                 if( accused != null ){
-                    predicates.add( status ? criteriaBuilder.isTrue( root.get("isAccused") ) : criteriaBuilder.isFalse( root.get("isAccused") ) );
+                    predicates.add( accused ? criteriaBuilder.isTrue( root.get("isAccused") ) : criteriaBuilder.isFalse( root.get("isAccused") ) );
                 }
                 return criteriaBuilder.and( predicates.toArray( new Predicate[ predicates.size() ] ) );
                 //return criteriaQuery.where( predicates.toArray( new Predicate[ predicates.size() ] ) ).getRestriction();

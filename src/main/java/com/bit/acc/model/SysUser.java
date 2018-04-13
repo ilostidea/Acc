@@ -101,6 +101,11 @@ public class SysUser implements java.io.Serializable {
 
 	public SysUser() {
 	}
+	
+	public SysUser(Long id, String nickName) {
+		this.id = id;
+		this.nickName = nickName;
+	}
 
 	public SysUser(Long id, /*Employee employee,*/ String mobile, String passwd,
 			Boolean status) {

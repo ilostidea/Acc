@@ -3,10 +3,12 @@ package com.bit.acc.dao;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.repository.query.Param;
 
 import com.bit.acc.model.Answer;
@@ -14,8 +16,8 @@ import com.bit.acc.model.Question;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecificationExecutor<Answer> {
 	
-	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, count(p.id) ) "
-			+ " from Answer a left join a.pumps p where a.question.id = :questionID group by a.id order by a.createTime desc")
+	@Query("select a from Answer a left join fetch a.pumps p where a.question.id = :questionID group by a.id order by a.createTime desc")
+	@EntityGraph(value = "answer.user" , type=EntityGraphType.FETCH)
 	public List<Answer> findByQuestion(@Param("questionID") Long questionId);
 	
 	public List<Answer> findByCondition(Specification<Answer> querySpecific);

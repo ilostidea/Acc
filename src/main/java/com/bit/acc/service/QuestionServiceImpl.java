@@ -107,9 +107,17 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 
 	@Override
 	public Question getQuesstionAndAnswersPumpCountById(Long id) {
-		Question question = dao.getQuesstionAndAnswersPumpCountById(id);
-		 List<Answer> answers = answerDao.findByQuestion(id); 
-		 question.setAnswers(new HashSet<Answer>(answers) );
+		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountById(id);
+		Question question = (Question) array[0];
+		Long answerCount = (Long) array[1];
+		Long collectedCount = (Long) array[2];
+		question.setAnswerCount(answerCount);
+		question.setCollectedCount(collectedCount);
+		List<Answer> answers = answerDao.findByQuestion(id); 
+		for(Answer answer : answers) {
+			answer.setPumpCount( (long) answer.getPumps().size() );
+		}
+		question.setAnswers(new HashSet<Answer>(answers) );
 		return question;
 	}
 

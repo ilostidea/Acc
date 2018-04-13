@@ -102,7 +102,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DruidStatView</servlet-name>
-		<url-pattern>/druid/*</url-pattern>
+		<url-pattern>/admin/druid/*</url-pattern>
 	</servlet-mapping>
     
 	<!-- 定义DispatcherServlet -->

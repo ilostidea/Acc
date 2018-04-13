@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "question", catalog = "acc")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@JsonIgnoreProperties(value={"approveCount", "disapproveCount", "createTime", "creator", "modifyTime", "modifier", "questionCollecteds"}/*, ignoreUnknown = true*/)
+@JsonIgnoreProperties(value={"approveCount", "disapproveCount", "creator", "modifyTime", "modifier", "questionCollecteds"}/*, ignoreUnknown = true*/)
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = "question.answers.pumpscount", 
             attributeNodes = {//attributeNodes 来定义需要加载的关联属性
@@ -54,6 +54,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
                             attributeNodes = @NamedAttributeNode( value = "answer", subgraph = "pumps")
                     ) */
             }
+	),
+	@NamedEntityGraph(name = "question.user",  
+	    attributeNodes = @NamedAttributeNode("user")  
 	)
 })
 public class Question implements java.io.Serializable {
@@ -292,8 +295,8 @@ public class Question implements java.io.Serializable {
 		this.modifier = modifier;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
+	@Fetch(FetchMode.SUBSELECT)
 	public Set<Answer> getAnswers() {
 		return this.answers;
 	}

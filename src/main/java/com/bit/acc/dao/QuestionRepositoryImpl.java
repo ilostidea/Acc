@@ -43,8 +43,8 @@ public class QuestionRepositoryImpl {
 				root.get( qestionModel.getSingularAttribute( "creator", Long.class ) ), 
 				root.get( qestionModel.getSingularAttribute( "modifyTime", Date.class ) ), 
 				root.get( qestionModel.getSingularAttribute( "modifier", Long.class ) ),
-				criteriaBuilder.count( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
-				criteriaBuilder.count( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
+				criteriaBuilder.countDistinct( root.join( qestionModel.getSet( "answers" ), JoinType.LEFT ) ),
+				criteriaBuilder.countDistinct( root.join( qestionModel.getSet("questionCollecteds"), JoinType.LEFT ) )
 				) );
 		
 		criteriaQuery.where(querySpecific.toPredicate(root, criteriaQuery, criteriaBuilder));

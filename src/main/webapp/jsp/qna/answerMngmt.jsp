@@ -71,8 +71,8 @@
 
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
-            <a href="questionMngmt.jsp" class="list-group-item">问题管理</a>
-            <a href="answerMngmt.jsp" class="list-group-item active">回答管理</a>
+            <a href="questionQuery.jsp" class="list-group-item">问题管理</a>
+            <a href="answerQuery.jsp" class="list-group-item active">回答管理</a>
           </div>
         </div><!--/.sidebar-offcanvas-->
           
@@ -82,30 +82,30 @@
           </p>
           <div class="row">
             <div class="col-xs-12 col-lg-12">
-              <h3 align="center">具体准则</h3>
+              <h3 align="center">答案管理</h3>
               	<div class="form-horizontal">
 					<div class="form-group">
 							<label class="col-sm-2 control-label" for="userName">回答人</label>
 							<div class="col-sm-3">
-							    <input type="text" class="form-control" id="userName" name="userName" placeholder="请输入昵称、手机号或邮箱">
+							    <input type="text" class="form-control input-sm" id="userName" name="userName" placeholder="请输入昵称、手机号或邮箱">
 							</div>
 							<label class="col-sm-2 control-label" for="answer">回答</label>
 							<div class="col-sm-3">
-							    <input type="text" class="form-control" id="answer" name="answer" placeholder="请输入回答中包含的文字">
+							    <input type="text" class="form-control input-sm" id="answer" name="answer" placeholder="请输入回答中包含的文字">
 							</div>
 							<div class="col-sm-2"></div>
 				    </div>
 					<div class="form-group">
 							<label class="col-sm-2 control-label" for="status">状态</label>
 							<div class="col-sm-3">
-							    <select id="status" name="status" class="form-control ">
+							    <select id="status" name="status" class="form-control input-sm">
 							        <option value="true">启用</option>
 							        <option value="false">停用</option>
 							    </select>
 							</div>
 							<label class="col-sm-2 control-label" for="accused">是否被投诉</label>
 							<div class="col-sm-3">
-							    <select id="accused" name="accused" class="form-control ">
+							    <select id="accused" name="accused" class="form-control input-sm">
 							        <option value="true">是</option>
 							        <option value="false">否</option>
 							    </select>

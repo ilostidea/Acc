@@ -14,6 +14,14 @@
     <link href="<%=request.getContextPath() %>/style/messenger.css" rel="stylesheet" >
     <link href="<%=request.getContextPath() %>/style/messenger-theme-air.css" rel="stylesheet" >
 	<link href="<%=request.getContextPath() %>/style/bootstrap-markdown.min.css" rel="stylesheet">
+	<style type="text/css">
+	/* messages */
+	.messages {margin:0; padding:0;}
+	.messages .messages {padding-top:19px;}
+	.messages li {list-style-type:none; padding-bottom:0.3em;}
+	.messages .well {padding:19px; background-color: #fefefe;}
+	.messages .messages .well {border:none; -webkit-box-shadow:none;-moz-box-shadow:none; box-shadow:none; border-left:3px solid #eee;border-left:3px solid rgba(0, 0, 0, 0.05);}
+	</style>
 </head>
 <body>
 
@@ -71,8 +79,8 @@
 
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
-            <a href="questionMngmt.jsp" class="list-group-item active">问题管理</a>
-            <a href="answerMngmt.jsp" class="list-group-item">回答管理</a>
+            <a href="questionQuery.jsp" class="list-group-item active">问题管理</a>
+            <a href="answerQuery.jsp" class="list-group-item">回答管理</a>
           </div>
         </div><!--/.sidebar-offcanvas-->
           
@@ -81,64 +89,38 @@
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
           </p>
           <div class="row">
-            <div class="col-xs-12 col-lg-12">
-              <h3 align="center">具体准则</h3>
-              	<div class="form-horizontal">
-					<div class="form-group">
-							<label class="col-sm-2 control-label" for="userName">提问人</label>
-							<div class="col-sm-3">
-							    <input type="text" class="form-control input-sm" id="userName" name="userName" placeholder="请输入昵称、手机号或邮箱">
-							</div>
-							<label class="col-sm-2 control-label" for="question">内容</label>
-							<div class="col-sm-3">
-							    <input type="text" class="form-control input-sm" id="question" name="question" placeholder="问题内容中包含的字符">
-							</div>
-							<div class="col-sm-2"></div>
-				    </div>
-					<div class="form-group">
-							<label class="col-sm-2 control-label" for="status">状态</label>
-							<div class="col-sm-3">
-							    <select id="status" name="status input-sm" class="form-control input-sm">
-							        <option value="true">启用</option>
-							        <option value="false">停用</option>
-							    </select>
-							</div>
-							<label class="col-sm-2 control-label" for="accused">是否被投诉</label>
-							<div class="col-sm-3">
-							    <select id="accused" name="accused" class="form-control input-sm">
-							        <option value="true">是</option>
-							        <option value="false">否</option>
-							    </select>
-					        </div>
-							<div class="col-sm-2">
-							    <a class="btn btn-success btn-sm pull-right" href="#" onclick="query()"><i class="fa fa-file"></i> 查询</a>
-							</div>
-				    </div>
-				    <hr>
-					<div class="form-group">
-						<div class="col-sm-1"></div>
-						<div class="col-sm-10">
-			               <table class="table table-striped">
-							  <caption></caption>
-							  <thead>
-							    <tr>
-							      <th>标题</th>
-							      <!-- th>开始执行年份</th> -->
-							      <th>问题</th>
-							      <th>统计</th>
-							    </tr>
-							  </thead>
-							  <tbody id="data-list">
-							  <!-- 查询出来的数据显示在这里 -->
-							  </tbody>
-							</table>
-						</div>
-						<div class="col-sm-1"></div>
-				    </div>
-            </div>
-          </div><!--/row-->
+	            
+	           <div class="span9">
+	            <h2 id="title" class="text-center"></h2>
+					<ul class="messages">
+						<li class="well">
+							<p id="question" class="message"></p>
+							<span class="meta"><em id="quser"></em> 发布于 <em id="qtime"></em></span>
+							<a id="qstatus"></a>
+							<span class="pull-right" id="qstatic"></span>
+							<ul id="answers" class="messages"><!-- 
+								<li class="well">
+									<p class="message">
+										Nascetur ridiculus mus. Phasellus enim nibh, congue nec tincidunt sed, luctus ullamcorper leo. Nunc ac mauris augue. Nam non nulla tellus, vitae volutpat nibh. Maecenas fringilla vestibulum neque vitae tristique. Ut fermentum accumsan dolor, ut tincidunt lacus dictum non. Proin non ultrices libero. Praesent hendrerit, dolor ut facilisis porta, lorem massa ullamcorper dolor, at dictum elit augue vel lorem. Pellentesque vitae elit quis erat congue gravida ac sed urna. Vivamus vitae purus lectus. Maecenas nec dui lorem. Mauris viverra, est et mattis malesuada, sapien lectus congue justo, eget ultricies lorem ante a nulla.
+									</p>
+									<span class="meta">Written <em>2 days ago</em> by <em>Jill</em></span>
+									<ul class="messages">
+										<li class="well">
+											<p class="message">
+												Etiam felis tellus.
+											</p>
+											<span class="meta">Written <em>1 day ago</em> by <em>Jill</em></span>
+										</li>
+									</ul>
+								</li> -->
+							</ul>
+						</li>
+					</ul>
+				</div>
+	            
+	          
           </div>
-        </div><!--/.col-xs-12.col-sm-9-->
+        </div><!--/.col-xs-12.col-sm-10-->
 
       </div><!--/row-->
 
@@ -166,26 +148,44 @@
     }
 	
 	function query(){
-		var userName = $("#userName").val();
-		var question = $("#question").val();
-		var status = $("#status").val();
-		var accused = $("#accused").val();
-		$.get("/question/admin/question",
-	    		  { userName : userName, question:question, status : status, accused : accused },
+		var id = ${param.id};
+		$.get("/question/detail",
+	    		  { questionID : id },
 	    		  function(responseTxt, status){
-					$("#data-list").empty();
 					if(status == "success"){
-						var len = responseTxt.data.length;
-						var datas = responseTxt.data;
-						for(var i = 0; i < len; i++){
-							var tr = $("<tr id=\"tr" + i + "\"></tr>");
-							var td0 = $("<td></td>").text(datas[i].title);
-							//var td1 = $("<td></td>").text(datas[i].exeYear);
-							var td2 = $("<td></td>").text(datas[i].question);
-							var td3 = $("<td></td>").text("回答数：" + datas[i].answerCount + "；收藏数：" + datas[i].collectedCount );
-							$(tr).append(td0, /* td1, */ td2, td3);
-							$("#data-list").append(tr);
+						var data = responseTxt.data;
+						$("#title").text(data.title);
+						$("#question").text(data.question);
+						$("#quser").text(data.user.nickName);
+						$("#qtime").text(data.createTime);
+						$("#qstatus").text(data.status?"启用":"禁用");
+						$("#qstatic").text("回答["+data.answerCount+"]    收藏["+data.collectedCount+"]");
+						var answers = data.answers;
+						for( var i=0; i<answers.length; i++){
+							var answer = answers[i];
+							var li = $("<li class=\"well\"></li>");
+							var p = $("<p class=\"message\"></p>").text(answer.answer);
+							li.append(p);
+							var span1 = $("<span class=\"meta\"><em>"+answer.user.nickName+"</em>发布于<em>" + answer.createTime + "</em>&nbsp;&nbsp;<a>"+(answer.status?'启用':'禁用')+"</a></span>");
+							li.append(span1);
+							var span2 = $("<span class=\"meta pull-right\">评论["+answer.pumpCount+"]    顶["+answer.approveCount+"]    踩["+answer.disapproveCount+"]</span>");
+							li.append(span2);
+							$("#answers").append(li);
+							var pumps = answer.pumps;
+							var pumpUl = $("<ul class=\"messages\"></ul>");
+							if(pumps.length > 0)
+								li.append(pumpUl);
+							for(var j=0; j<pumps.length; j++){
+								var pump = pumps[j];
+								var pumpLi = $("<li class=\"well\"></li>");
+								var pumpP = $("<p class=\"message\"></p>").text(pump.content);
+								pumpLi.append(pumpP);
+								var pumpSpan = $("<span class=\"meta\"><em>"+pump.user.nickName+"</em>发布于<em>" + pump.createTime + "</em>&nbsp;&nbsp;<a>"+(pump.status?'启用':'禁用')+"</a></span>");
+								pumpLi.append(pumpSpan);
+								pumpUl.append(pumpLi);
+							}
 						}
+						
 					}
 				},
 			   "json"

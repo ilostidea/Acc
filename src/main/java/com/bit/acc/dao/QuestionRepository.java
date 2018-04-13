@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +18,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	public static final String queryQuestionAnswerCountCollectedTimes = "select new Question( q.id, q.user, q.title, q.question, q.isAnonymous, q.approveCount, q.disapproveCount, q.isAccused, q.status, q.createTime, q.creator, q.modifyTime, q.modifier, "
 			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
-			+ "  ) from Question q ";
+			+ "  ) from Question q";
+	
+	public static final String queryQuestionAnswerPumpCountCollectedTimes = "select q, "
+			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
+			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
+			+ "  from Question q";
 	
 	@Query(queryQuestionAnswerCountCollectedTimes + " group by q.id order by q.createTime desc")
 	public List<Question> findRecent( );
@@ -32,8 +39,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where qc.user.id = :userID group by q.id order by q.createTime desc")
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " where q.id = :id group by q.id")
-	public Question getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
+	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.id = :id group by q.id")
+	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
+	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
 	
 	@Query("select t from Question as t left join fetch t.answers where t.id = :id")
 	public Question getQuesstionAndAnswersById(@Param("id") Long id);

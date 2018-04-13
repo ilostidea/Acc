@@ -67,8 +67,8 @@
 
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
-            <a href="questionMngmt.jsp" class="list-group-item">问题管理</a>
-            <a href="answerMngmt.jsp" class="list-group-item">回答管理</a>
+            <a href="questionQuery.jsp" class="list-group-item">问题管理</a>
+            <a href="answerQuery.jsp" class="list-group-item">回答管理</a>
           </div>
         </div><!--/.sidebar-offcanvas-->
           
