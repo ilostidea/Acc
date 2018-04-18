@@ -14,6 +14,14 @@
     <link href="<%=request.getContextPath() %>/style/messenger.css" rel="stylesheet" >
     <link href="<%=request.getContextPath() %>/style/messenger-theme-air.css" rel="stylesheet" >
 	<link href="<%=request.getContextPath() %>/style/bootstrap-markdown.min.css" rel="stylesheet">
+	<style type="text/css">
+	/* messages */
+	.messages {margin:0; padding:0;}
+	.messages .messages {padding-top:19px;}
+	.messages li {list-style-type:none; padding-bottom:0.3em;}
+	.messages .well {padding:19px; background-color: #fefefe;}
+	.messages .messages .well {border:none; -webkit-box-shadow:none;-moz-box-shadow:none; box-shadow:none; border-left:3px solid #eee;border-left:3px solid rgba(0, 0, 0, 0.05);}
+	</style>
 </head>
 <body>
 
@@ -65,86 +73,58 @@
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
 
-    <div class="container">
+	<div class="container">
 
-      <div class="row row-offcanvas row-offcanvas-left" >
+		<div class="row row-offcanvas row-offcanvas-left">
 
-        <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
-          <div class="list-group">
-            <a href="questionQuery.jsp" class="list-group-item">问题管理</a>
-            <a href="answerQuery.jsp" class="list-group-item active">回答管理</a>
-          </div>
-        </div><!--/.sidebar-offcanvas-->
-          
-        <div class="col-xs-12 col-sm-10 pull-right">
-          <p class="pull-left visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-          </p>
-          <div class="row">
-            <div class="col-xs-12 col-lg-12">
-              <h3 align="center">答案管理</h3>
-              	<div class="form-horizontal">
-					<div class="form-group">
-							<label class="col-sm-2 control-label" for="userName">回答人</label>
-							<div class="col-sm-3">
-							    <input type="text" class="form-control input-sm" id="userName" name="userName" placeholder="请输入昵称、手机号或邮箱">
-							</div>
-							<label class="col-sm-2 control-label" for="answer">回答</label>
-							<div class="col-sm-3">
-							    <input type="text" class="form-control input-sm" id="answer" name="answer" placeholder="请输入回答中包含的文字">
-							</div>
-							<div class="col-sm-2"></div>
-				    </div>
-					<div class="form-group">
-							<label class="col-sm-2 control-label" for="status">状态</label>
-							<div class="col-sm-3">
-							    <select id="status" name="status" class="form-control input-sm">
-							        <option value="true">启用</option>
-							        <option value="false">停用</option>
-							    </select>
-							</div>
-							<label class="col-sm-2 control-label" for="accused">是否被投诉</label>
-							<div class="col-sm-3">
-							    <select id="accused" name="accused" class="form-control input-sm">
-							        <option value="true">是</option>
-							        <option value="false">否</option>
-							    </select>
-					        </div>
-							<div class="col-sm-2">
-							    <a class="btn btn-success btn-sm pull-right" href="#" onclick="query()"><i class="fa fa-file"></i> 查询</a>
-							</div>
-				    </div>
-				    <hr>
-					<div class="form-group">
-						<div class="col-sm-1"></div>
-						<div class="col-sm-10">
-			               <table class="table table-striped">
-							  <caption></caption>
-							  <thead>
-							    <tr>
-							      <th>问题</th>
-							      <!-- th>开始执行年份</th> -->
-							      <th>回答</th>
-							      <th>统计</th>
-							    </tr>
-							  </thead>
-							  <tbody id="data-list">
-							  <!-- 查询出来的数据显示在这里 -->
-							  </tbody>
-							</table>
-						</div>
-						<div class="col-sm-1"></div>
-				    </div>
-            </div>
-          </div><!--/row-->
-          </div>
-        </div><!--/.col-xs-12.col-sm-9-->
+			<div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
+				<div class="list-group">
+					<a href="questionQuery.jsp" class="list-group-item">问题管理</a> <a
+						href="answerQuery.jsp" class="list-group-item active">回答管理</a>
+				</div>
+			</div>
+			<!--/.sidebar-offcanvas-->
 
-      </div><!--/row-->
+			<div class="col-xs-12 col-sm-10 pull-right">
+				<p class="pull-left visible-xs">
+					<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+				</p>
+				<div class="row">
 
-    </div><!--/.container-->
+					<div class="span9">
+						<h2 id="qtitle" class="text-center">&nbsp;&nbsp;</h2>
+						<ul class="messages">
+							<li class="well" style="background-color: #f0f0f0;">
+								<h3 style="margin-top: 0px;margin-left:-5px;">问</h3>
+								<p id="question" class="message"></p>
+								<span class="meta">
+								<em id="quser"></em> 发布于 <em id="qtime"></em>
+								<a id="qstatus" title="点击查看"></a>
+								</span>
+							</li>
+							<li class="well">
+								<h3 style="margin-top: 0px;margin-left:-5px;">答</h3>
+								<p id="answer" class="message"></p>
+								<span class="meta"><em id="answerUser"></em> 发布于 <em id="answerTime"></em></span>
+								<a id="answerStatus"></a>
+								<span class="pull-right" id="answerStatic"></span>
+								<ul id="pumps" class="messages">
+								</ul>
+							</li>
+						</ul>
+					</div>
 
-    <footer class="footer" >
+				</div>
+			</div>
+			<!--/.col-xs-12.col-sm-9-->
+
+		</div>
+		<!--/row-->
+
+	</div>
+	<!--/.container-->
+
+	<footer class="footer" >
         <p class="text-muted">acc admin &copy; 2017</p>
     </footer>
     <!-- Bootstrap core JavaScript
@@ -157,33 +137,86 @@
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
     <script src="<%=request.getContextPath() %>/js/messenger.js"></script>
-    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.js"></script>
-    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.zh.js"></script>
-    <script src="<%=request.getContextPath() %>/js/marked.js"></script>
     <script>
 	$._messengerDefaults = {
          extraClasses: 'messenger-fixed messenger-theme-air messenger-on-bottom'
     }
-
+	
+	function switchStatus(type, sid, toStatus, element){
+        var url = "";
+        if(type == "answer")
+        	url = "/answer/admin/switchStatus";
+        else
+        	url = "/pump/admin/switchStatus";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data :  { "id" : sid, "status" : toStatus } ,
+			contentType : "application/x-www-form-urlencoded",
+			dataType : "text",
+			success : function(){
+				Messenger().post({
+					message : ('已' + (toStatus?"启用":"禁用") + '！'),//提示信息
+      				type : 'success',//消息类型。error、info、success
+      				hideAfter : 2,//多长时间消失
+      				showCloseButton : true,//是否显示关闭按钮
+      				hideOnNavigate : false //是否隐藏导航
+      		    });
+				$(element).text( (toStatus?"启用":"禁用") );
+				$(element).unbind();
+				$(element).click(function(e){
+					switchStatus(type, sid, !toStatus, element);
+					e.stopPropagation();
+				});
+		    }
+		});
+	}
+	
 	function query(){
-		var userName = $("#userName").val();
-		var answer = $("#answer").val();
-		var status = $("#status").val();
-		var accused = $("#accused").val();
-		$.get("/answer/admin/answer",
-	    		  { userName : userName, answer : answer, status : status, accused : accused },
+		var id = ${param.id};
+		$.get("/answer/details",
+	    		  { answerID : id },
 	    		  function(responseTxt, status){
 					if(status == "success"){
-						var len = responseTxt.data.length;
-						var datas = responseTxt.data;
-						for(var i = 0; i < len; i++){
-							var tr = $("<tr id=\"tr" + i + "\"></tr>");
-							var td0 = $("<td></td>").text(datas[i].questionTitle);
-							var td2 = $("<td></td>").text(datas[i].answer);
-							var td3 = $("<td></td>").text("追问数：" + datas[i].pumpCount );
-							$(tr).append(td0, /* td1, */ td2, td3);
-							$("#data-list").append(tr);
+						var data = responseTxt.data;
+						$("#qtitle").text(data.question.title);
+						$("#question").text(data.question.question);
+						$("#quser").text(data.question.user.nickName);
+						$("#qtime").text(data.question.createTime);
+						$("#qstatus").text(data.question.status?"启用":"禁用");
+						$("#qstatus").css({"cursor":"pointer"});
+						$("#qstatus").click( function(){
+							window.location.href="questionMngmt.jsp?id="+data.question.id;
+						});
+						
+						var answer = data.answer;
+						$("#answer").text(answer.answer);
+						$("#answerUser").text(answer.user.nickName);
+						$("#answerTime").text(answer.createTime);
+						$("#answerStatus").text(answer.status?"启用":"禁用");
+						$("#answerStatus").css({"cursor":"pointer"});
+						$("#answerStatus").click( function(){
+							switchStatus("answer", answer.id, !answer.status, $("#answerStatus"));
+						});
+						$("#answerStatic").text("评论["+answer.pumps.length+"]    顶["+answer.approveCount+"]    踩["+answer.disapproveCount+"]");
+
+						var pumps = answer.pumps;
+						for(var j=0; j<pumps.length; j++){
+							var pump = pumps[j];
+							var pumpLi = $("<li class=\"well\"></li>");
+							var pumpP = $("<p class=\"message\"></p>").text(pump.content);
+							pumpLi.append(pumpP);
+							var pumpSpan = $("<span class=\"meta\"><em>"+pump.user.nickName+"</em>发布于<em>" + pump.createTime + "</em>&nbsp;&nbsp;</span>");
+							let alink = $("<a style='cursor:pointer;'></a>");
+							alink.text(pump.status?'启用':'禁用');
+							$(alink).click( function(){
+								switchStatus("pump", pump.id, !pump.status, alink);
+							});
+							pumpSpan.append(alink);
+							pumpLi.append(pumpSpan);
+							$("#pumps").append(pumpLi);
 						}
+
 					}
 				},
 			   "json"

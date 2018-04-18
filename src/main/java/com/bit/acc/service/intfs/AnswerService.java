@@ -15,6 +15,10 @@ public interface AnswerService extends Service<Answer, Long> {
 	
 	public List<Answer> findByCollectedUser(Long userId);
 	
+	public Answer getAnswerQuestionPumps(Long id);
+	
+	public void switchStatus(Long id, Boolean status);
+	
 	public void approve(Long id);
 	
 	public void disapprove(Long id);

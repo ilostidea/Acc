@@ -178,7 +178,7 @@
 						var len = responseTxt.data.length;
 						var datas = responseTxt.data;
 						for(var i = 0; i < len; i++){
-							var tr = $("<tr id=\"tr" + i + "\" onclick=\"location.href='questionMngmt.jsp?id="+datas[i].id+"'\" style=\"cursor:pointer\"></tr>");
+							var tr = $("<tr id=\"tr" + i + "\" onclick=\"location.href='questionMngmt.jsp?id="+datas[i].id+"'\" style=\"cursor:pointer;\"></tr>");
 							var td0 = $("<td></td>").text(datas[i].title);
 							//var td1 = $("<td></td>").text(datas[i].exeYear);
 							var td2 = $("<td></td>").text(datas[i].question);

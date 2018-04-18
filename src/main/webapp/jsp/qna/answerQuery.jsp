@@ -177,7 +177,7 @@
 						var len = responseTxt.data.length;
 						var datas = responseTxt.data;
 						for(var i = 0; i < len; i++){
-							var tr = $("<tr id=\"tr" + i + "\"></tr>");
+							var tr = $("<tr id=\"tr" + i + "\" onclick=\"location.href='answerMngmt.jsp?id="+datas[i].id+"'\" style=\"cursor:pointer;\"></tr>");
 							var td0 = $("<td></td>").text(datas[i].questionTitle);
 							var td2 = $("<td></td>").text(datas[i].answer);
 							var td3 = $("<td></td>").text("追问数：" + datas[i].pumpCount );

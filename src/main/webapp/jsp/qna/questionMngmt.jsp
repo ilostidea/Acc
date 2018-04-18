@@ -23,9 +23,8 @@
 	.messages .messages .well {border:none; -webkit-box-shadow:none;-moz-box-shadow:none; box-shadow:none; border-left:3px solid #eee;border-left:3px solid rgba(0, 0, 0, 0.05);}
 	</style>
 </head>
-<body>
 
-  <body>
+ <body>
     <nav class="navbar navbar-fixed-top navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -73,60 +72,49 @@
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
 
-    <div class="container">
+	<div class="container">
 
-      <div class="row row-offcanvas row-offcanvas-left" >
+		<div class="row row-offcanvas row-offcanvas-left">
 
-        <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
-          <div class="list-group">
-            <a href="questionQuery.jsp" class="list-group-item active">问题管理</a>
-            <a href="answerQuery.jsp" class="list-group-item">回答管理</a>
-          </div>
-        </div><!--/.sidebar-offcanvas-->
-          
-        <div class="col-xs-12 col-sm-10 pull-right">
-          <p class="pull-left visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-          </p>
-          <div class="row">
-	            
-	           <div class="span9">
-	            <h2 id="title" class="text-center"></h2>
-					<ul class="messages">
-						<li class="well">
-							<p id="question" class="message"></p>
-							<span class="meta"><em id="quser"></em> 发布于 <em id="qtime"></em></span>
-							<a id="qstatus"></a>
-							<span class="pull-right" id="qstatic"></span>
-							<ul id="answers" class="messages"><!-- 
-								<li class="well">
-									<p class="message">
-										Nascetur ridiculus mus. Phasellus enim nibh, congue nec tincidunt sed, luctus ullamcorper leo. Nunc ac mauris augue. Nam non nulla tellus, vitae volutpat nibh. Maecenas fringilla vestibulum neque vitae tristique. Ut fermentum accumsan dolor, ut tincidunt lacus dictum non. Proin non ultrices libero. Praesent hendrerit, dolor ut facilisis porta, lorem massa ullamcorper dolor, at dictum elit augue vel lorem. Pellentesque vitae elit quis erat congue gravida ac sed urna. Vivamus vitae purus lectus. Maecenas nec dui lorem. Mauris viverra, est et mattis malesuada, sapien lectus congue justo, eget ultricies lorem ante a nulla.
-									</p>
-									<span class="meta">Written <em>2 days ago</em> by <em>Jill</em></span>
-									<ul class="messages">
-										<li class="well">
-											<p class="message">
-												Etiam felis tellus.
-											</p>
-											<span class="meta">Written <em>1 day ago</em> by <em>Jill</em></span>
-										</li>
-									</ul>
-								</li> -->
-							</ul>
-						</li>
-					</ul>
+			<div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
+				<div class="list-group">
+					<a href="questionQuery.jsp" class="list-group-item active">问题管理</a>
+					<a href="answerQuery.jsp" class="list-group-item">回答管理</a>
 				</div>
-	            
-	          
-          </div>
-        </div><!--/.col-xs-12.col-sm-10-->
+			</div>
+			<!--/.sidebar-offcanvas-->
 
-      </div><!--/row-->
+			<div class="col-xs-12 col-sm-10 pull-right">
+				<p class="pull-left visible-xs">
+					<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+				</p>
+				<div class="row">
 
-    </div><!--/.container-->
+					<div class="span9">
+						<h2 id="title" class="text-center">&nbsp;&nbsp;</h2>
+						<ul class="messages">
+							<li class="well">
+								<p id="question" class="message"></p>
+								<span class="meta"><em id="quser"></em> 发布于 <em id="qtime"></em></span>
+								<a id="qstatus"></a>
+								<span class="pull-right" id="qstatic"></span>
+								<ul id="answers" class="messages">
+								</ul>
+							</li>
+						</ul>
+					</div>
 
-    <footer class="footer" >
+				</div>
+			</div>
+			<!--/.col-xs-12.col-sm-10-->
+
+		</div>
+		<!--/row-->
+
+	</div>
+	<!--/.container-->
+
+	<footer class="footer" >
         <p class="text-muted">acc admin &copy; 2017</p>
     </footer>
     <!-- Bootstrap core JavaScript
@@ -139,13 +127,42 @@
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
     <script src="<%=request.getContextPath() %>/js/messenger.js"></script>
-    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.js"></script>
-    <script src="<%=request.getContextPath() %>/js/bootstrap-markdown.zh.js"></script>
-    <script src="<%=request.getContextPath() %>/js/marked.js"></script>
     <script>
 	$._messengerDefaults = {
          extraClasses: 'messenger-fixed messenger-theme-air messenger-on-bottom'
     }
+	
+	function switchStatus(type, sid, toStatus, element){
+        var url = "";
+        if( type == "question")
+        	url = "/question/admin/switchStatus";
+        else if(type == "answer")
+        	url = "/answer/admin/switchStatus";
+        else
+        	url = "/pump/admin/switchStatus";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data :  { "id" : sid, "status" : toStatus } ,
+			contentType : "application/x-www-form-urlencoded",
+			dataType : "text",
+			success : function(){
+				Messenger().post({
+					message : ('已' + (toStatus?"启用":"禁用") + '！'),//提示信息
+      				type : 'success',//消息类型。error、info、success
+      				hideAfter : 2,//多长时间消失
+      				showCloseButton : true,//是否显示关闭按钮
+      				hideOnNavigate : false //是否隐藏导航
+      		    });
+				$(element).text( (toStatus?"启用":"禁用") );
+				$(element).unbind();
+				$(element).click(function(e){
+					switchStatus(type, sid, !toStatus, element);
+					e.stopPropagation();
+				});
+		    }
+		});
+	}
 	
 	function query(){
 		var id = ${param.id};
@@ -159,6 +176,10 @@
 						$("#quser").text(data.user.nickName);
 						$("#qtime").text(data.createTime);
 						$("#qstatus").text(data.status?"启用":"禁用");
+						$("#qstatus").css({"cursor":"pointer"});
+						$("#qstatus").click( function(){
+							switchStatus("question", data.id, !data.status, $("#qstatus"));
+						});
 						$("#qstatic").text("回答["+data.answerCount+"]    收藏["+data.collectedCount+"]");
 						var answers = data.answers;
 						for( var i=0; i<answers.length; i++){
@@ -166,7 +187,13 @@
 							var li = $("<li class=\"well\"></li>");
 							var p = $("<p class=\"message\"></p>").text(answer.answer);
 							li.append(p);
-							var span1 = $("<span class=\"meta\"><em>"+answer.user.nickName+"</em>发布于<em>" + answer.createTime + "</em>&nbsp;&nbsp;<a>"+(answer.status?'启用':'禁用')+"</a></span>");
+							var span1 = $("<span class=\"meta\"><em>"+answer.user.nickName+"</em>发布于<em>" + answer.createTime + "</em>&nbsp;&nbsp;</span>");
+							let alink = $("<a style='cursor:pointer;'></a>");
+							alink.text(answer.status?'启用':'禁用');
+							$(alink).click( function(){
+								switchStatus("answer", answer.id, !answer.status, alink);
+							});
+							span1.append(alink);
 							li.append(span1);
 							var span2 = $("<span class=\"meta pull-right\">评论["+answer.pumpCount+"]    顶["+answer.approveCount+"]    踩["+answer.disapproveCount+"]</span>");
 							li.append(span2);
@@ -180,12 +207,17 @@
 								var pumpLi = $("<li class=\"well\"></li>");
 								var pumpP = $("<p class=\"message\"></p>").text(pump.content);
 								pumpLi.append(pumpP);
-								var pumpSpan = $("<span class=\"meta\"><em>"+pump.user.nickName+"</em>发布于<em>" + pump.createTime + "</em>&nbsp;&nbsp;<a>"+(pump.status?'启用':'禁用')+"</a></span>");
+								var pumpSpan = $("<span class=\"meta\"><em>"+pump.user.nickName+"</em>发布于<em>" + pump.createTime + "</em>&nbsp;&nbsp;</span>");
+								let alink = $("<a style='cursor:pointer;'></a>");
+								alink.text(pump.status?'启用':'禁用');
+								$(alink).click( function(){
+									switchStatus("pump", pump.id, !pump.status, alink);
+								});
+								pumpSpan.append(alink);
 								pumpLi.append(pumpSpan);
 								pumpUl.append(pumpLi);
 							}
 						}
-						
 					}
 				},
 			   "json"

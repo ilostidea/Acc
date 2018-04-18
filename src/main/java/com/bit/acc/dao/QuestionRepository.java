@@ -3,11 +3,13 @@ package com.bit.acc.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,7 +17,7 @@ import com.bit.acc.model.Question;
 
 public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSpecificationExecutor<Question> {
 	
-	public static final String queryQuestionAnswerCountCollectedTimes = "select new Question( q.id, q.user, q.title, q.question, q.isAnonymous, q.approveCount, q.disapproveCount, q.isAccused, q.status, q.createTime, q.creator, q.modifyTime, q.modifier, "
+	public static final String queryQuestionAnswerCountCollectedTimes = "select new Question( q, "
 			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
 			+ "  ) from Question q";
@@ -25,8 +27,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
 			+ "  from Question q";
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " group by q.id order by q.createTime desc")
-	public List<Question> findRecent( );
+	@Modifying
+	@Query("update Question set status = ?2 where id = ?1")
+	public void switchStatus(Long id, Boolean status);
+	
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " group by q.id order by q.modifyTime desc")
+	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
+	public List<Object> findRecent( Pageable pageable );
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	

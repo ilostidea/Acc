@@ -2,6 +2,7 @@ package com.bit.acc.model;
 // Generated 2018-2-3 19:27:28 by Hibernate Tools 5.2.6.Final
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @DynamicUpdate(true)
 @Table(name = "pump", catalog = "acc")
 @JsonIgnoreProperties(value={"creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
-public class Pump implements java.io.Serializable {
+public class Pump implements java.io.Serializable, Comparable<Pump> {
 
 	/**
 	 * auto generated
@@ -182,4 +183,9 @@ public class Pump implements java.io.Serializable {
 		this.modifier = modifier;
 	}
 
+	@Override
+	public int compareTo(Pump p) {
+		return createTime.compareTo( p.getCreateTime() );
+	}
+	
 }

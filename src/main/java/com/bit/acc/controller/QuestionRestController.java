@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -74,17 +77,12 @@ public class QuestionRestController {
         return new Response().success( listQuestion );
     }
     
-    @RequestMapping(value="/admin/question",method=RequestMethod.GET)
-    @ControllerLog(value = "管理问题")
-    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("question") String question, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
-        List<Question> listQuestion = questionService.findByCondition( userName, question,  status, accused);
-        return new Response().success( listQuestion );
-    }
-    
     @RequestMapping(value="/recent",method=RequestMethod.GET)
     @ControllerLog(value = "获得最近问题及问题概况")
-    public Response queryRecent() throws Exception{
-        List<Question> listQuestion = questionService.findRecent();
+    public Response queryRecent( @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
+        Pageable pageable = PageRequest.of(page, size);
+        List<Question> listQuestion = questionService.findRecent(pageable);
         return new Response().success( listQuestion );
     }
     
@@ -144,6 +142,24 @@ public class QuestionRestController {
     public Response profile(@RequestParam("userID") Long userID){
     	Map<String, Long> questionProfile = questionService.getQuestionProfileById(userID);
         return new Response().success( questionProfile );
+    }
+
+    /*====================================================================================
+     * 以下是仅为管理员功能的接口
+     */
+    
+    @RequestMapping(value="/admin/question",method=RequestMethod.GET)
+    @ControllerLog(value = "管理问题")
+    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("question") String question, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
+        List<Question> listQuestion = questionService.findByCondition( userName, question,  status, accused);
+        return new Response().success( listQuestion );
+    }
+
+    @RequestMapping(value="/admin/switchStatus",method=RequestMethod.POST)
+    @ControllerLog(value = "启用/禁用问题")
+    public Response switchStatus(@RequestParam(value="id") Long id,  @RequestParam("status") Boolean status ) throws Exception{
+       questionService.switchStatus(id,  status );
+        return new Response().success(  );
     }
 
 }

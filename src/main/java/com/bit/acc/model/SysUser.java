@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @DynamicInsert(true)
 @DynamicUpdate(true)
 @Table(name = "SysUser")
-@JsonIgnoreProperties(value={"createTime", "createPerson", "modifyTime", "modifyPerson"}, ignoreUnknown = true)//"passwd", "status"
+@JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}, ignoreUnknown = true)//"passwd", "status"
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")//解决json循环嵌套的问题,加上了该注解，会导致反序列化子对象失败
 @GroupSequence({First.class, Second.class, SysUser.class})
 public class SysUser implements java.io.Serializable {

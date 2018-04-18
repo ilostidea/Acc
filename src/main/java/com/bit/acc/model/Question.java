@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "question", catalog = "acc")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@JsonIgnoreProperties(value={"approveCount", "disapproveCount", "creator", "modifyTime", "modifier", "questionCollecteds"}/*, ignoreUnknown = true*/)
+@JsonIgnoreProperties(value={"creator", "createTime", "modifier", "questionCollecteds"}/*, ignoreUnknown = true*/)
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = "question.answers.pumpscount", 
             attributeNodes = {//attributeNodes 来定义需要加载的关联属性
@@ -59,7 +59,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	    attributeNodes = @NamedAttributeNode("user")  
 	)
 })
-public class Question implements java.io.Serializable {
+public class Question implements java.io.Serializable, Comparable<Question> {
 
 	/**
 	 * auto generated
@@ -331,6 +331,11 @@ public class Question implements java.io.Serializable {
 
 	public void setQuestionCollecteds(Set<QuestionCollected> questionCollecteds) {
 		this.questionCollecteds = questionCollecteds;
+	}
+	
+	@Override
+	public int compareTo(Question q) {
+		return q.getCreateTime().compareTo( getCreateTime() );
 	}
 
 }

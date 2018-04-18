@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bit.acc.model.Answer;
+import com.bit.acc.model.Question;
 import com.bit.acc.service.intfs.AnswerService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
@@ -74,13 +75,6 @@ public class AnswerRestController {
         return new Response().success(listAnswer);
     }
     
-    @RequestMapping(value="/admin/answer",method=RequestMethod.GET)
-    @ControllerLog(value = "管理回答")
-    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("answer") String answer, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
-        List<Answer> listAnswer = answerService.findForAdmin(userName, answer, status, accused);
-        return new Response().success(listAnswer);
-    }
-    
     /**
      * 通过用户ID获得该用户的回答
      * @param userID
@@ -132,6 +126,16 @@ public class AnswerRestController {
         return new Response().success(answer);
     }
     
+    @RequestMapping(value="/details",method=RequestMethod.GET)
+    public Response details(@RequestParam("answerID") Long answerID){
+    	Answer answer = answerService.getAnswerQuestionPumps(answerID);
+    	Question question = answer.getQuestion();
+    	Map<String, Object> result = new HashMap<>();
+    	result.put("answer", answer);
+    	result.put("question", question);
+        return new Response().success(result);
+    }
+    
     /**
      * 点赞
      * @param answerID
@@ -152,6 +156,24 @@ public class AnswerRestController {
     public Response disapprove(@RequestParam("answerID") Long answerID){
     	answerService.disapprove(answerID);
         return new Response().success();
+    }
+
+    /*====================================================================================
+     * 以下是仅为管理员功能的接口
+     */
+    
+    @RequestMapping(value="/admin/answer",method=RequestMethod.GET)
+    @ControllerLog(value = "管理回答")
+    public Response queryForAdmin(@RequestParam("userName") String userName, @RequestParam("answer") String answer, @RequestParam("status") Boolean status, @RequestParam("accused") Boolean accused) throws Exception{
+        List<Answer> listAnswer = answerService.findForAdmin(userName, answer, status, accused);
+        return new Response().success(listAnswer);
+    }
+
+    @RequestMapping(value="/admin/switchStatus",method=RequestMethod.POST)
+    @ControllerLog(value = "启用/禁用回答")
+    public Response switchStatus(@RequestParam(value="id") Long id,  @RequestParam("status") Boolean status ) throws Exception{
+    	answerService.switchStatus(id,  status );
+        return new Response().success(  );
     }
     
 }

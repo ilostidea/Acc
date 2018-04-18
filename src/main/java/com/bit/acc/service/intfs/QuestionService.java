@@ -3,12 +3,16 @@ package com.bit.acc.service.intfs;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
+
 import com.bit.acc.model.Question;
 import com.bit.acc.service.baseservice.Service;
 
 public interface QuestionService extends Service<Question, Long> {
+	
+	public void switchStatus(Long id, Boolean status);
 
-	public List<Question> findRecent( );
+	public List<Question> findRecent( Pageable pageable );
 	
 	public List<Question> findByCondition(String userName, String question, Boolean status, Boolean accused);
 

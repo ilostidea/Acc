@@ -1,9 +1,9 @@
 package com.bit.acc.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -48,9 +49,24 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	return super.save(entity);
     }
     
+    public void switchStatus(Long id, Boolean status) {
+    	dao.switchStatus(id, status);
+    }
+    
 	@Override
-	public List<Question> findRecent() {
-		return dao.findRecent( );
+	public List<Question> findRecent(Pageable pageable) {
+		List<Object> list = dao.findRecent(pageable );
+		List<Question> resultList = new ArrayList<>();
+		for(Object o : list ) {
+			Object[] array = (Object[]) o;
+			Question question = (Question) array[0];
+			Long answerCount = (Long) array[1];
+			Long collectedCount = (Long) array[2];
+			question.setAnswerCount(answerCount);
+			question.setCollectedCount(collectedCount);
+			resultList.add(question);
+		}
+		return resultList;
 	}
 
 	@Override
@@ -74,7 +90,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
                     predicates.add( status ? criteriaBuilder.isTrue( root.get("status") ) : criteriaBuilder.isFalse( root.get("status") ) );
                 }
                 if( accused != null ){
-                    predicates.add( status ? criteriaBuilder.isTrue( root.get("isAccused") ) : criteriaBuilder.isFalse( root.get("isAccused") ) );
+                    predicates.add( accused ? criteriaBuilder.isTrue( root.get("isAccused") ) : criteriaBuilder.isFalse( root.get("isAccused") ) );
                 }
                 return criteriaBuilder.and( predicates.toArray( new Predicate[ predicates.size() ] ) );
                 //return criteriaQuery.where( predicates.toArray( new Predicate[ predicates.size() ] ) ).getRestriction();
@@ -117,7 +133,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 		for(Answer answer : answers) {
 			answer.setPumpCount( (long) answer.getPumps().size() );
 		}
-		question.setAnswers(new HashSet<Answer>(answers) );
+		question.setAnswers(new TreeSet<Answer>(answers) );
 		return question;
 	}
 

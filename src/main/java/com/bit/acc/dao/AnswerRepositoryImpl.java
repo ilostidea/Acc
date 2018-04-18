@@ -51,7 +51,9 @@ public class AnswerRepositoryImpl {
 		criteriaQuery.where(querySpecific.toPredicate(root, criteriaQuery, criteriaBuilder));
 		criteriaQuery.groupBy (root.get("id") );
 		criteriaQuery.orderBy( criteriaBuilder.desc( root.get("createTime") ) );
-		TypedQuery<Answer> query = entityManager.createQuery(criteriaQuery);
+
+		//EntityGraph graph = entityManager.getEntityGraph("answer.question");
+		TypedQuery<Answer> query = entityManager.createQuery(criteriaQuery);//.setHint(org.hibernate.annotations.QueryHints.FETCHGRAPH, graph);
 		return query.getResultList();
 	}
 

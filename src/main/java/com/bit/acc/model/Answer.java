@@ -45,10 +45,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value={"creator", "modifyTime", "modifier", "answerCollecteds"}/*, ignoreUnknown = true*/)
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = "answer.user",  
-	    attributeNodes = @NamedAttributeNode("user")  
+	    attributeNodes = @NamedAttributeNode("user") 
+	),
+	@NamedEntityGraph(name = "answer.userAndPumps",  
+	    attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode(value="pumps", subgraph = "pump")},
+        subgraphs = {//subgraphs 来定义关联对象的属性
+                @NamedSubgraph(name = "pump", attributeNodes = @NamedAttributeNode("user"))
+        }
 	)
 })
-public class Answer implements java.io.Serializable {
+public class Answer implements java.io.Serializable, Comparable<Answer> {
 
 	/**
 	 * auto generated
@@ -155,8 +161,8 @@ public class Answer implements java.io.Serializable {
 		this.id = id;
 	}
 
+	@JsonIgnore//即使没有这个注解也是忽略掉这个字段的
 	@JsonBackReference
-	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, optional=false)
 	@JoinColumn(name = "QuestionID", nullable = false)
 	public Question getQuestion() {
@@ -311,4 +317,8 @@ public class Answer implements java.io.Serializable {
 		this.pumpCount = pumpCount;
 	}
 	
+	@Override
+	public int compareTo(Answer a) {
+		return createTime.compareTo( a.getCreateTime() );
+	}
 }

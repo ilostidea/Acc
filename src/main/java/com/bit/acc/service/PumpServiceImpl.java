@@ -31,6 +31,10 @@ public class PumpServiceImpl extends AbstractService<Pump, Long> implements Pump
     	}
     	return super.save(entity);
     }
+    
+    public void switchStatus(Long id, Boolean status) {
+    	dao.switchStatus(id, status);
+    }
 
 	@Override
 	public List<Pump> findByAnswer(Long answerId) {

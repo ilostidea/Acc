@@ -94,4 +94,14 @@ public class PumpRestController {
     	Pump pump = pumpService.findById(pumpID);
         return new Response().success(pump);
     }
+
+    /*====================================================================================
+     * 以下是仅为管理员功能的接口
+     */
+    @RequestMapping(value="/admin/switchStatus",method=RequestMethod.POST)
+    @ControllerLog(value = "启用/禁用回答")
+    public Response switchStatus(@RequestParam("id") Long id,  @RequestParam("status") Boolean status ) throws Exception{
+    	pumpService.switchStatus(id,  status );
+        return new Response().success(  );
+    }
 }

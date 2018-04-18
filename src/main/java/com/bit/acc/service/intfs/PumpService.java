@@ -8,5 +8,7 @@ import com.bit.acc.service.baseservice.Service;
 public interface PumpService extends Service<Pump, Long> {
 	
 	public List<Pump> findByAnswer(Long answerId);
+	
+	public void switchStatus(Long id, Boolean status);
 
 }

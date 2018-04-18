@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.bit.acc.dao.AnswerRepository;
 import com.bit.acc.model.Answer;
+import com.bit.acc.model.Question;
 import com.bit.acc.service.baseservice.AbstractService;
 import com.bit.acc.service.intfs.AnswerService;
 
@@ -86,6 +87,18 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
 	public List<Answer> findByCollectedUser(Long userId) {
 		return dao.findByCollectedUser(userId);
 	}
+	
+	public Answer getAnswerQuestionPumps(Long id) {
+		/*Object[] queryResult = dao.getAnswerQuestionPumps(id);
+		Answer answer = (Answer) queryResult[1];
+		answer.setQuestion( (Question) queryResult[0] );
+		return answer;*/
+		return dao.getAnswerQuestionPumps(id);
+	}
+    
+    public void switchStatus(Long id, Boolean status) {
+    	dao.switchStatus(id, status);
+    }
 
 	@Override
 	public void approve(Long id) {
