@@ -24,6 +24,8 @@ public interface QuestionService extends Service<Question, Long> {
 	
 	public Question getQuesstionAndAnswersById(Long id);
 	
+	public Question getQuesstionAndAnswersPumpCountByIdForAdmin(Long id);
+	
 	public Question getQuesstionAndAnswersPumpCountById(Long id) ;
 	
 	public Map<String, Long> getQuestionProfileById(Long userID);

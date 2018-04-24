@@ -39,6 +39,7 @@
 				<!-- 在web环境中一定要定位到classpath，否则默认到当前web应用下找  -->
 				<value>classpath:validator-messages</value>
 				<!--<value>classpath:org/hibernate/validator/ValidationMessages</value>-->
+				<value>i18n</value>
 			</list>
 		</property>
 		<property name="useCodeAsDefaultMessage" value="false"/>

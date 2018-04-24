@@ -103,7 +103,7 @@ public class UserController {
         ModelAndView mv = new ModelAndView();
         List<SysUser> userList = userService.findAll();
         mv.addObject("userList", userList);
-        mv.setViewName("user/all");
+        mv.setViewName("user/list");
         return mv;
     }
     
@@ -126,7 +126,7 @@ public class UserController {
         String encrypted = CipherUtil.simpleHash("md5", sysUser.getPasswd(), null, 2, true);
         sysUser.setPasswd(encrypted);
         userService.save(sysUser);
-        return "redirect:/user/list";
+        return "redirect:/user/admin/list";
     }
     
     @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
@@ -139,26 +139,26 @@ public class UserController {
     }
     
     //@RequiresRoles("admin")
-    @RequestMapping(value="/admin/del/{userid}",method=RequestMethod.DELETE)
-    public String del(@PathVariable Long userid){
+    @RequestMapping(value="/admin/del/{userId}",method=RequestMethod.DELETE)
+    public void del(@PathVariable Long userId){
     	SysUser sysUser = new SysUser();
-    	sysUser.setId(userid);
+    	sysUser.setId(userId);
         userService.delete(sysUser);
         
-        return "redirect:/user/list";
+        //return "redirect:/user/admin/list";
     }
     
     @RequestMapping(value="/edit/{userid}",method=RequestMethod.GET)
     public ModelAndView getEdit(@PathVariable Long userid, Model model){
     	SysUser sysUser = userService.getOne(userid);
-        model.addAttribute("userAttribute", sysUser);
+        model.addAttribute("sysUser", sysUser);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("user/edit");
         return mv;
     }
     
     @RequestMapping(value="/save/{userid}",method=RequestMethod.POST)
-    public String saveEdit(@ModelAttribute("userAttribute") SysUser userModel, @PathVariable int userid){
+    public String saveEdit(@ModelAttribute("sysUser") SysUser userModel, @PathVariable int userid){
         //userService.attachClean(userModel);
     	userService.save(userModel);
         return "redirect:/user/admin/list";

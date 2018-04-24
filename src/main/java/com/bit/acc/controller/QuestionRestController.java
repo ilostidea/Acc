@@ -154,6 +154,13 @@ public class QuestionRestController {
         List<Question> listQuestion = questionService.findByCondition( userName, question,  status, accused);
         return new Response().success( listQuestion );
     }
+    
+    @RequestMapping(value="/admin/detail",method=RequestMethod.GET)
+    public Response detailForAdmin(@RequestParam("questionID") Long questionID){
+    	//Question question = questionService.getQuesstionAndAnswersById(questionID);
+    	Question question = questionService.getQuesstionAndAnswersPumpCountByIdForAdmin( questionID );
+        return new Response().success( question );
+    }
 
     @RequestMapping(value="/admin/switchStatus",method=RequestMethod.POST)
     @ControllerLog(value = "启用/禁用问题")

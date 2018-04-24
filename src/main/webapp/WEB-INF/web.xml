@@ -34,7 +34,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </filter-mapping>
 
 	<filter>
-		<filter-name>DruidWebStatFilter</filter-name>
+		<filter-name>druidWebStatFilter</filter-name>
 		<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
 		<init-param>
 			<param-name>exclusions</param-name>
@@ -42,7 +42,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>DruidWebStatFilter</filter-name>
+		<filter-name>druidWebStatFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
     
@@ -95,13 +95,22 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <filter-name>hibernateFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+<!-- 
+	<filter>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+-->
 	<servlet>
-		<servlet-name>DruidStatView</servlet-name>
+		<servlet-name>druidStatView</servlet-name>
 		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>DruidStatView</servlet-name>
+		<servlet-name>druidStatView</servlet-name>
 		<url-pattern>/admin/druid/*</url-pattern>
 	</servlet-mapping>
     

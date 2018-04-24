@@ -137,6 +137,25 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 		return question;
 	}
 
+	/**
+	 * 不管是启用还是禁用的都查出来了
+	 */
+	@Override
+	public Question getQuesstionAndAnswersPumpCountByIdForAdmin(Long id) {
+		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountByIdForAdmin(id);
+		Question question = (Question) array[0];
+		Long answerCount = (Long) array[1];
+		Long collectedCount = (Long) array[2];
+		question.setAnswerCount(answerCount);
+		question.setCollectedCount(collectedCount);
+		List<Answer> answers = answerDao.findByQuestionForAdmin(id); 
+		for(Answer answer : answers) {
+			answer.setPumpCount( (long) answer.getPumps().size() );
+		}
+		question.setAnswers(new TreeSet<Answer>(answers) );
+		return question;
+	}
+
 	@Override
 	public Map<String, Long> getQuestionProfileById(Long userId) {
 		return dao.getQuestionProfileById(userId);

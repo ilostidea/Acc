@@ -31,38 +31,43 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " group by q.id order by q.modifyTime desc")
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public List<Object> findRecent( Pageable pageable );
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " where q.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID group by q.id order by q.createTime desc")
 	public List<Question> findByUser(@Param("userID") Long userId);
 
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where a.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID group by q.id order by q.createTime desc")
 	public List<Question> findByAnsweredUser(@Param("userID") Long userId);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where qc.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID group by q.id order by q.createTime desc")
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
+	
+	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true and q.id = :id group by q.id")
+	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
+	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
 	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.id = :id group by q.id")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
+	public Object getQuesstionAndAnswersPumpCountByIdForAdmin(@Param("id") Long id) ;
 	
 	@Query("select t from Question as t left join fetch t.answers where t.id = :id")
 	public Question getQuesstionAndAnswersById(@Param("id") Long id);
 	
 	@Query("select new map( " + 
-					"(select count(q.id) from Question q where q.user.id = u.id) as myQuestion, " + 
-					"(select count(a.id) from Answer a where a.user.id = u.id) as myAnswer, " + 
+					"(select count(q.id) from Question q where q.status is true and q.user.id = u.id) as myQuestion, " + 
+					"(select count(a.id) from Answer a where a.status is true and a.user.id = u.id) as myAnswer, " + 
 					"(select count(qc.id) from QuestionCollected qc where qc.user.id = u.id) as myCollectedQuestion, " + 
 					"(select count(ac.id) from AnswerCollected ac where ac.user.id = u.id) as myCollectedAnswer, " + 
 					"(select count(qc.id) from QuestionCollected qc join Question q on qc.question.id = q.id where q.user.id = u.id) as myQuestionCollectedByOthers, " + 
 					"(select count(ac.id) from AnswerCollected ac join Answer a on ac.answer.id = a.id where a.user.id = u.id) as myAnswerCollectedByOthers, " + 
-					"(select Coalesce( sum(q.approveCount), 0 ) from Question q where q.user.id = u.id) + (select Coalesce( sum(a.approveCount), 0 ) from Answer a where a.user.id = u.id) as approveCount, " + 
-					"(select Coalesce( sum(q.disapproveCount), 0 ) from Question q where q.user.id = u.id) + (select Coalesce( sum(a.disapproveCount), 0 ) from Answer a where a.user.id = u.id) as disApproveCount " +
+					"(select Coalesce( sum(q.approveCount), 0 ) from Question q where q.status is true and q.user.id = u.id) + (select Coalesce( sum(a.approveCount), 0 ) from Answer a where a.status is true and a.user.id = u.id) as approveCount, " + 
+					"(select Coalesce( sum(q.disapproveCount), 0 ) from Question q where q.status is true and q.user.id = u.id) + (select Coalesce( sum(a.disapproveCount), 0 ) from Answer a where a.status is true and a.user.id = u.id) as disApproveCount " +
 					")  " +
 					"from SysUser u where u.id = :userID")
 	public Map<String, Long> getQuestionProfileById(@Param("userID") Long userId);

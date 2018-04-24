@@ -12,15 +12,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.GroupSequence;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
@@ -61,25 +61,25 @@ public class SysUser implements java.io.Serializable {
 	private Employee employee;*/
 	
 	@Column(name = "Mobile")
-	@NotEmpty(message = "{user.mobile.null}", groups = {First.class})
-	@Size(min = 11, max = 16, message = "{user.mobile.length.illegal}", groups = {First.class})
-	@Pattern(regexp = IConstants.REGEX_MOBILE, message = "{user.mobile.illegal}", groups = {First.class})
+	@NotEmpty(message = "{sysUser.mobile.null}", groups = {First.class})
+	@Size(min = 11, max = 16, message = "{sysUser.mobile.length.illegal}", groups = {First.class})
+	@Pattern(regexp = IConstants.REGEX_MOBILE, message = "{sysUser.mobile.illegal}", groups = {First.class})
 	private String mobile;
 
 	@Column(name = "Email")
-	@Length(max = 64, message = "{user.email.length.illegal}", groups = {First.class})
-	@Email(message = "{user.email.illegal}", groups = {First.class})
+	@Length(max = 64, message = "{sysUser.email.length.illegal}", groups = {First.class})
+	@Email(message = "{sysUser.email.illegal}", groups = {First.class})
 	private String email;
 	
 	@Column(name = "Passwd")
-	@NotEmpty(message = "{user.password.null}", groups = {First.class})
-	//@Length(min = 32, max = 32, message = "{user.password.length.illegal}", groups = {Second.class})
-	//@Pattern(regexp = IConstants.REGEX_PASSWORD, message = "{user.password.illegal}")
+	@NotEmpty(message = "{sysUser.passwd.null}", groups = {First.class})
+	//@Length(min = 32, max = 32, message = "{sysUser.passwd.length.illegal}", groups = {Second.class})
+	//@Pattern(regexp = IConstants.REGEX_PASSWORD, message = "{sysUser.passwd.illegal}")
 	private String passwd;
 
 	@Column(name = "NickName")
-	@NotEmpty(message = "{user.nickName.null}", groups = {First.class})
-	@Length(max = 32, message = "{user.nickName.length.illegal}", groups = {Second.class})
+	@NotEmpty(message = "{sysUser.nickName.null}", groups = {First.class})
+	@Length(max = 32, message = "{sysUser.nickName.length.illegal}", groups = {Second.class})
 	private String nickName;
 
 	@Column(name = "Status", nullable = false)
@@ -169,7 +169,7 @@ public class SysUser implements java.io.Serializable {
 		this.nickName = nickName;
 	}
 
-	public Boolean isStatus() {
+	public Boolean getStatus() {
 		return this.status;
 	}
 
