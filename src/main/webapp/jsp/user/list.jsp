@@ -43,7 +43,9 @@
 		             <div class="form-group">
 							<label class="col-sm-2 control-label" for="account">Mb./Email/NickName</label>
 							<div class="col-sm-4">
-							    <input type="text" id="account" name="account" class="form-control " onchange="findUser()"/>
+	              		 		<form id="queryForm" action="<%=request.getContextPath()%>/user/admin/list" method="get">
+								    <input type="text" id="account" name="account" class="form-control " onchange="findUser()"/>
+					    		</form>
 							</div>
 							<div class="col-sm-6">
 					  			<a class="btn btn-success btn-sm pull-right" href="<%=request.getContextPath()%>/user/admin/add"><i class="fa fa-file"></i> 新增用户</a>
@@ -130,6 +132,11 @@
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
     <script>
+    
+    function findUser(){
+		var queryForm = $("#queryForm");
+		delUserForm.submit();
+    }
 	
     function delUser(userId){
 		<%--

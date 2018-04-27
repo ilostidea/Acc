@@ -17,9 +17,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import com.bit.common.util.IConstants;
@@ -87,6 +89,7 @@ public class SysUser implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, nullable = false, length = 19)
+	@CreationTimestamp
 	private Date createTime;
 
 	@Column(name = "Creator")
@@ -94,6 +97,7 @@ public class SysUser implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ModifyTime", nullable = false, length = 19)
+	@UpdateTimestamp
 	private Date modifyTime;
 
 	@Column(name = "Modifier")

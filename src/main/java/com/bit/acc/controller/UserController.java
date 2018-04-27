@@ -87,10 +87,10 @@ public class UserController {
 
     //@RequiresRoles("admin")
     @RequestMapping(value="/admin/list",method=RequestMethod.GET)
-    public ModelAndView getUserlist(Model model){
+    public ModelAndView getUserlist(@RequestParam(value="account", defaultValue="") String account){
         
         ModelAndView mv = new ModelAndView();
-        List<SysUser> userList = userService.findAll();
+        List<SysUser> userList = userService.findByAccountNickName(account);
         mv.addObject("userList", userList);
         mv.setViewName("user/list");
         return mv;

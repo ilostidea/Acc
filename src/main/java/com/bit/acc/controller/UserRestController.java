@@ -1,6 +1,7 @@
 package com.bit.acc.controller;
 
-import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -33,7 +34,7 @@ public class UserRestController {
     @Resource(name="sysUserService")
     private UserService userService;
     
-    @RequestMapping(value="/admin/add",method=RequestMethod.POST)
+    @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody SysUser sysUser, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -59,7 +60,7 @@ public class UserRestController {
         return new Response().success();
     }
     
-    @RequestMapping(value="/admin/update",method=RequestMethod.POST)
+    @RequestMapping(value="/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody SysUser sysUser, BindingResult result) {
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
@@ -84,8 +85,38 @@ public class UserRestController {
         return new Response().success();
     }
     
+    @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
+    public Response show(@PathVariable Long userid){
+    	SysUser sysUser = userService.findById(userid);
+        return new Response().success(sysUser);
+    }
+    
+    
+    @RequestMapping(value="/detail",method=RequestMethod.GET)
+    public Response detail(@RequestParam("userid") Long userid){
+    	SysUser sysUser = userService.findById(userid);
+        return new Response().success(sysUser);
+    }
+    
+/**
+ * ==================For Admin User===========================================================
+ */
+    
     /**
-     * 获得用户列表信息，包含用户员工的信息
+     * 获得用户列表信息
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
+    @ControllerLog(value = "获得用户列表")
+    public Response getUsers() throws Exception{
+    	//测试异常处理 if(true) throw new SQLException("SQL异常");
+        List<SysUser> userList = userService.findAll();
+        return new Response().success(userList);
+    }
+    
+    /**
+     * 获得用户列表信息
      * @return
      * @throws Exception
      */
@@ -102,24 +133,19 @@ public class UserRestController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/admin/list",method=RequestMethod.GET)
+    @RequestMapping(value="/admin/stat",method=RequestMethod.GET)
     @ControllerLog(value = "获得用户列表")
-    public Response getUsers() throws Exception{
+    public Response stat(@RequestParam(value="from", required=false) Date from, @RequestParam(value="to", required=false) Date to) throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
-        List<SysUser> userList = userService.findAll();
+    	if(to == null)
+    		to = new Date();
+    	if(from == null) {
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTime(to);
+    		calendar.add(Calendar.DATE, -30);
+    		from = calendar.getTime();
+    	}
+    	Long[][] userList = userService.getNewUsersAndTotalUsersByDate(from, to);
         return new Response().success(userList);
-    }
-    
-    @RequestMapping(value="/show/{userid}",method=RequestMethod.GET)
-    public Response show(@PathVariable Long userid){
-    	SysUser sysUser = userService.findById(userid);
-        return new Response().success(sysUser);
-    }
-    
-    
-    @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("userid") Long userid){
-    	SysUser sysUser = userService.findById(userid);
-        return new Response().success(sysUser);
     }
 }
