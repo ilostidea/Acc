@@ -87,7 +87,7 @@ public class UserController {
 
     //@RequiresRoles("admin")
     @RequestMapping(value="/admin/list",method=RequestMethod.GET)
-    public ModelAndView getUserlist(@RequestParam(value="account", defaultValue="") String account){
+    public ModelAndView getUserlist(@RequestParam(value="account", defaultValue="") String account) throws Exception{
         
         ModelAndView mv = new ModelAndView();
         List<SysUser> userList = userService.findByAccountNickName(account);

@@ -35,7 +35,12 @@ public class SysLog implements java.io.Serializable {
 	private static final long serialVersionUID = 8496799177052227038L;
 	private Long id;
 	//private Long enterpriseId;
-	private Long userId;
+	private String ip;
+	private Long userId;/*
+	private String mobile;
+	private String email;
+	private String nickName;*/
+	private String log;
 	private String entityName;
 	private String operate;
 	private String instance;
@@ -51,10 +56,10 @@ public class SysLog implements java.io.Serializable {
 	public SysLog() {
 	}
 
-	public SysLog(/*Long enterpriseId, */Long userId, String entityName,
+	public SysLog(String ip, Long userId, String entityName,
 			String operate, String instance, String attribute, String oldValue,
 			String newValue, Date oprtTime) {
-		//this.enterpriseId = enterpriseId;
+		this.ip = ip;
 		this.userId = userId;
 		this.entityName = entityName;
 		this.operate = operate;
@@ -77,22 +82,32 @@ public class SysLog implements java.io.Serializable {
 		this.id = id;
 	}
 
-	/*@Column(name = "EnterpriseID", nullable = false)
-	public Long getEnterpriseId() {
-		return this.enterpriseId;
+	@Column(name = "IP", nullable = false)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setEnterpriseId(Long enterpriseId) {
-		this.enterpriseId = enterpriseId;
-	}*/
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 
-	@Column(name = "UserID", nullable = false)
+	@Column(name = "UserID", nullable = true)
 	public Long getUserId() {
 		return this.userId;
 	}
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+	
+	
+	@Column(name = "Log", nullable = false, length = 100)
+	public String getLog() {
+		return log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
 	}
 
 	@Column(name = "EntityName", nullable = false, length = 64)
@@ -113,7 +128,7 @@ public class SysLog implements java.io.Serializable {
 		this.operate = operate;
 	}
 
-	@Column(name = "Instance", nullable = false, length = 64)
+	@Column(name = "Instance", nullable = true, length = 64)
 	public String getInstance() {
 		return this.instance;
 	}
@@ -122,7 +137,7 @@ public class SysLog implements java.io.Serializable {
 		this.instance = instance;
 	}
 
-	@Column(name = "Attribute", nullable = false, length = 32)
+	@Column(name = "Attribute", nullable = true, length = 32)
 	public String getAttribute() {
 		return this.attribute;
 	}
@@ -131,7 +146,7 @@ public class SysLog implements java.io.Serializable {
 		this.attribute = attribute;
 	}
 
-	@Column(name = "OldValue", nullable = false, length = 64)
+	@Column(name = "OldValue", nullable = true, length = 64)
 	public String getOldValue() {
 		return this.oldValue;
 	}
@@ -140,7 +155,7 @@ public class SysLog implements java.io.Serializable {
 		this.oldValue = oldValue;
 	}
 
-	@Column(name = "NewValue", nullable = false, length = 64)
+	@Column(name = "NewValue", nullable = true, length = 64)
 	public String getNewValue() {
 		return this.newValue;
 	}

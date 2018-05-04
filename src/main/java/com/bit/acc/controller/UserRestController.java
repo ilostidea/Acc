@@ -1,5 +1,6 @@
 package com.bit.acc.controller;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +111,7 @@ public class UserRestController {
     @RequestMapping(value="/admin/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得用户列表")
     public Response getUsers() throws Exception{
-    	//测试异常处理 if(true) throw new SQLException("SQL异常");
+    	//测试异常处理     	if(true) throw new SQLException("SQL异常");
         List<SysUser> userList = userService.findAll();
         return new Response().success(userList);
     }

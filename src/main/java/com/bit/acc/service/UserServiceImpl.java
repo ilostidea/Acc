@@ -1,5 +1,6 @@
 package com.bit.acc.service;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import com.bit.acc.dao.SysUserRepository;
 import com.bit.acc.model.SysUser;
 import com.bit.acc.service.baseservice.AbstractService;
 import com.bit.acc.service.intfs.UserService;
+import com.bit.common.log.ServiceLog;
 
 @Service("sysUserService")
 public class UserServiceImpl extends AbstractService<SysUser, Long> implements UserService {
@@ -38,11 +40,14 @@ public class UserServiceImpl extends AbstractService<SysUser, Long> implements U
 		return super.save(transientInstance);
 	}
 	
+
 	public List<SysUser> findByAccount(String account){
 		return dao.findByAccount(account);
 	}
-	
-	public List<SysUser> findByAccountNickName(String mobileOrEmailOrNickName ){
+
+    @ServiceLog(value = "根据账号查询用户")
+	public List<SysUser> findByAccountNickName(String mobileOrEmailOrNickName ) throws Exception{
+    	if(true) throw new SQLException("SQL异常");
 		return dao.findByAccountNickName(mobileOrEmailOrNickName);
 	}
 	

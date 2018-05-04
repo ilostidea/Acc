@@ -157,10 +157,6 @@
          });
     	 setTimeout("window.location.href='<%=request.getContextPath()%>/user/admin/list';",1000);
     }
-    
-    function findUser(){
-    	
-    }
     </script>
 </body>
 </html>

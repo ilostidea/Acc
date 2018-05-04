@@ -15,9 +15,9 @@
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
             <!-- Size and time based archiving -->
-            <fileNamePattern>${LOG_HOME}\%d{yyyy/MM/dd,aux}\Log.%d{hh.mm.ss}-%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/%d{yyyy/MM/dd,aux}/AccLog%d{yyyy-MM-dd_HH}-%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
-                <maxFileSize>1MB</maxFileSize>
+                <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <!--
@@ -34,15 +34,17 @@
 		-->
 	</appender>
 	
+	<!-- INFO输出到标准输出 -->
 	<root level="INFO">
 		<appender-ref ref="stdout"/>
 	</root>
 	<!--additivity="false"指定日志不向上一级输入。
-	<logger name="cn.company.bau.desktop.composite.EventRealTimeComposite" level="INFO" additivity="false">  
+	<logger name="bit.com" level="INFO" additivity="false">  
         <appender-ref ref="event" />  
     </logger>  -->
   
+  <!-- com.bit包下的WARN及以上级别输出到文件 -->
     <logger name="com.bit" level="WARN">
         <appender-ref ref="file"/>
-    </logger>  
+    </logger>
 </configuration>

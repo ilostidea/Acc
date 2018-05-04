@@ -14,7 +14,7 @@ public interface UserService extends Service<SysUser, Long> {
 	
 	public List<SysUser> findByAccount(String account);
 	
-	public List<SysUser> findByAccountNickName(String mobileOrEmailOrNickName );
+	public List<SysUser> findByAccountNickName(String mobileOrEmailOrNickName ) throws Exception;
 	
 	public Long[][] getNewUsersAndTotalUsersByDate(Date from, Date to);
 	

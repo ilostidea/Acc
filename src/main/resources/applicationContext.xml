@@ -32,8 +32,8 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ExceptionHandler"/>
 	</context:component-scan>
 	
-	<!-- service包 -->
-    <context:component-scan base-package="your service package" />
+	<!-- service包
+    <context:component-scan base-package="your service package" /> -->
     
     <!-- 配置C3P0数据源，从上面配置文件读取--><!-- 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">

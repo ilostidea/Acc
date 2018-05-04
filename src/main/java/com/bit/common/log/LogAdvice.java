@@ -30,7 +30,7 @@ import com.bit.common.util.IConstants;
 @Component
 public class LogAdvice{
 	
-	// 注入Service用于把日志保存数据库
+	// 注入Service用于把日志保存到数据库
 	@Resource(name="sysLogService")
 	private SysLogService sysLogService;
 	
@@ -62,17 +62,10 @@ public class LogAdvice{
 		// 请求的IP
 		String ip = session.getHost();
 		try {
-			// *========控制台输出=========*//
-			System.out.println("=====前置通知开始=====");
-			System.out.println("请求方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));
-			System.out.println("方法描述:" + getControllerMethodDescription(joinPoint));
-			//System.out.println("请求人:" + user.getName());
-			System.out.println("请求IP:" + ip);
 			// *========数据库日志=========*//
-			/*Log log = SpringContextHolder.getBean("logxx");
+			/*Log log = SpringContextHolder.getBean("sysLogService");
 			log.setDescription(getControllerMethodDescription(joinPoint));
-			log.setMethod((joinPoint.getTarget().getClass().getName() + "."
-					+ joinPoint.getSignature().getName() + "()"));
+			log.setMethod((joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));
 			log.setType("0");
 			log.setRequestIp(ip);
 			log.setExceptionCode(null);
@@ -83,8 +76,9 @@ public class LogAdvice{
 			// 保存数据库
 			logService.add(log);*/
 			SysLog sysLog = new SysLog();
-			sysLog.setUserId(user.getId());
-			//sysLog.setEnterpriseId(user.getEmployee().getEnterprises());
+			sysLog.setIp(ip);
+			sysLog.setUserId(user==null ? null : user.getId());
+			//sysLog.setLog( getMethodDescription(joinPoint, "controller") );
 			sysLog.setEntityName(joinPoint.getTarget().getClass().getName());
 			sysLog.setInstance(null);
 			sysLog.setAttribute(null);
@@ -92,7 +86,7 @@ public class LogAdvice{
 			sysLog.setOldValue(null);
 			sysLog.setNewValue(null);
 			sysLog.setOprtTime(new Date());
-			//sysLogService.persist(sysLog);
+			sysLogService.save(sysLog);
 			
 			System.out.println("=====前置通知结束=====");
 		} catch (Exception e) {
@@ -103,13 +97,28 @@ public class LogAdvice{
 	}
 
 	/**
-	 * 异常通知 用于拦截service层记录异常日志
+	 * 异常通知 用于拦截controller层，记录异常日志
+	 * 
+	 * @param joinPoint
+	 * @param e
+	 */
+	@AfterThrowing(pointcut = "controllerAspect()", throwing = "e")
+	public void doAfterControllerThrowing(JoinPoint joinPoint, Throwable e) {
+		logAfterThrowing(joinPoint, e);
+	}
+
+	/**
+	 * 异常通知 用于拦截service层，记录异常日志
 	 * 
 	 * @param joinPoint
 	 * @param e
 	 */
 	@AfterThrowing(pointcut = "serviceAspect()", throwing = "e")
-	public void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
+	public void doAfterServiceThrowing(JoinPoint joinPoint, Throwable e) {
+		logAfterThrowing(joinPoint, e);
+	}
+	
+	private void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		HttpSession session = request.getSession();
 		// 读取session中的用户
@@ -123,40 +132,26 @@ public class LogAdvice{
 				params += String.valueOf(joinPoint.getArgs()[i]) + ";";
 			}
 		}
-		try {
-			/* ========控制台输出========= */
-			System.out.println("=====异常通知开始=====");
-			System.out.println("异常代码:" + e.getClass().getName());
-			System.out.println("异常信息:" + e.getMessage());
-			System.out.println("异常方法:"
-					+ (joinPoint.getTarget().getClass().getName() + "."
-							+ joinPoint.getSignature().getName() + "()"));
-			System.out.println("方法描述:" + getServiceMthodDescription(joinPoint));
-			//System.out.println("请求人:" + user.getName());
-			System.out.println("请求IP:" + ip);
-			System.out.println("请求参数:" + params);
-			System.out.println("=====异常通知结束=====");
-		} catch (Exception ex) {
-			// 记录本地异常日志
-			logger.error("==异常通知异常==");
-			logger.error("异常信息:{}", ex.getMessage());
-		}
 		/* ==========记录本地异常日志========== */
-		logger.error("异常方法:{}异常代码:{}异常信息:{}参数:{}", joinPoint.getTarget()
-				.getClass().getName()
-				+ joinPoint.getSignature().getName(), e.getClass().getName(),
-				e.getMessage(), params);
-
+		logger.error("\r\n\t异常方法:{}\r\n\t方法参数:{}\r\n\t异常代码:{}\r\n\t异常信息:{}\r\n\t堆栈打印:{}",
+				joinPoint.getTarget().getClass().getName() +"." + joinPoint.getSignature().getName(), 
+				params,
+				e.getClass().getName(),
+				e.getMessage(),
+				e.getStackTrace()
+				);
+		
 	}
 
 	/**
-	 * 获取注解中对方法的描述信息 用于service层注解
+	 * 获取注解中对方法的描述信息
 	 * 
 	 * @param joinPoint 切点
 	 * @return 方法描述
 	 * @throws Exception
 	 */
-	public static String getServiceMthodDescription(JoinPoint joinPoint)
+	@SuppressWarnings("rawtypes")
+	private String getMethodDescription(JoinPoint joinPoint, String type)
 			throws Exception {
 		String targetName = joinPoint.getTarget().getClass().getName();
 		String methodName = joinPoint.getSignature().getName();
@@ -168,38 +163,15 @@ public class LogAdvice{
 			if (method.getName().equals(methodName)) {
 				Class[] clazzs = method.getParameterTypes();
 				if (clazzs.length == arguments.length) {
-					description = method.getAnnotation(ServiceLog.class).value();
+					if( type.equals("controller"))
+						description = method.getAnnotation(ControllerLog.class).value();
+					else if(type.equals("service"))
+						description = method.getAnnotation(ServiceLog.class).value();
 					break;
 				}
 			}
 		}
 		return description;
 	}
-
-	/**
-	 * 获取注解中对方法的描述信息 用于Controller层注解
-	 * 
-	 * @param joinPoint 切点
-	 * @return 方法描述
-	 * @throws Exception
-	 */
-	public static String getControllerMethodDescription(JoinPoint joinPoint)
-			throws Exception {
-		String targetName = joinPoint.getTarget().getClass().getName();
-		String methodName = joinPoint.getSignature().getName();
-		Object[] arguments = joinPoint.getArgs();
-		Class targetClass = Class.forName(targetName);
-		Method[] methods = targetClass.getMethods();
-		String description = "";
-		for (Method method : methods) {
-			if (method.getName().equals(methodName)) {
-				Class[] clazzs = method.getParameterTypes();
-				if (clazzs.length == arguments.length) {
-					description = method.getAnnotation(ControllerLog.class).value();
-					break;
-				}
-			}
-		}
-		return description;
-	}
+	
 }
