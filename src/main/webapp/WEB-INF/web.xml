@@ -123,7 +123,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 			<param-value>classpath*:spring-mvc.xml</param-value>
 		</init-param><!--
 		<init-param>-->
-			<!-- 设置为false取消其自动注册的异常解析器，可自定义异常解析器,DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver的bean作为异常解析器 --><!--
+			<!-- 设置为false取消其自动注册的异常解析器，可自定义异常解析器,
+			DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver的bean作为异常解析器 -->
+		<!--
 			<param-name>detectAllHandlerExceptionResolvers</param-name>
 			<param-value>true</param-value>
 		</init-param>-->

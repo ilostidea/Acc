@@ -23,8 +23,8 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
     <!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->  
     <property name="exceptionMappings">  
         <props>  
-            <prop key="cn.basttg.core.exception.BusinessException">error-business</prop>
-            <prop key="cn.basttg.core.exception.ParameterException">error-parameter</prop>  
+            <prop key="cn.bit.core.exception.BusinessException">error-business</prop>
+            <prop key="cn.bit.core.exception.ParameterException">error-parameter</prop>
   
             <!-- 这里还可以继续扩展对不同异常类型的处理 -->  
         </props>  
@@ -52,7 +52,7 @@ public class SimpleHandlerExceptionResolver extends SimpleMappingExceptionResolv
 		try {
 			ex.printStackTrace();
 			PrintWriter writer = response.getWriter();
-			writer.write( ex.getMessage() );
+			writer.write( "{error:" + ex.getMessage() + "}");
 			writer.close();
 		}catch(IOException e){
 			e.printStackTrace();

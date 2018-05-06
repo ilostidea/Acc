@@ -29,6 +29,8 @@
 	<context:component-scan base-package="com.bit.acc.*,com.bit.common.*" use-default-filters="true">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestControllerAdvice"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ExceptionHandler"/>
 	</context:component-scan>
 	
@@ -170,7 +172,9 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
-	
+
+	<!-- 基于注释的事务，当注释中发现@Transactional时，使用id为“transactionManager”的事务管理器  -->
+	<!-- 如果没有设置transaction-manager的值，则spring以缺省默认的事务管理器来处理事务，默认事务管理器为第一个加载的事务管理器 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
 	<jpa:repositories base-package="com.bit.acc.dao" 

@@ -7,16 +7,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.UserService;
@@ -109,9 +105,11 @@ public class UserRestController {
      * @throws Exception
      */
     @RequestMapping(value="/admin/list",method=RequestMethod.GET)
-    @ControllerLog(value = "获得用户列表")
+    @ResponseStatus(value = HttpStatus.OK)
+    //@ControllerLog(value = "获得用户列表")
     public Response getUsers() throws Exception{
-    	//测试异常处理     	if(true) throw new SQLException("SQL异常");
+    	//测试异常处理
+        if(true) throw new NullPointerException("空指针异常");
         List<SysUser> userList = userService.findAll();
         return new Response().success(userList);
     }

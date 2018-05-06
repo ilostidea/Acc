@@ -2,9 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans     
@@ -13,24 +11,22 @@
 	http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd
-	http://www.springframework.org/schema/tx
-	http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd
 	">
-	
+
 	<!--通知spring使用cglib而不是jdk来生成代理方法, AOP可以拦截到Controller-->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
-	
+
 	<!--websocket 在线聊天-->
 	<context:component-scan base-package="com.bit.websocket"></context:component-scan>
-    
+
 	<!-- 启动自动扫描该包下所有的Bean(例如@Controller) -->
-	<context:component-scan base-package="com.bit.acc.controller,com.acc.common.exception" use-default-filters="false">
-       <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
-       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
-       <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestControllerAdvice"/>
+	<context:component-scan base-package="com.bit.acc.controller,com.bit.common.exception" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestControllerAdvice"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 	</context:component-scan>
     
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -39,7 +35,6 @@
 				<!-- 在web环境中一定要定位到classpath，否则默认到当前web应用下找  -->
 				<value>classpath:validator-messages</value>
 				<!--<value>classpath:org/hibernate/validator/ValidationMessages</value>-->
-				<value>i18n</value>
 			</list>
 		</property>
 		<property name="useCodeAsDefaultMessage" value="false"/>
@@ -74,11 +69,11 @@
     
 	<!-- 默认访问跳转到登录页面 -->
     <!-- <mvc:view-controller path="/" view-name="forward:/login" /> -->
-    
+
 	<!-- 基于注释的事务，当注释中发现@Transactional时，使用id为“transactionManager”的事务管理器  -->
 	<!-- 如果没有设置transaction-manager的值，则spring以缺省默认的事务管理器来处理事务，默认事务管理器为第一个加载的事务管理器 --><!--
 	<tx:annotation-driven transaction-manager="transactionManager"/> -->
-	
+
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">
@@ -101,7 +96,7 @@
     </bean>
     
     <!-- web.xml设置detectAllHandlerExceptionResolvers为false，取消spring自动注册的异常解析器，自定义异常解析器。
-    	 DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver的bean作为异常解析器。
+    	 DispatcherServlet会在spring上下文寻找 id 为 handlerExceptionResolver 的bean作为异常解析器。
 		 见<param-name>detectAllHandlerExceptionResolvers</param-name>--><!-- 
 	<bean id="handlerExceptionResolver" class="com.bit.common.exception.AnnotationHandlerMethodExceptionResolver">
 		<property name="defaultErrorView" value="error"/> --><!-- 错误页面 --><!--
@@ -111,9 +106,25 @@
             </list>
 		</property>
 	</bean> -->
-	
-	<!-- 普通的Controller会将异常处理交给该类，如果有个异常处理类加上@ControllerAdvice注解，该bean就不起作用 -->
+
+
+	<!-- 将异常处理交给实现了HandlerExceptionResolver的类处理，按出现的顺序执行，返回了不为空的ModelAndView就不继续 -->
+    <!--
 	<bean id="exceptionHandler" class="com.bit.common.exception.AccHandlerExceptionResolver"/>
+	<bean id="handlerExceptionResolver" class="com.bit.common.exception.AnnotationHandlerMethodExceptionResolver">
+        <property name="defaultErrorView" value="error"/>
+		<property name="messageConverters">
+            <list>
+                <ref bean="jackson2HttpConverter"/>
+            </list>
+		</property>
+    </bean>
+	<bean id="simpleHandlerExceptionResolver" class="com.bit.common.exception.SimpleHandlerExceptionResolver">-->
+        <!-- 定义默认的异常处理页面，当该异常类型的注册时使用 --><!--
+        <property name="defaultErrorView" value="error"></property>-->
+        <!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception --><!--
+        <property name="exceptionAttribute" value="error"></property>
+    </bean>-->
 	
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
     <!-- <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">

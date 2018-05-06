@@ -19,7 +19,7 @@ public class AccHandlerExceptionResolver implements HandlerExceptionResolver {
 	public ModelAndView resolveException(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex) {
 		Map<String, Object> model = new HashMap<String, Object>();
-        model.put("ex", ex);
+        model.put("error", ex);
         /*// 根据不同错误转向不同页面  
         if(ex instanceof BusinessException) {
             return new ModelAndView("business_error", model);
@@ -28,7 +28,7 @@ public class AccHandlerExceptionResolver implements HandlerExceptionResolver {
         } else {
             return new ModelAndView("error", model);
         }*/
-        return new ModelAndView("error", model);
+        return null; //new ModelAndView("error", model);
 	}
 
 }

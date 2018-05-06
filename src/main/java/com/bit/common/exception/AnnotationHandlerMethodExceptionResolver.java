@@ -24,37 +24,42 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 
 public class AnnotationHandlerMethodExceptionResolver extends ExceptionHandlerExceptionResolver {
 
-	private String defaultErrorView;
+    private String defaultErrorView;
 
-	public String getDefaultErrorView() {
-		return defaultErrorView;
-	}
+    public String getDefaultErrorView() {
+        return defaultErrorView;
+    }
 
-	public void setDefaultErrorView(String defaultErrorView) {
-		this.defaultErrorView = defaultErrorView;
-	}
+    public void setDefaultErrorView(String defaultErrorView) {
+        this.defaultErrorView = defaultErrorView;
+    }
 
-	protected ModelAndView doResolveHandlerMethodException(
-			HttpServletRequest request, HttpServletResponse response,
-			HandlerMethod handlerMethod, Exception exception) {
+    protected ModelAndView doResolveHandlerMethodException(
+            HttpServletRequest request, HttpServletResponse response,
+            HandlerMethod handlerMethod, Exception exception) {
 
-		if (handlerMethod == null) {
-			return null;
-		}
+        if (handlerMethod == null) {
+            return null;
+        }
 
-		Method method = handlerMethod.getMethod();
+        Method method = handlerMethod.getMethod();
 
-		if (method == null) {
-			return null;
-		}
+        if (method == null) {
+            return null;
+        }
 
-		ModelAndView mv = super.doResolveHandlerMethodException(request, response, handlerMethod, exception);
+        //仍然会调用@ControllerAdvice的异常处理方法
+        ModelAndView mv = super.doResolveHandlerMethodException(request, response, handlerMethod, exception);
 
-		ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method, ResponseBody.class);
-		RestController restCotrollerAnn = AnnotationUtils.findAnnotation(handlerMethod.getMethod().getDeclaringClass(), RestController.class);
-		//当类上面加了@RestController，或者方法上面加了@ResponseBody后，
-		if (responseBodyAnn != null || restCotrollerAnn != null) {
-			try {
+        if(mv!=null && !mv.isEmpty())
+            //return mv;
+            return null;
+
+        ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method, ResponseBody.class);
+        RestController restCotrollerAnn = AnnotationUtils.findAnnotation(method.getDeclaringClass(), RestController.class);
+        //当类上面加了@RestController，或者方法上面加了@ResponseBody后，
+        if (responseBodyAnn != null || restCotrollerAnn != null) {
+            try {
 				/*
 				//当方法上添加了@ResponseStatus注解时，直接发送该方法
 				ResponseStatus responseStatusAnn = AnnotationUtils.findAnnotation(method, ResponseStatus.class);
@@ -72,54 +77,54 @@ public class AnnotationHandlerMethodExceptionResolver extends ExceptionHandlerEx
 				}
 				//test response.sendError(HttpStatus.BAD_REQUEST.value(), "请求失败！");
 				*/
-				return handleResponseBody(mv, request, response, handlerMethod, exception);
-			} catch (Exception e) {
-				return null;
-			}
-		}
-		
-		if( mv == null ) {
-			mv = new ModelAndView();
-		}
+                return handleResponseBody(mv, request, response, handlerMethod, exception);
+            } catch (Exception e) {
+                return null;
+            }
+        }
 
-		if ( mv.getViewName() == null) {
-			mv.setViewName(defaultErrorView);
-		}
-		mv.addObject("error", exception.getMessage());
+        if (mv == null) {
+            mv = new ModelAndView();
+        }
 
-		return mv;
+        if (mv.getViewName() == null) {
+            mv.setViewName(defaultErrorView);
+        }
+        mv.addObject("error", exception.getMessage());
 
-	}
+        return mv;
 
-	@SuppressWarnings({ "unchecked", "rawtypes"/*, "resource"*/ })
-	private ModelAndView handleResponseBody(ModelAndView mv,
-			HttpServletRequest request, HttpServletResponse response,
-			HandlerMethod handlerMethod, Exception exception)
-			throws ServletException, IOException {
-		HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
-		List<MediaType> acceptedMediaTypes = inputMessage.getHeaders().getAccept();
-		if (acceptedMediaTypes.isEmpty()) {
-			acceptedMediaTypes = Collections.singletonList(MediaType.ALL);
-		}
-		MediaType.sortByQualityValue(acceptedMediaTypes);
-		HttpOutputMessage outputMessage = new ServletServerHttpResponse(response);
-		List<HttpMessageConverter<?>> messageConverters = super.getMessageConverters();
-		//Map value = mv.getModelMap();
-		//Class<?> returnValueType = value.getClass();
-		if (messageConverters != null) {
-			for (MediaType acceptedMediaType : acceptedMediaTypes) {
-				for (HttpMessageConverter messageConverter : messageConverters) {
-					//if (messageConverter.canWrite(returnValueType, acceptedMediaType)) {
-						messageConverter.write(exception.getMessage(), acceptedMediaType, outputMessage);
-						//return new ModelAndView();
-					//}
-				}
-			}
-		}
-		if (logger.isWarnEnabled()) {
-			logger.warn("Could not find HttpMessageConverter that supports return type " + acceptedMediaTypes);
-		}
-		return new ModelAndView();
-	}
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"/*, "resource"*/})
+    private ModelAndView handleResponseBody(ModelAndView mv,
+                                            HttpServletRequest request, HttpServletResponse response,
+                                            HandlerMethod handlerMethod, Exception exception)
+            throws ServletException, IOException {
+        HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
+        List<MediaType> acceptedMediaTypes = inputMessage.getHeaders().getAccept();
+        if (acceptedMediaTypes.isEmpty()) {
+            acceptedMediaTypes = Collections.singletonList(MediaType.ALL);
+        }
+        MediaType.sortByQualityValue(acceptedMediaTypes);
+        HttpOutputMessage outputMessage = new ServletServerHttpResponse(response);
+        List<HttpMessageConverter<?>> messageConverters = super.getMessageConverters();
+        //Map value = mv.getModelMap();
+        //Class<?> returnValueType = value.getClass();
+        if (messageConverters != null) {
+            for (MediaType acceptedMediaType : acceptedMediaTypes) {
+                for (HttpMessageConverter messageConverter : messageConverters) {
+                    //if (messageConverter.canWrite(returnValueType, acceptedMediaType)) {
+                    messageConverter.write(exception.getMessage(), acceptedMediaType, outputMessage);
+                    //return new ModelAndView();
+                    //}
+                }
+            }
+        }
+        if (logger.isWarnEnabled()) {
+            logger.warn("Could not find HttpMessageConverter that supports return type " + acceptedMediaTypes);
+        }
+        return new ModelAndView();
+    }
 
 }
