@@ -7,25 +7,26 @@ import java.sql.SQLException;
 
 import javax.validation.ConstraintViolationException;
 
-import com.bit.acc.controller.RestControllerExceptionHandler;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * @author Zhou Liang
  * 如果使用了ControllerAdvice，且其在 RestControllerAdvice 之前被注册，RestControllerAdvice就不起作用。
  * @see RestControllerExceptionHandler
  */
-@ControllerAdvice( annotations = Controller.class )
+@ControllerAdvice( basePackageClasses = {com.bit.acc.controller.UserController.class} )
 //@EnableWebMvc
 //@ResponseBody
 public class ControllerExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
 	/**
      * SQL 异常
@@ -33,7 +34,8 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler({SQLException.class})
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ModelAndView processSQLException(NativeWebRequest request, SQLException e) {
+    public ModelAndView handleSQLException(NativeWebRequest request, SQLException e) {
+        logger.error( "SQLException:\r\n\t{}",  e.getStackTrace() );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -47,7 +49,8 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView processConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
+    public ModelAndView handleConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
+        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -60,7 +63,8 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView processUnauthorizedException(NativeWebRequest request, UnauthorizedException e) {
+    public ModelAndView handleUnauthorizedException(NativeWebRequest request, UnauthorizedException e) {
+        logger.error( "UnauthorizedException:\r\n\t{}",  e.getStackTrace() );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -73,7 +77,8 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView processUnauthenticatedException(NativeWebRequest request, AuthenticationException e) {
+    public ModelAndView handleUnauthenticatedException(NativeWebRequest request, AuthenticationException e) {
+        logger.error( "AuthenticationException:\r\n\t{}",  e.getStackTrace() );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");

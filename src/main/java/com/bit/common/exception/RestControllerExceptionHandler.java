@@ -1,7 +1,7 @@
 /**
  * 2016-06-08
  */
-package com.bit.acc.controller;
+package com.bit.common.exception;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -12,6 +12,8 @@ import javax.validation.ConstraintViolationException;
 
 import com.google.common.base.Throwables;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +32,8 @@ import com.bit.common.model.Response;
 //@ResponseBody
 public class RestControllerExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(RestControllerExceptionHandler.class);
+
     /**
      * 参数校验不通过
      * @param e
@@ -38,6 +42,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleIllegalParamException(MethodArgumentNotValidException e) {
+        logger.error( "MethodArgumentNotValidException:\r\n\t{}",  e.getStackTrace() );
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         String tips = "参数不合法";
         if (errors.size() > 0) {
@@ -52,7 +57,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({FileNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response processNotFoundException(FileNotFoundException e) {
+    public Response handleNotFoundException(FileNotFoundException e) {
+        logger.error( "FileNotFoundException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，请求的界面不存在！");
     }
 	
@@ -62,7 +68,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({NullPointerException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response processSQLException(NullPointerException e) {
+    public Response handleSQLException(NullPointerException e) {
+        logger.error( "NullPointerException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了空指针异常！");
     }
 	
@@ -73,8 +80,9 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({SQLException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public Response processSQLException(SQLException e) {
+    public Response handleSQLException(SQLException e) {
 //        Throwables.getRootCause(e).getMessage();
+        logger.error( "SQLException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了SQL异常！");
     }
 
@@ -84,7 +92,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response processConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
+    public Response handleConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
+        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据校验未通过！");
     }
 
@@ -94,7 +103,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response processConstraintViolationException(NativeWebRequest request, org.hibernate.exception.ConstraintViolationException e) {
+    public Response handleConstraintViolationException(NativeWebRequest request, org.hibernate.exception.ConstraintViolationException e) {
+        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据已被引用！");
     }
     
@@ -104,7 +114,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Response processUnauthenticatedException(UnauthorizedException e) {
+    public Response handleUnauthenticatedException(UnauthorizedException e) {
+        logger.error( "UnauthorizedException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，您没有权限！");
     }
     
@@ -114,7 +125,8 @@ public class RestControllerExceptionHandler {
      */
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response processEntityNotFoundException(EntityNotFoundException e) {
+    public Response handleEntityNotFoundException(EntityNotFoundException e) {
+        logger.error( "EntityNotFoundException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，实体不存在！");
     }
     

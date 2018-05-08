@@ -53,8 +53,8 @@ public class LogAdvice{
 	 * @param joinPoint
 	 *            切点
 	 */
-	@Before("controllerAspect()")
-	public void doBefore(JoinPoint joinPoint) {
+	@Before("controllerAspect()&&@annotation(log)")
+	public void doBefore(JoinPoint joinPoint, ControllerLog log) {
 		
 		Subject subject = SecurityUtils.getSubject();
 		Session session = subject.getSession();
@@ -78,7 +78,13 @@ public class LogAdvice{
 			SysLog sysLog = new SysLog();
 			sysLog.setIp(ip);
 			sysLog.setUserId(user==null ? null : user.getId());
-			//sysLog.setLog( getMethodDescription(joinPoint, "controller") );
+			sysLog.setLog( log.value() );
+
+
+            Class targetClass = joinPoint.getTarget().getClass();
+            String methodName = joinPoint.getSignature().getName();
+            Object[] arguments = joinPoint.getArgs();
+
 			sysLog.setEntityName(joinPoint.getTarget().getClass().getName());
 			sysLog.setInstance(null);
 			sysLog.setAttribute(null);
@@ -86,7 +92,7 @@ public class LogAdvice{
 			sysLog.setOldValue(null);
 			sysLog.setNewValue(null);
 			sysLog.setOprtTime(new Date());
-			sysLogService.save(sysLog);
+//			sysLogService.save(sysLog);
 			
 			System.out.println("=====前置通知结束=====");
 		} catch (Exception e) {
@@ -143,35 +149,4 @@ public class LogAdvice{
 		
 	}
 
-	/**
-	 * 获取注解中对方法的描述信息
-	 * 
-	 * @param joinPoint 切点
-	 * @return 方法描述
-	 * @throws Exception
-	 */
-	@SuppressWarnings("rawtypes")
-	private String getMethodDescription(JoinPoint joinPoint, String type)
-			throws Exception {
-		String targetName = joinPoint.getTarget().getClass().getName();
-		String methodName = joinPoint.getSignature().getName();
-		Object[] arguments = joinPoint.getArgs();
-		Class targetClass = Class.forName(targetName);
-		Method[] methods = targetClass.getMethods();
-		String description = "";
-		for (Method method : methods) {
-			if (method.getName().equals(methodName)) {
-				Class[] clazzs = method.getParameterTypes();
-				if (clazzs.length == arguments.length) {
-					if( type.equals("controller"))
-						description = method.getAnnotation(ControllerLog.class).value();
-					else if(type.equals("service"))
-						description = method.getAnnotation(ServiceLog.class).value();
-					break;
-				}
-			}
-		}
-		return description;
-	}
-	
 }
