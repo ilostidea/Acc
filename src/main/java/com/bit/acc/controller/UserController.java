@@ -111,8 +111,7 @@ public class UserController {
     
     @RequestMapping(value="/admin/add",method=RequestMethod.GET)
     public ModelAndView getAdd() throws Exception{
-    	//测试异常处理
-        if(true) throw new SQLException("SQL异常");
+    	//测试异常处理        if(true) throw new SQLException("SQL异常");
         ModelAndView mv = new ModelAndView();
         mv.setViewName("user/add");
         mv.addObject(new SysUser());

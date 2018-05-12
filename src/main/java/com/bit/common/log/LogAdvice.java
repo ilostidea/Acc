@@ -1,30 +1,24 @@
 package com.bit.common.log;
 
-import java.lang.reflect.Method;
-import java.util.Date;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.bit.acc.model.SysLog;
 import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.SysLogService;
 import com.bit.common.util.IConstants;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.CodeSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 @Aspect
 @Component
@@ -63,36 +57,50 @@ public class LogAdvice{
 		String ip = session.getHost();
 		try {
 			// *========数据库日志=========*//
-			/*Log log = SpringContextHolder.getBean("sysLogService");
-			log.setDescription(getControllerMethodDescription(joinPoint));
-			log.setMethod((joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));
-			log.setType("0");
-			log.setRequestIp(ip);
-			log.setExceptionCode(null);
-			log.setExceptionDetail(null);
-			log.setParams(null);
-			log.setCreateBy(user);
-			log.setCreateDate(DateUtil.getCurrentDate());
-			// 保存数据库
-			logService.add(log);*/
 			SysLog sysLog = new SysLog();
 			sysLog.setIp(ip);
 			sysLog.setUserId(user==null ? null : user.getId());
 			sysLog.setLog( log.value() );
-
-
-            Class targetClass = joinPoint.getTarget().getClass();
-            String methodName = joinPoint.getSignature().getName();
-            Object[] arguments = joinPoint.getArgs();
-
 			sysLog.setEntityName(joinPoint.getTarget().getClass().getName());
-			sysLog.setInstance(null);
-			sysLog.setAttribute(null);
 			sysLog.setOperate(joinPoint.getSignature().getName());
-			sysLog.setOldValue(null);
-			sysLog.setNewValue(null);
+			StringBuffer argString = new StringBuffer();
+            Object[] argTypes = ((CodeSignature)joinPoint.getSignature()).getParameterTypes();
+            String[] argNames = ((CodeSignature)joinPoint.getSignature()).getParameterNames();
+            Object[] args = joinPoint.getArgs();
+			for(int i = 0 ; i < args.length; i++ ){
+			    String argType = null;
+				if(argTypes[i] instanceof Class)
+                    argType = ( (Class) argTypes[i] ).getName();
+				else
+                    argType = argTypes[i].getClass().getName();
+                argString.append( argType ).append(" ");
+
+                if(argType.indexOf("com.bit.acc.model") >=  0) {/*
+                    JSONValue jsonValue = JSONMapper.toJSON(args[i]);
+                    String jsonStr = jsonValue.render(true);// 是否格式化
+                    argString.append(argNames[i]).append(":").append(jsonStr);*/
+
+					/**
+					 * ObjectMapper是JSON操作的核心，Jackson的所有JSON操作都是在ObjectMapper中实现。
+					 * ObjectMapper有多个JSON序列化的方法，可以把JSON字符串保存至File、OutputStream等不同的介质中。
+					 * writeValue(File arg0, Object arg1)把arg1转成json序列，并保存到arg0文件中。
+					 * writeValue(OutputStream arg0, Object arg1)把arg1转成json序列，并保存到arg0输出流中。
+					 * writeValueAsBytes(Object arg0)把arg0转成json序列，并把结果输出成字节数组。
+					 * writeValueAsString(Object arg0)把arg0转成json序列，并把结果输出成字符串。
+					 */
+					ObjectMapper mapper = new ObjectMapper();
+					String json = mapper.writeValueAsString( args[i] );
+					argString.append(argNames[i]).append(":").append(json);
+
+				} else {
+                    argString.append(argNames[i]).append(":").append(args[i]);
+                }
+                if( i < args.length - 1)
+                    argString.append(", ");
+            }
+			sysLog.setArgs( argString.toString() );
 			sysLog.setOprtTime(new Date());
-//			sysLogService.save(sysLog);
+			sysLogService.save(sysLog);
 			
 			System.out.println("=====前置通知结束=====");
 		} catch (Exception e) {
@@ -108,17 +116,17 @@ public class LogAdvice{
 	 * @param joinPoint
 	 * @param e
 	 */
-	@AfterThrowing(pointcut = "controllerAspect()", throwing = "e")
+	/*@AfterThrowing(pointcut = "controllerAspect()", throwing = "e")
 	public void doAfterControllerThrowing(JoinPoint joinPoint, Throwable e) {
 		logAfterThrowing(joinPoint, e);
 	}
 
-	/**
+	*//**
 	 * 异常通知 用于拦截service层，记录异常日志
 	 * 
 	 * @param joinPoint
 	 * @param e
-	 */
+	 *//*
 	@AfterThrowing(pointcut = "serviceAspect()", throwing = "e")
 	public void doAfterServiceThrowing(JoinPoint joinPoint, Throwable e) {
 		logAfterThrowing(joinPoint, e);
@@ -138,7 +146,7 @@ public class LogAdvice{
 				params += String.valueOf(joinPoint.getArgs()[i]) + ";";
 			}
 		}
-		/* ==========记录本地异常日志========== */
+		*//* ==========记录本地异常日志========== *//*
 		logger.error("\r\n\t异常方法:{}\r\n\t方法参数:{}\r\n\t异常代码:{}\r\n\t异常信息:{}\r\n\t堆栈打印:{}",
 				joinPoint.getTarget().getClass().getName() +"." + joinPoint.getSignature().getName(), 
 				params,
@@ -147,6 +155,6 @@ public class LogAdvice{
 				e.getStackTrace()
 				);
 		
-	}
+	}*/
 
 }

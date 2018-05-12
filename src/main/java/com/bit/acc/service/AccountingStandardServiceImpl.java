@@ -27,6 +27,7 @@ public class AccountingStandardServiceImpl extends AbstractService<AccountingSta
 	@Override
 	public List<Map<String, Object>> getNameExeyearsWithDistinctCode() {
 		//String jpql = "select t from " + AccountingStandard.class.getName() + " as t where t.status = true";
+		if(true) throw new NullPointerException();
 		List< AccountingStandard > resultList = dao.findAllStatusTrue();
 
 		Map<String, Map<String, Object>> tempMap = new HashMap<String, Map<String, Object>>();

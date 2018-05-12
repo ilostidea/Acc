@@ -12,11 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -43,30 +39,35 @@ public class SysLog implements java.io.Serializable {
 	private String log;
 	private String entityName;
 	private String operate;
+	private String args;
+	/*
 	private String instance;
 	private String attribute;
 	private String oldValue;
-	private String newValue;
-	private Date oprtTime;
+	private String newValue;*/
+	private Date oprtTime;/*
 	private Date createTime;
 	private Long creator;
 	private Date modifyTime;
-	private Long modifier;
+	private Long modifier;*/
 
 	public SysLog() {
 	}
 
-	public SysLog(String ip, Long userId, String entityName,
-			String operate, String instance, String attribute, String oldValue,
-			String newValue, Date oprtTime) {
+	public SysLog(String ip, Long userId, String log, String entityName,
+			String operate, String args,/*String instance, String attribute, String oldValue,
+			String newValue,*/ Date oprtTime) {
 		this.ip = ip;
 		this.userId = userId;
+		this.log = log;
 		this.entityName = entityName;
 		this.operate = operate;
+		this.args = args;
+		/*
 		this.instance = instance;
 		this.attribute = attribute;
 		this.oldValue = oldValue;
-		this.newValue = newValue;
+		this.newValue = newValue;*/
 		this.oprtTime = oprtTime;
 	}
 
@@ -128,7 +129,17 @@ public class SysLog implements java.io.Serializable {
 		this.operate = operate;
 	}
 
-	@Column(name = "Instance", nullable = true, length = 64)
+    @Type(type="text")
+    @Column(name = "Args", nullable = false, length = 65535)
+    public String getArgs() {
+        return this.args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
+    }
+
+/*	@Column(name = "Instance", nullable = true, length = 64)
 	public String getInstance() {
 		return this.instance;
 	}
@@ -162,7 +173,7 @@ public class SysLog implements java.io.Serializable {
 
 	public void setNewValue(String newValue) {
 		this.newValue = newValue;
-	}
+	}*/
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "OprtTime", nullable = false, length = 19)
@@ -174,7 +185,12 @@ public class SysLog implements java.io.Serializable {
 		this.oprtTime = oprtTime;
 	}
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 
+/*
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CreateTime", updatable = false, nullable = false, length = 19)
 	@CreationTimestamp
@@ -213,6 +229,6 @@ public class SysLog implements java.io.Serializable {
 
 	public void setModifier(Long modifier) {
 		this.modifier = modifier;
-	}
+	}*/
 
 }
