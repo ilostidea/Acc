@@ -15,19 +15,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -125,27 +114,6 @@ public class UserRestController {
     public Response getUserEmployee() throws Exception{
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
         List<SysUser> userList = userService.findAll();//throw new SQLException("What ?");
-        return new Response().success(userList);
-    }
-    
-    /**
-     * 获得用户列表信息，不包含用户员工的信息
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value="/admin/stat",method=RequestMethod.GET)
-    @ControllerLog(value = "获得用户列表")
-    public Response stat(@RequestParam(value="from", required=false) Date from, @RequestParam(value="to", required=false) Date to) throws Exception{
-    	//测试异常处理 if(true) throw new SQLException("SQL异常");
-    	if(to == null)
-    		to = new Date();
-    	if(from == null) {
-    		Calendar calendar = Calendar.getInstance();
-    		calendar.setTime(to);
-    		calendar.add(Calendar.DATE, -30);
-    		from = calendar.getTime();
-    	}
-    	Long[][] userList = userService.getNewUsersAndTotalUsersByDate(from, to);
         return new Response().success(userList);
     }
 }

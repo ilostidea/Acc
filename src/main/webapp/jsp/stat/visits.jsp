@@ -34,9 +34,11 @@
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
             <a href="<%=request.getContextPath()%>/jsp/stat/customer.jsp" class="list-group-item">注册客户数</a>
-            <a href="#" class="list-group-item active">访问量统计</a>
+            <a href="#" class="list-group-item active">访问量统计</a><%--
+              <a href="<%=request.getContextPath()%>/jsp/stat/duration.jsp" class="list-group-item">访问时长统计</a>--%>
             <a href="<%=request.getContextPath()%>/jsp/stat/conversion.jsp" class="list-group-item">转化率</a>
-            <a href="<%=request.getContextPath()%>/jsp/stat/retention.jsp" class="list-group-item">留存率</a><!-- 
+            <a href="<%=request.getContextPath()%>/jsp/stat/retention.jsp" class="list-group-item">留存率</a>
+              <a href="<%=request.getContextPath()%>/jsp/stat/bounce.jsp" class="list-group-item">跳出率</a><!--
             <a href="#" class="list-group-item">客户偏好统计</a>
             <a href="#" class="list-group-item">使用情况分析</a> -->
             <a href="<%=request.getContextPath()%>/admin/druid/*" class="list-group-item" target="_blank">数据池</a>
@@ -105,11 +107,12 @@
 		});
 		
 		$(document).ready(function(){
-			$.get("/sysUser/admin/stat",function(responseTxt, status){
+			$.get("/stat/admin/visit",function(responseTxt, status){
 				if(status == "success"){
 					var datas = responseTxt.data;
-					var data1 = datas[0];
-					var data2 = datas[1];
+					var dataVisitCount = datas[0];
+					var dataIpCount = datas[1];
+                    var cookieCount = datas[2];
 
 					//var dateFormat = 'MMMM DD YYYY';
 					var date = moment( ).subtract(30, 'd');//alert(date.format(dateFormat));
@@ -137,29 +140,38 @@
 						data: {
 							labels: labels,
 							datasets: [{
-								label: '日注册数',
-								backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(54, 162, 235)',
+								label: '访问次数',
+								backgroundColor: color('rgb(255, 99, 132)').alpha(0.5).rgbString(),//red
+								borderColor: 'rgb(255, 99, 132)',
 								fill: false,
-								data: data1,
+								data: dataVisitCount,
 								pointRadius: 1,
 								//lineTension: 0,
 								borderWidth: 2
 							}, {
-								label: '累计注册数',
-								backgroundColor: color('rgb(255, 159, 64)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(255, 159, 64)',
+								label: '访问IP数',
+								backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),//blue
+								borderColor: 'rgb(54, 162, 235)',
 								fill: false,
-								data: data2,
+								data: dataIpCount,
 								pointRadius: 1,
 								//lineTension: 0,
 								borderWidth: 2
-							}]
+							}, {
+                                label: '访问客户(Cookie)数',
+                                backgroundColor: color('rgb(255, 205, 86)').alpha(0.5).rgbString(),//yellow
+                                borderColor: 'rgb(255, 205, 86)',
+                                fill: false,
+                                data: cookieCount,
+                                pointRadius: 1,
+                                //lineTension: 0,
+                                borderWidth: 2
+                            }]
 						},
 						options: {
 							title: {
 					            display: true,
-								text: '注册客户统计',
+								text: '访问量统计',
 								fontSize: 18
 							},
 					        tooltips: {
@@ -185,7 +197,7 @@
 								yAxes: [{
 									scaleLabel: {
 										display: true,
-										labelString: '用户数'
+										labelString: '访问数'
 									},
 					                ticks: {
 					                    beginAtZero:true

@@ -37,7 +37,7 @@
 	
 	<!-- Define the Shiro Realm implementation to connect to back-end security datasource. -->
 	<bean id="dbRealm" class="com.bit.common.auth.DbRealm"><!--
-        <property name="userService" ref="userService"/>-->
+        <property name="userService" ref="userService"/> -->
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
         <!--可不设置，使用SecurityManager中的cacheManager 
         <property name="cacheManager" ref="cacheManager"/> -->

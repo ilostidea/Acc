@@ -102,9 +102,21 @@
     </bean>
     -->
 
+	<!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    &lt;!&ndash; 此种方式不推荐，对jpa的侵入性太强，除非数据库连接池也在spring中配置
+    <property name="dataSource" ref="dataSource" /> &ndash;&gt;
+        <property name="persistenceUnitName" value="Jweb" />
+    </bean>
+    &lt;!&ndash; 自动装载EntityManager &ndash;&gt;
+    <context:annotation-config />
+    &lt;!&ndash; 配置事务管理器 &ndash;&gt;
+    <bean id="entityManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>-->
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-	    <property name="dataSource" ref="dataSource"/>
-	    <!-- 用于指定持久化实现厂商类；如Hibernate为org.hibernate.ejb.HibernatePersistence类。只要有jpaVendorAdapter即可
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 用于指定持久化实现厂商类；如Hibernate为org.hibernate.ejb.HibernatePersistence类。只要有jpaVendorAdapter即可
         <property name="persistenceProvider" value="org.hibernate.ejb.HibernatePersistence"/> -->
         <!--  用于获取JPA持久化单元，默认实现DefaultPersistenceUnitManager用于解决多配置文件情况
         <property name="persistenceUnitManager" ref="defaultPersistenceUnitManager"/>

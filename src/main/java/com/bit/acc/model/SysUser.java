@@ -59,7 +59,7 @@ public class SysUser implements java.io.Serializable {
 	private String mobile;
 
 	@Column(name = "Email")
-	@Length(max = 64, message = "{sysUser.email.length.illegal}", groups = {First.class})
+	@Length(max = 32, message = "{sysUser.email.length.illegal}", groups = {First.class})
 	@Email(message = "{sysUser.email.illegal}", groups = {First.class})
 	private String email;
 	

@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@Table(name = "accUsage", catalog = "acc")
+@Table(name = "AccUsage", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")//解决json循环嵌套的问题,加上了该注解，会导致反序列化子对象失败
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")

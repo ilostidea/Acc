@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@Table(name = "specificstandard", catalog = "acc")
+@Table(name = "SpecificStandard", catalog = "acc")
 @JsonIgnoreProperties(value={"createTime", "creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="accStandardCache")
 @Cacheable(true)

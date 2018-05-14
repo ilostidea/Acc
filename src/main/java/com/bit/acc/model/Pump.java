@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @DynamicInsert(true)
 @DynamicUpdate(true)
-@Table(name = "pump", catalog = "acc")
+@Table(name = "Pump", catalog = "acc")
 @JsonIgnoreProperties(value={"creator", "modifyTime", "modifier"}/*, ignoreUnknown = true*/)
 public class Pump implements java.io.Serializable, Comparable<Pump> {
 

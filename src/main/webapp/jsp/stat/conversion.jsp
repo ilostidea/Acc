@@ -25,9 +25,11 @@
         <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar">
           <div class="list-group">
             <a href="<%=request.getContextPath()%>/jsp/stat/customer.jsp" class="list-group-item">注册客户数</a>
-            <a href="<%=request.getContextPath()%>/jsp/stat/visits.jsp" class="list-group-item">访问量统计</a>
+            <a href="<%=request.getContextPath()%>/jsp/stat/visits.jsp" class="list-group-item">访问量统计</a><%--
+              <a href="<%=request.getContextPath()%>/jsp/stat/duration.jsp" class="list-group-item">访问时长统计</a>--%>
             <a href="#" class="list-group-item active">转化率</a>
-            <a href="<%=request.getContextPath()%>/jsp/stat/retention.jsp" class="list-group-item">留存率</a><!-- 
+            <a href="<%=request.getContextPath()%>/jsp/stat/retention.jsp" class="list-group-item">留存率</a>
+              <a href="<%=request.getContextPath()%>/jsp/stat/bounce.jsp" class="list-group-item">跳出率</a><!--
             <a href="#" class="list-group-item">客户偏好统计</a>
             <a href="#" class="list-group-item">使用情况分析</a> -->
             <a href="<%=request.getContextPath()%>/admin/druid/*" class="list-group-item" target="_blank">数据池</a>
@@ -72,12 +74,12 @@
     var option = {
     	    title: {
     	        text: '漏斗图',
-    	        subtext: '纯属虚构',
+    	        subtext: '按时间段统计',
     	        left:'center'
     	    },
     	    tooltip: {
     	        trigger: 'item',
-    	        formatter: "{a} <br/>{b} : {c}%"
+    	        formatter: "{a} <br/>{b} : {c}次"
     	    },
     	    toolbox: {
     	        feature: {
@@ -87,7 +89,7 @@
     	        }
     	    },
     	    legend: {
-    	        data: ['展现','点击','访问','咨询','订单'],
+    	        data: ['访问数','新访问数（无user信息）','注册数'],
     	    	top:80
     	    },
     	    calculable: true,
@@ -134,18 +136,27 @@
     	                }
     	            },
     	            data: [
-    	                {value: 60, name: '访问'},
-    	                {value: 40, name: '咨询'},
-    	                {value: 20, name: '订单'},
-    	                {value: 80, name: '点击'},
-    	                {value: 100, name: '展现'}
+                        {value: 100, name: '访问数'},
+    	                {value: 80, name: '新访问数（无user信息）'},
+                        {value: 60, name: '注册数'}
     	            ]
     	        }
     	    ]
     	};
-    
-	    // 使用刚指定的配置项和数据显示图表。
-	    myChart.setOption(option);
+
+    $(document).ready(function(){
+        $.get("/stat/admin/convert",function(responseTxt, status) {
+            if (status == "success") {
+                var datas = responseTxt.data;
+                var charData = option.series[0].data;
+                charData[0].value = datas[0];
+                charData[1].value = datas[1];
+                charData[2].value = datas[2];
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            }
+        })
+    })
 
 	</script>
 </body>

@@ -1,23 +1,21 @@
 package com.bit.acc.service;
 
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.bit.acc.dao.SysUserRepository;
+import com.bit.acc.model.SysUser;
+import com.bit.acc.service.baseservice.AbstractService;
+import com.bit.acc.service.intfs.UserService;
+import com.bit.common.log.ServiceLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bit.acc.dao.SysUserRepository;
-import com.bit.acc.model.SysUser;
-import com.bit.acc.service.baseservice.AbstractService;
-import com.bit.acc.service.intfs.UserService;
-import com.bit.common.log.ServiceLog;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service("sysUserService")
 public class UserServiceImpl extends AbstractService<SysUser, Long> implements UserService {
@@ -47,7 +45,7 @@ public class UserServiceImpl extends AbstractService<SysUser, Long> implements U
 
     @ServiceLog(value = "根据账号查询用户")
 	public List<SysUser> findByAccountNickName(String mobileOrEmailOrNickName ) throws Exception{
-    	if(true) throw new SQLException("SQL异常");
+    	//if(true) throw new SQLException("SQL异常");
 		return dao.findByAccountNickName(mobileOrEmailOrNickName);
 	}
 	
@@ -81,6 +79,10 @@ public class UserServiceImpl extends AbstractService<SysUser, Long> implements U
 				result[1][i+1] = result[1][i];
 		}
 		return result;
+	}
+
+	public Object[] getNewUsersByDate(Date from, Date to) {
+		return dao.getNewUsersByDate(from, to);
 	}
 
 }

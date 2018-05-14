@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.shiro.web.subject.WebSubject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -18,6 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
 import java.util.Date;
 
 @Aspect
@@ -48,7 +55,7 @@ public class LogAdvice{
 	 *            切点
 	 */
 	@Before("controllerAspect()&&@annotation(log)")
-	public void doBefore(JoinPoint joinPoint, ControllerLog log) {
+	public void doBefore(JoinPoint joinPoint, ControllerLog log ) {
 		
 		Subject subject = SecurityUtils.getSubject();
 		Session session = subject.getSession();
@@ -59,6 +66,24 @@ public class LogAdvice{
 			// *========数据库日志=========*//
 			SysLog sysLog = new SysLog();
 			sysLog.setIp(ip);
+            String cookieName = ((DefaultWebSessionManager) ((DefaultWebSecurityManager) SecurityUtils.getSecurityManager()).getSessionManager()).getSessionIdCookie().getName();
+            String accsessionid = "";
+            ServletRequest request = ((WebSubject) subject).getServletRequest();
+            //获取所有Cookie
+            Cookie[] cookies = ( (HttpServletRequest) request).getCookies();
+            //如果浏览器中存在Cookie
+            if (cookies != null && cookies.length > 0) {
+                //遍历所有Cookie
+                for(Cookie cookie: cookies) {
+                    //找到name为city的Cookie
+                    if (cookie.getName().equals( cookieName )) {
+                        //使用URLDecode.decode()解码,防止中文乱码
+                        accsessionid = URLDecoder.decode(cookie.getValue(), "utf-8");
+                        break;
+                    }
+                }
+            }
+			sysLog.setCookie( accsessionid );
 			sysLog.setUserId(user==null ? null : user.getId());
 			sysLog.setLog( log.value() );
 			sysLog.setEntityName(joinPoint.getTarget().getClass().getName());
