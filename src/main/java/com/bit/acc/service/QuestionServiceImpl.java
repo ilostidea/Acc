@@ -1,27 +1,23 @@
 package com.bit.acc.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
-
 import com.bit.acc.dao.AnswerRepository;
 import com.bit.acc.dao.QuestionRepository;
 import com.bit.acc.model.Answer;
 import com.bit.acc.model.Question;
 import com.bit.acc.service.baseservice.AbstractService;
 import com.bit.acc.service.intfs.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
 
 @Service("questionService")
 public class QuestionServiceImpl extends AbstractService<Question, Long> implements QuestionService {
@@ -54,8 +50,9 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     }
     
 	@Override
-	public List<Question> findRecent(Pageable pageable) {
-		List<Object> list = dao.findRecent(pageable );
+	public Map<String, Object> findRecent(Pageable pageable) {
+		Page<Object> list = dao.findRecent(pageable );
+		Map<String, Object> resultMap = new HashMap<>();
 		List<Question> resultList = new ArrayList<>();
 		for(Object o : list ) {
 			Object[] array = (Object[]) o;
@@ -66,7 +63,10 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 			question.setCollectedCount(collectedCount);
 			resultList.add(question);
 		}
-		return resultList;
+		resultMap.put("list", resultList);
+		resultMap.put("totalElements", list.getTotalElements());
+		resultMap.put("totalPages", list.getTotalPages());
+		return resultMap;
 	}
 
 	@Override

@@ -1,24 +1,5 @@
 package com.bit.acc.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bit.acc.model.Question;
 import com.bit.acc.service.intfs.QuestionService;
 import com.bit.common.log.ControllerLog;
@@ -26,6 +7,17 @@ import com.bit.common.model.Response;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * question 问答模块的问题
@@ -82,7 +74,7 @@ public class QuestionRestController {
     public Response queryRecent( @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
         Pageable pageable = PageRequest.of(page, size);
-        List<Question> listQuestion = questionService.findRecent(pageable);
+        Map<String, Object> listQuestion = questionService.findRecent(pageable);
         return new Response().success( listQuestion );
     }
     

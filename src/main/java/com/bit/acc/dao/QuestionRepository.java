@@ -3,6 +3,7 @@ package com.bit.acc.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -31,9 +32,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc")
+	@Query(value= queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc",
+	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public List<Object> findRecent( Pageable pageable );
+	public Page<Object> findRecent(Pageable pageable );
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
