@@ -117,4 +117,33 @@ public class SysLogServiceImpl extends AbstractService<SysLog, Long> implements 
         return result;
 	}
 
+    public Long[][] getRestionByDate(Date from, Date to) {
+	    int datediff = (int) ChronoUnit.DAYS.between(from.toInstant(), to.toInstant());
+        Long[][] result = new Long[4][datediff];
+        List<Object[]> queryResult = dao.getRetetion(from, to);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(from);
+        calendar.add(Calendar.DATE, 1);
+        List<Object[]> basicVisitCountResult = dao.getVisitCookieCountByDate( from, calendar.getTime() );
+        Long basicVisitCount = 0l;
+        if( basicVisitCountResult.size() > 0)
+            basicVisitCount = new Long( basicVisitCountResult.get(0)[2].toString() );
+        for(int i=0; i<datediff; i++) {
+            result[0][i] = new Long(i+1) ;//天数
+            result[1][i] = basicVisitCount;//起始时间的访问数（cookie）
+            result[2][i] = 0l;//第i天后的访问数
+            result[3][i] = 0l;//第i天后的留存率
+            for(int j=0; j<queryResult.size(); j++) {
+                Object[] retention = queryResult.get(j);
+                if (new Long(retention[0].toString()) == i+1) {
+                    //result[0][i] = new Long(retention[0].toString());
+                    result[2][i] = new Long(retention[1].toString());//第N天的访问量
+                    double point = (double) result[2][i]/basicVisitCount*10000;
+                    result[3][i] = Math.round( point );
+                }
+            }
+        }
+	    return result;
+    }
+
 }

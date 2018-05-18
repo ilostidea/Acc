@@ -32,29 +32,29 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(value= queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc",
+	@Query(value= queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc",//TODO: What does 'group by q.id' do?
 	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public Page<Object> findRecent(Pageable pageable );
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
 	public List<Question> findByUser(@Param("userID") Long userId);
 
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
 	public List<Question> findByAnsweredUser(@Param("userID") Long userId);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID group by q.id order by q.createTime desc")
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true and q.id = :id group by q.id")
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true and q.id = :id group by q.id")//TODO: What does 'group by q.id' do?
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.id = :id group by q.id")
+	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.id = :id group by q.id")//TODO: What does 'group by q.id' do?
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public Object getQuesstionAndAnswersPumpCountByIdForAdmin(@Param("id") Long id) ;
 	

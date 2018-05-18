@@ -29,10 +29,25 @@ public interface SysLogRepository extends JpaRepository<SysLog, Long> {
      * @param to
      * @return
      */
-    @Query(value = " select t.oprtTime, count(t.cookieCount) from " +
-            " (select l.oprtTime, count(l.cookie) as cookieCount from SysLog l where l.oprtTime BETWEEN ?1 AND ?2 group by date_format(l.oprtTime, '%Y%m%d'), l.cookie having count( l.cookie) = 1) as t " +
-            " group by date_format(t.oprtTime, '%Y%m%d')",
+    @Query(value = " select t.OprtTime, count(t.cookieCount) from " +
+            " (select l.OprtTime, count(l.Cookie) as cookieCount from SysLog l where l.OprtTime BETWEEN ?1 AND ?2 group by date_format(l.OprtTime, '%Y%m%d'), l.Cookie having count( l.Cookie) = 1) as t " +
+            " group by date_format(t.OprtTime, '%Y%m%d')",
             nativeQuery = true)
     public  List<Object[]> getOnlyOnceVisitCookieCountByDate(Date from, Date to);
+
+    /**
+     * 用原生SQL，按天数查询一定时期内的留存数
+     * @param from
+     * @param to
+     * @return
+     */
+    @Query(value = "select t.dateDiff, count(distinct t.retentionCookie) from " +
+            "( select DATEDIFF(l1.OprtTime, l2.OprtTime) as dateDiff, l1.Cookie as retentionCookie " +
+            "    from SysLog l1 join SysLog l2 on l1.Cookie = l2.Cookie and date_format(l1.OprtTime,'%Y%m%d') > date_format(l2.OprtTime,'%Y%m%d') " +
+            "  where date_format(l2.OprtTime,'%Y%m%d') = date_format(?1,'%Y%m%d') and l1.OprtTime <= ?2 " +
+            ") as t " +
+            "group by t.datediff",
+           nativeQuery = true)
+    public  List<Object[]> getRetetion(Date from, Date to);
 
 }

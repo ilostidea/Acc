@@ -107,4 +107,18 @@ public class Stat4AdminRestController {
         return new Response().success(visits);
     }
 
+    /**
+     * 留存率率统计
+     */
+    @RequestMapping(value = "/admin/retention", method = RequestMethod.GET)
+    public Response retention(@RequestParam(value = "from", required = false) Date from,
+                           @RequestParam(value = "to", required = false) Date to) {
+        to = getEndDate(to);
+        if (from == null) {
+            from = getFromDate(to, -30);
+        }
+        Long[][] retention = logService.getRestionByDate(from, to);
+        return new Response().success(retention);
+    }
+
 }

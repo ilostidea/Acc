@@ -84,123 +84,116 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
-    <script>/*
-		function randomNumber(min, max) {
-			return Math.random() * (max - min) + min;
-		}
+    <script>
 
-		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * 0.95, lastClose * 1.05);
-			var close = randomNumber(open * 0.95, open * 1.05);
-			return {
-				t: date.valueOf(),
-				y: close
-			};
-		}*/
+        var chart;
 
-		var chart;
+        $('#update').on('click', function() {
+            var type = $('#type').val();
+            chart.config.type = type;
+            chart.update();
+        });
 
-		$('#update').on('click', function() {
-			var type = $('#type').val();
-			chart.config.type = type;
-			chart.update();
-		});
-		
-		$(document).ready(function(){
-			$.get("/sysUser/admin/stat",function(responseTxt, status){
-				if(status == "success"){
-					var datas = responseTxt.data;
-					var data1 = datas[0];
-					var data2 = datas[1];
+        $(document).ready(function(){
+            $.get("/stat/admin/retention",function(responseTxt, status){
+                if(status == "success"){
+                    var datas = responseTxt.data;
+                    var daysLater = datas[0];
+                    var basicVisitCount = datas[1];
+                    var daysLaterVisitCount = datas[2];
+                    var retentionRate = datas[3];
 
-					//var dateFormat = 'MMMM DD YYYY';
-					var date = moment( ).subtract(30, 'd');//alert(date.format(dateFormat));
-					var labels = [date];
-					while (labels.length < 30) {
-						date = date.clone().add(1, 'd');
-						labels.push(date);
-					}/*
-					var data1 = [randomBar(date, 30)];
-					var data2 = [randomBar(date, 30)];
-					var labels = [date];
-					while (data1.length < 60) {
-						date = date.clone().add(1, 'd');
-						if (date.isoWeekday() <= 5) {
-							data1.push(randomBar(date, data1[data1.length - 1].y));
-							labels.push(date);
-							data2.push(randomBar(date, data2[data2.length - 1].y));
-							//labels.push(date);
-						}
-					}*/
+                    for(var i=0; i<retentionRate.length; i++){
+                        retentionRate[i] = retentionRate[i] / 100;
+                    }
 
-					var color = Chart.helpers.color;
-					var config = {
-						type: 'line',
-						data: {
-							labels: labels,
-							datasets: [{
-								label: '日注册数',
-								backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(54, 162, 235)',
-								fill: false,
-								data: data1,
-								pointRadius: 1,
-								//lineTension: 0,
-								borderWidth: 2
-							}, {
-								label: '累计注册数',
-								backgroundColor: color('rgb(255, 159, 64)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(255, 159, 64)',
-								fill: false,
-								data: data2,
-								pointRadius: 1,
-								//lineTension: 0,
-								borderWidth: 2
-							}]
-						},
-						options: {
-							title: {
-					            display: true,
-								text: '注册客户统计',
-								fontSize: 18
-							},
-					        tooltips: {
-					            mode: 'index'
-					        },
-					        bounds: 'ticks',
-							scales: {
-								xAxes: [{
-									type: 'time',
-									distribution: 'linear',
-									ticks: {
-										source: 'labels'
-									},
-									time: {
-										unit: 'day',
-										tooltipFormat: 'YYYY年MM月DD日'
-									},
-									scaleLabel: {
-										display: true,
-										labelString: '日期'
-									}
-								}],
-								yAxes: [{
-									scaleLabel: {
-										display: true,
-										labelString: '用户数'
-									},
-					                ticks: {
-					                    beginAtZero:true
-					                }
-								}]
-							}
-						}
-					};
-					var ctx = document.getElementById('chart1').getContext('2d');
-					chart = new Chart(ctx, config);
-				}
-			});
-		});
+                    var color = Chart.helpers.color;
+                    var config = {
+                        type: 'line',
+                        data: {
+                            labels: daysLater,
+                            datasets: [ {
+                                label: '留存率',
+                                backgroundColor: color('rgb(255, 205, 86)').alpha(0.5).rgbString(),//yellow
+                                borderColor: 'rgb(255, 205, 86)',
+                                fill: false,
+                                data: retentionRate,
+                                yAxisID: 'y-axis-1',
+                                pointRadius: 1,
+                                //lineTension: 0,
+                                borderWidth: 2
+                            }, {
+                                label: '基准日访问Cookie数',
+                                backgroundColor: color('rgb(255, 99, 132)').alpha(0.5).rgbString(),//red
+                                borderColor: 'rgb(255, 99, 132)',
+                                fill: false,
+                                data: basicVisitCount,
+                                yAxisID: 'y-axis-2',
+                                pointRadius: 1,
+                                //lineTension: 0,
+                                borderWidth: 2
+                            }, {
+                                label: '日后访问Cookie数',
+                                backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),//blue
+                                borderColor: 'rgb(54, 162, 235)',
+                                fill: false,
+                                data: daysLaterVisitCount,
+                                yAxisID: 'y-axis-2',
+                                pointRadius: 1,
+                                //lineTension: 0,
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: '留存统计',
+                                fontSize: 18
+                            },
+                            tooltips: {
+                                mode: 'index'
+                            },
+                            bounds: 'ticks',
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '天数'
+                                    }
+                                }],
+                                yAxes: [{
+                                    id: 'y-axis-1',
+                                    position: 'left',
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '留存率(%)'
+                                    },
+                                    ticks: {
+                                        beginAtZero:true
+                                    }
+                                },{
+                                    id: 'y-axis-2',
+                                    position: 'right',
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '访问数'
+                                    },
+                                    ticks: {
+                                        beginAtZero:true
+                                    },
+                                    gridLines: {
+                                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                    }
+                                }]
+                            }
+                        }
+                    };
+                    var ctx = document.getElementById('chart1').getContext('2d');
+                    chart = new Chart(ctx, config);
+                }
+            });
+        });
 
 	</script>
 </body>

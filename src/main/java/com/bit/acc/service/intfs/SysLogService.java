@@ -13,4 +13,6 @@ public interface SysLogService extends Service<SysLog, Long> {
 
     public Long[][] getVisitCookieAndOnceVisitCookieByDate(Date from, Date to);
 
+    public Long[][] getRestionByDate(Date from, Date to);
+
 }
