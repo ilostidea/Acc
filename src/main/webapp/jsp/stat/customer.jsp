@@ -10,9 +10,7 @@
 	<link href="<%=request.getContextPath() %>/style/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="<%=request.getContextPath() %>/style/offcanvas.css" rel="stylesheet">
     <link href="<%=request.getContextPath() %>/style/fontawesome-all.css" rel="stylesheet" >
-	<script src="http://momentjs.cn/downloads/moment-with-locales.min.js"></script><!-- 
-	<script src="<%=request.getContextPath() %>/js/ChartUtils.js"></script>-->
-	<script src="<%=request.getContextPath() %>/js/Chart.min.js"></script>
+    <link href="<%=request.getContextPath() %>/style/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 	<style type="text/css">
 		canvas {
 			-moz-user-select: none;
@@ -52,16 +50,24 @@
           <div class="row">
             <div class="col-xs-6 col-lg-12">
              <!-- 右侧内容区 -->
-             
-			Chart Type:
-			<select id="type">
-				<option value="line">Line</option>
-				<option value="bar">Bar</option>
-			</select>
-			<button id="update">update</button>
-			<br>
-			<br>
-             <canvas id="chart1"></canvas>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="type">Chart Type:</label>
+                    <div class="col-sm-3">
+                        <select id="type">
+                            <option value="line">Line</option>
+                            <option value="bar">Bar</option>
+                        </select>
+                        <button id="update">update</button>
+                    </div>
+                    <label class="col-sm-2 control-label" for="dtp_input1">Date Picking:</label>
+                    <div class="col-sm-5">
+                        <input id="dtp_input1" size="16" type="text" value="" readonly class="form_date" onchange="javascript:queryCustomerCount();">to
+                        <input id="dtp_input2" size="16" type="text" value="" readonly class="form_date" onchange="javascript:queryCustomerCount();">
+                    </div>
+                </div>
+                <br>
+
+                <canvas id="chart1"></canvas>
              
              <!-- 右侧内容区域结束 -->
             </div>
@@ -84,19 +90,25 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
-    <script>/*
-		function randomNumber(min, max) {
-			return Math.random() * (max - min) + min;
-		}
+    <script src="http://momentjs.cn/downloads/moment-with-locales.min.js"></script><!--
+	<script src="<%=request.getContextPath() %>/js/ChartUtils.js"></script>-->
+    <script src="<%=request.getContextPath() %>/js/Chart.min.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
 
-		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * 0.95, lastClose * 1.05);
-			var close = randomNumber(open * 0.95, open * 1.05);
-			return {
-				t: date.valueOf(),
-				y: close
-			};
-		}*/
+        $('.form_date').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            pickerPosition: 'bottom-left'
+        });
 
 		var chart;
 
@@ -105,102 +117,123 @@
 			chart.config.type = type;
 			chart.update();
 		});
+
+		function queryCustomerCount(){
+            var fromDateStr = $("#dtp_input1").val();
+            var fullDate = fromDateStr.split("-");
+            var fromDate = new Date(fullDate[0], fullDate[1]-1, fullDate[2]);
+            var toDateStr = $("#dtp_input2").val();
+            fullDate = toDateStr.split("-");
+            var toDate = new Date(fullDate[0], fullDate[1]-1, fullDate[2]);
+            $.get("/stat/admin/reg",
+                {from : fromDate, to : toDate},
+                function(responseTxt, status){
+                    if (status == "success") {
+                        var datas = responseTxt.data;
+                        var data1 = datas[0];
+                        var data2 = datas[1];
+
+                        var date = fromDate;//从最后一天开始往前统计
+                        var labels = [date];
+                        while (date < toDate) {
+                            date = new Date(date.getTime() + 1000 * 60 * 60 * 24 * 1);
+                            labels.push(date);
+                        }
+
+                        var color = Chart.helpers.color;
+                        var config = {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '日注册数',
+                                    backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),
+                                    borderColor: 'rgb(54, 162, 235)',
+                                    fill: false,
+                                    data: data1,
+                                    pointRadius: 1,
+                                    //lineTension: 0,
+                                    borderWidth: 2
+                                }, {
+                                    label: '累计注册数',
+                                    backgroundColor: color('rgb(255, 159, 64)').alpha(0.5).rgbString(),
+                                    borderColor: 'rgb(255, 159, 64)',
+                                    fill: false,
+                                    data: data2,
+                                    pointRadius: 1,
+                                    //lineTension: 0,
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                title: {
+                                    display: true,
+                                    text: '注册客户统计',
+                                    fontSize: 18
+                                },
+                                tooltips: {
+                                    mode: 'index'
+                                },
+                                bounds: 'ticks',
+                                scales: {
+                                    xAxes: [{
+                                        type: 'time',
+                                        distribution: 'linear',
+                                        ticks: {
+                                            source: 'labels'
+                                        },
+                                        time: {
+                                            unit: 'day',
+                                            tooltipFormat: 'YYYY年MM月DD日'
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '日期'
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '用户数'
+                                        },
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        };
+                        var ctx = document.getElementById('chart1').getContext('2d');
+                        if (chart == null)
+                            chart = new Chart(ctx, config);
+                        else {
+                            chart.config = config;
+                            chart.update();
+                        }
+                    }
+                }
+            );
+        }
 		
 		$(document).ready(function(){
-			$.get("/stat/admin/reg",function(responseTxt, status){
-				if(status == "success"){
-					var datas = responseTxt.data;
-					var data1 = datas[0];
-					var data2 = datas[1];
+            var today = new Date();
+            var yestoday = new Date(today - 1000 * 60 * 60 * 24 * 1);
+            $("#dtp_input2").val(getStringFormatOfDate(yestoday));
+            var thirtyDaysBefore = new Date(today - 1000 * 60 * 60 * 24 * 30);//最后一个数字30可改，30天
+            $("#dtp_input1").val(getStringFormatOfDate(thirtyDaysBefore));
+            queryCustomerCount();
+        });
 
-					//var dateFormat = 'MMMM DD YYYY';
-					var date = moment( ).subtract(30, 'd');//alert(date.format(dateFormat));
-					var labels = [date];
-					while (labels.length < 30) {
-						date = date.clone().add(1, 'd');
-						labels.push(date);
-					}/*
-					var data1 = [randomBar(date, 30)];
-					var data2 = [randomBar(date, 30)];
-					var labels = [date];
-					while (data1.length < 60) {
-						date = date.clone().add(1, 'd');
-						if (date.isoWeekday() <= 5) {
-							data1.push(randomBar(date, data1[data1.length - 1].y));
-							labels.push(date);
-							data2.push(randomBar(date, data2[data2.length - 1].y));
-							//labels.push(date);
-						}
-					}*/
-
-					var color = Chart.helpers.color;
-					var config = {
-						type: 'line',
-						data: {
-							labels: labels,
-							datasets: [{
-								label: '日注册数',
-								backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(54, 162, 235)',
-								fill: false,
-								data: data1,
-								pointRadius: 1,
-								//lineTension: 0,
-								borderWidth: 2
-							}, {
-								label: '累计注册数',
-								backgroundColor: color('rgb(255, 159, 64)').alpha(0.5).rgbString(),
-								borderColor: 'rgb(255, 159, 64)',
-								fill: false,
-								data: data2,
-								pointRadius: 1,
-								//lineTension: 0,
-								borderWidth: 2
-							}]
-						},
-						options: {
-							title: {
-					            display: true,
-								text: '注册客户统计',
-								fontSize: 18
-							},
-					        tooltips: {
-					            mode: 'index'
-					        },
-					        bounds: 'ticks',
-							scales: {
-								xAxes: [{
-									type: 'time',
-									distribution: 'linear',
-									ticks: {
-										source: 'labels'
-									},
-									time: {
-										unit: 'day',
-										tooltipFormat: 'YYYY年MM月DD日'
-									},
-									scaleLabel: {
-										display: true,
-										labelString: '日期'
-									}
-								}],
-								yAxes: [{
-									scaleLabel: {
-										display: true,
-										labelString: '用户数'
-									},
-					                ticks: {
-					                    beginAtZero:true
-					                }
-								}]
-							}
-						}
-					};
-					var ctx = document.getElementById('chart1').getContext('2d');
-					chart = new Chart(ctx, config);
-				}
-			});
-		});
+		function getStringFormatOfDate(date) {
+            var year  = date.getFullYear();
+            var month  = date.getMonth() + 1;
+            if( month < 10)
+                month = '0' + month;
+            var day   = date.getDate();
+            if( day < 10)
+                day = '0' + day;
+            return (year + "-" + month + "-" + day);
+        }
 
 	</script>
 </body>

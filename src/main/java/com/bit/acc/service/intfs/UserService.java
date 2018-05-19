@@ -16,6 +16,6 @@ public interface UserService extends Service<SysUser, Long> {
 	
 	public Long[][] getNewUsersAndTotalUsersByDate(Date from, Date to);
 
-	public Object[] getNewUsersByDate(Date from, Date to);
+	public Object[] getNewUsersByPeriod(Date from, Date to);
 	
 }

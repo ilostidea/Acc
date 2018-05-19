@@ -22,10 +22,10 @@ public class Stat4AdminRestController {
     @Resource(name = "sysLogService")
     private SysLogService logService;
 
-    private Date getFromDate(Date to, int ahead) {
+    private Date getFromDate(Date to, int afterDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(to);
-        calendar.add(Calendar.DATE, ahead);
+        calendar.add(Calendar.DATE, afterDays);
         return calendar.getTime();
     }
 
@@ -85,7 +85,7 @@ public class Stat4AdminRestController {
             from = getFromDate(to, -30);
         }
         Object[] visits = logService.getVisitAllAndNewByDate(from, to);
-        Object[] newUsers = userService.getNewUsersByDate(from, to);
+        Object[] newUsers = userService.getNewUsersByPeriod(from, to);
         Long[] result = new Long[3];
         result[0] = (Long) ((Object[]) visits[0])[1];
         result[1] = (Long) ((Object[]) visits[0])[2];
@@ -113,9 +113,9 @@ public class Stat4AdminRestController {
     @RequestMapping(value = "/admin/retention", method = RequestMethod.GET)
     public Response retention(@RequestParam(value = "from", required = false) Date from,
                            @RequestParam(value = "to", required = false) Date to) {
-        to = getEndDate(to);
-        if (from == null) {
-            from = getFromDate(to, -30);
+        from = getEndDate(from);
+        if (to == null) {
+            to = getFromDate(from, 30);
         }
         Long[][] retention = logService.getRestionByDate(from, to);
         return new Response().success(retention);

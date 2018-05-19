@@ -33,7 +33,7 @@ public class SysLogServiceImpl extends AbstractService<SysLog, Long> implements 
      */
 	public Long[][] getVisitIPsAndCookiesByDate(Date from, Date to) {
 		List<Object[]> queryResult = dao.getVisitIPsAndCookiesByDate(from, to);
-		Long[][] result = new Long[3][(int) ChronoUnit.DAYS.between(from.toInstant(), to.toInstant())];
+		Long[][] result = new Long[3][(int) ChronoUnit.DAYS.between(from.toInstant(), to.toInstant())+1];
 		int i = 0;
 
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
@@ -79,7 +79,7 @@ public class SysLogServiceImpl extends AbstractService<SysLog, Long> implements 
      * @return
      */
 	public Long[][] getVisitCookieAndOnceVisitCookieByDate(Date from, Date to) {
-        Long[][] result = new Long[3][(int) ChronoUnit.DAYS.between(from.toInstant(), to.toInstant())];
+        Long[][] result = new Long[3][(int) ChronoUnit.DAYS.between(from.toInstant(), to.toInstant()) + 1];
         int i = 0;
         List<Object[]> visitCookieCountResult = dao.getVisitCookieCountByDate(from, to);
         List<Object[]> oneTimeVisitCookieCountResult = dao.getOnlyOnceVisitCookieCountByDate(from, to);
@@ -127,7 +127,7 @@ public class SysLogServiceImpl extends AbstractService<SysLog, Long> implements 
         List<Object[]> basicVisitCountResult = dao.getVisitCookieCountByDate( from, calendar.getTime() );
         Long basicVisitCount = 0l;
         if( basicVisitCountResult.size() > 0)
-            basicVisitCount = new Long( basicVisitCountResult.get(0)[2].toString() );
+            basicVisitCount = new Long( basicVisitCountResult.get(0)[1].toString() );
         for(int i=0; i<datediff; i++) {
             result[0][i] = new Long(i+1) ;//天数
             result[1][i] = basicVisitCount;//起始时间的访问数（cookie）

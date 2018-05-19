@@ -10,7 +10,7 @@
 	<link href="<%=request.getContextPath() %>/style/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="<%=request.getContextPath() %>/style/offcanvas.css" rel="stylesheet">
     <link href="<%=request.getContextPath() %>/style/fontawesome-all.css" rel="stylesheet" >
-	<script src="<%=request.getContextPath() %>/js/echarts.min.js"></script>
+    <link href="<%=request.getContextPath() %>/style/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
 
@@ -43,7 +43,17 @@
           <div class="row">
             <div class="col-xs-6 col-lg-12" align="center">
              <!-- 右侧内容区 -->
-             
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="dtp_input1">Date Picking:</label>
+                    <div class="col-sm-5 pull-left">
+                        <input id="dtp_input1" size="16" type="text" value="" readonly class="form_date"
+                               onchange="javascript:queryConversion();">to
+                        <input id="dtp_input2" size="16" type="text" value="" readonly class="form_date"
+                               onchange="javascript:queryConversion();">
+                    </div>
+                </div>
+                <br>
+                <br>
 
 			    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 			    <div id="main" style="width: 800px;height:400px;"></div>
@@ -69,7 +79,24 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="<%=request.getContextPath() %>/js/ie10-viewport-bug-workaround.js"></script>
     <script src="<%=request.getContextPath() %>/js/offcanvas.js"></script>
+    <script src="<%=request.getContextPath() %>/js/echarts.min.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker.zh-CN.js"></script>
     <script>
+
+    $('.form_date').datetimepicker({
+        language:  'zh-CN',
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        pickerPosition: 'bottom-left'
+    });
+
     var myChart = echarts.init(document.getElementById('main'));
     var option = {
     	    title: {
@@ -83,7 +110,7 @@
     	    },
     	    toolbox: {
     	        feature: {
-    	            dataView: {readOnly: false},
+    	            dataView: {readOnly: true},
     	            restore: {},
     	            saveAsImage: {}
     	        }
@@ -144,20 +171,47 @@
     	    ]
     	};
 
+    function queryConversion() {
+        var fromDateStr = $("#dtp_input1").val();
+        var fullDate = fromDateStr.split("-");
+        var fromDate = new Date(fullDate[0], fullDate[1]-1, fullDate[2]);
+        var toDateStr = $("#dtp_input2").val();
+        fullDate = toDateStr.split("-");
+        var toDate = new Date(fullDate[0], fullDate[1]-1, fullDate[2]);
+        $.get("/stat/admin/convert",
+            {from : fromDate, to : toDate},
+            function(responseTxt, status) {
+                if (status == "success") {
+                    var datas = responseTxt.data;
+                    var charData = option.series[0].data;
+                    charData[0].value = datas[0];
+                    charData[1].value = datas[1];
+                    charData[2].value = datas[2];
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            });
+    }
+
     $(document).ready(function(){
-        $.get("/stat/admin/convert",function(responseTxt, status) {
-            if (status == "success") {
-                var datas = responseTxt.data;
-                var charData = option.series[0].data;
-                charData[0].value = datas[0];
-                charData[1].value = datas[1];
-                charData[2].value = datas[2];
-                // 使用刚指定的配置项和数据显示图表。
-                myChart.setOption(option);
-            }
-        })
+        var today = new Date();
+        var yestoday = new Date(today - 1000 * 60 * 60 * 24 * 1);
+        $("#dtp_input2").val(getStringFormatOfDate(yestoday));
+        var thirtyDaysBefore = new Date(today - 1000 * 60 * 60 * 24 * 30);//最后一个数字30可改，30天
+        $("#dtp_input1").val(getStringFormatOfDate(thirtyDaysBefore));
+        queryConversion();
     })
 
+    function getStringFormatOfDate(date) {
+        var year  = date.getFullYear();
+        var month  = date.getMonth() + 1;
+        if( month < 10)
+            month = '0' + month;
+        var day   = date.getDate();
+        if( day < 10)
+            day = '0' + day;
+        return (year + "-" + month + "-" + day);
+    }
 	</script>
 </body>
 </html>

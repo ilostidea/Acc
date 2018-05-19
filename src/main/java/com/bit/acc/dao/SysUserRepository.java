@@ -18,9 +18,12 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long> {
 	public List<SysUser> findByAccountNickName(@Param("account") String mobileOrEmailOrNickName );
 
 	@Query(" select u.createTime, count(u.id) as newUsers from SysUser u where u.createTime BETWEEN ?1 AND ?2")
-	public Object[] getNewUsersByDate(Date from, Date to);
+	public Object[] getNewUsersByPeriod(Date from, Date to);
+
+	@Query(" select u.createTime, count(u.id) as newUsers from SysUser u where u.createTime BETWEEN ?1 AND ?2 group by FUNCTION('date_format', u.createTime, '%Y%m%d')")
+	public List<Object[]> getNewUsersByDate(Date from, Date to);
 	
-	@Query(" select u.createTime, count(u.id) as newUsers, (select count(t.id) from SysUser t where t.createTime <= u.createTime) as totalUsers from SysUser u group by FUNCTION('date_format', u.createTime, '%Y%m%d') having u.createTime BETWEEN ?1 AND ?2")
-	public List<Object[]> getNewUsersAndTotalUsersByDate(Date from, Date to);
+	@Query(" select count(t.id) from SysUser t where t.createTime <= ?1")
+	public Long getTotalUsersByDate(Date date);
 	
 }
