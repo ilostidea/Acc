@@ -1,4 +1,77 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
+<style>
+    .navbar-right li > a span.badge {
+        position: absolute;
+        top: 8px;
+        right: 25px;
+        padding: 2px 5px;
+        color: #ffffff;
+    }
+	.badge-default,
+	.label-default {
+		background-color: #999 !important;
+	}
+	.badge-primary,
+	.label-primary {
+		background-color: #dc6767 !important;
+	}
+	.badge-red,
+	.label-red {
+		background-color: #bf4346 !important;
+	}
+	.badge-orange,
+	.label-orange {
+		background-color: #e9662c !important;
+	}
+	.badge-green,
+	.label-green {
+		background-color: #488c6c !important;
+	}
+	.badge-yellow,
+	.label-yellow {
+		background-color: #f2994b !important;
+	}
+	.badge-blue,
+	.label-blue {
+		background-color: #0a819c !important;
+	}
+	.badge-violet,
+	.label-violet {
+		background-color: #9351ad !important;
+	}
+	.badge-pink,
+	.label-pink {
+		background-color: #bf3773 !important;
+	}
+	.badge-grey,
+	.label-grey {
+		background-color: #4b5d67 !important;
+	}
+	.badge-dark,
+	.label-dark {
+		background-color: #594857 !important;
+	}
+	.label-success,
+	.badge-success {
+		background-color: #5cb85c;
+		background-image: none !important;
+	}
+	.label-warning,
+	.badge-warning {
+		background-color: #f0ad4e;
+		background-image: none !important;
+	}
+	.label-danger,
+	.badge-danger {
+		background-color: #d9534f;
+		background-image: none !important;
+	}
+	.label-info,
+	.badge-info {
+		background-color: #5bc0de;
+		background-image: none !important;
+	}
+</style>
 <nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container">
 		<div class="navbar-header">
@@ -31,7 +104,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle"><i class="fa fa-bell fa-fw"></i><span class="badge badge-green">3</span></a>
+					<a href="#" class="dropdown-toggle"><i class="fa fa-bell fa-fw"></i><span class="badge badge-warning">3</span></a>
 				</li>
 				<li id="topbar-chat" class="hidden-xs">
 					<a href="#" class="dropdown-toggle"><i class="fa fa-comments"></i><span class="badge badge-info">3</span></a>

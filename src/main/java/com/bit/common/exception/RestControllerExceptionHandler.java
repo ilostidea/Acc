@@ -3,14 +3,7 @@
  */
 package com.bit.common.exception;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolationException;
-
-import com.google.common.base.Throwables;
+import com.bit.common.model.Response;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +12,12 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.bit.common.model.Response;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Zhou Liang
@@ -72,7 +68,14 @@ public class RestControllerExceptionHandler {
         logger.error( "NullPointerException:\r\n\t{}",  e.getStackTrace() );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了空指针异常！");
     }
-	
+
+    @ExceptionHandler({ArrayIndexOutOfBoundsException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Response handleSQLException(ArrayIndexOutOfBoundsException e) {
+        logger.error( "NullPointerException:\r\n\t{}",  e.getStackTrace() );
+        return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了数组越界异常！");
+    }
+
 	/**
      * SQL异常
      * <p/>

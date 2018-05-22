@@ -59,7 +59,7 @@
                     </select>
                     <button id="update">update</button>
                 </div>
-                <label class="col-sm-2 control-label" for="dtp_input">Date Picking:</label>
+                <label class="col-sm-2 control-label" for="dtp_input">Base Date Picking:</label>
                 <div class="input-group date form_date col-md-4" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input" data-link-format="yyyy-mm-dd">
                     <input id="dtp_input" class="form-control" size="16" type="text" value="" readonly onchange="javascript:queryRetention();">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
