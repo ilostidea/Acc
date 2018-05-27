@@ -64,7 +64,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 			resultList.add(question);
 		}
 		resultMap.put("list", resultList);
-		resultMap.put("totalElements", list.getTotalElements());
+		resultMap.put("total", list.getTotalElements());
 		resultMap.put("totalPages", list.getTotalPages());
 		return resultMap;
 	}
