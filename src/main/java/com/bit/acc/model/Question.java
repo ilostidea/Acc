@@ -62,6 +62,7 @@ public class Question implements java.io.Serializable, Comparable<Question> {
     private Set<QuestionCollected> questionCollecteds = new HashSet<QuestionCollected>(0);
     private Long answerCount;
     private Long collectedCount;
+    private Boolean hasCollected;//当前用户是否已关注该问题
 
     public Question() {
     }
@@ -303,6 +304,14 @@ public class Question implements java.io.Serializable, Comparable<Question> {
         this.collectedCount = collectedCount;
     }
 
+    @Transient
+    public Boolean isHasCollected() {
+        return hasCollected;
+    }
+
+    public void setHasCollected(Boolean hasCollected) {
+        this.hasCollected = hasCollected;
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
     public Set<QuestionCollected> getQuestionCollecteds() {

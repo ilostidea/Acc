@@ -27,15 +27,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
 			+ "  from Question q";
+
+	public static final String queryQuestionAnswerPumpCountCollectedTimesIsCollected = "select q, "
+			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
+			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount,"
+			+ " ( select qc2.id from QuestionCollected qc2 where qc2.question.id = q.id and qc2.user.id = :userId) as hasCollected "
+			+ "  from Question q where q.status is true order by q.modifyTime desc";
 	
 	@Modifying
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(value= queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true group by q.id order by q.modifyTime desc",//TODO: What does 'group by q.id' do?
+	@Query(value= queryQuestionAnswerPumpCountCollectedTimesIsCollected,
 	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Page<Object> findRecent(Pageable pageable );
+	public Page<Object> findRecent(@Param("userId") Long userId, Pageable pageable);
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	

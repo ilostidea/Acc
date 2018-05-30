@@ -71,10 +71,10 @@ public class QuestionRestController {
     
     @RequestMapping(value="/recent",method=RequestMethod.GET)
     @ControllerLog(value = "获得最近问题及问题概况")
-    public Response queryRecent( @RequestParam(value = "page", defaultValue = "0") Integer page,
+    public Response queryRecent(@RequestParam(value = "userId", defaultValue = "0") Long userId, @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
         Pageable pageable = PageRequest.of(page, size);
-        Map<String, Object> listQuestion = questionService.findRecent(pageable);
+        Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
         return new Response().success( listQuestion );
     }
     

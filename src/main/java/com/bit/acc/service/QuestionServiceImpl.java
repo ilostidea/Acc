@@ -50,8 +50,11 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     }
     
 	@Override
-	public Map<String, Object> findRecent(Pageable pageable) {
-		Page<Object> list = dao.findRecent(pageable );
+	public Map<String, Object> findRecent(Long userId, Pageable pageable) {
+		Long curUserId = 0l;
+    	if(userId != null)
+			curUserId = userId;
+		Page<Object> list = dao.findRecent(curUserId, pageable );
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Question> resultList = new ArrayList<>();
 		for(Object o : list ) {
@@ -59,8 +62,10 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 			Question question = (Question) array[0];
 			Long answerCount = (Long) array[1];
 			Long collectedCount = (Long) array[2];
+			Boolean hasCollected = array[3]==null?Boolean.FALSE:Boolean.TRUE;
 			question.setAnswerCount(answerCount);
 			question.setCollectedCount(collectedCount);
+			question.setHasCollected(hasCollected);
 			resultList.add(question);
 		}
 		resultMap.put("list", resultList);
