@@ -73,6 +73,12 @@ public class QuestionRestController {
     @ControllerLog(value = "获得最近问题及问题概况")
     public Response queryRecent(@RequestParam(value = "userId", defaultValue = "0") Long userId, @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
+        if(page > 0)//前端传入page的值，从1开始，后端是从0开始计数
+            page--;
+        if(page < 0)
+            page = 0;
+        if(size <= 0)
+            size = 15;
         Pageable pageable = PageRequest.of(page, size);
         Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
         return new Response().success( listQuestion );
