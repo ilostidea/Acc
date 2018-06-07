@@ -124,9 +124,9 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("questionID") Long questionID){
-    	//Question question = questionService.getQuesstionAndAnswersById(questionID);
-    	Question question = questionService.getQuesstionAndAnswersPumpCountById( questionID );
+    public Response detail(@RequestParam("id") Long questionID){
+    	Question question = questionService.getQuesstionAndAnswersById(questionID);
+//    	Question question = questionService.getQuesstionAndAnswersPumpCountById( questionID );
         return new Response().success( question );
     }
     
