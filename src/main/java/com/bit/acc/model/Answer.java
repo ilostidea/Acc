@@ -297,6 +297,10 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 	
 	@Override
 	public int compareTo(Answer a) {
+		if(this.createTime == null)
+			return -1;
+		if(a.getCreateTime() == null)
+			return 1;
 		return createTime.compareTo( a.getCreateTime() );
 	}
 }

@@ -22,26 +22,21 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
 			+ "  ) from Question q";
-	
-	public static final String queryQuestionAnswerPumpCountCollectedTimes = "select q, "
-			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
-			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
-			+ "  from Question q";
 
-	public static final String queryQuestionAnswerPumpCountCollectedTimesIsCollected = "select q, "
+	public static final String queryQuestionAnswerPumpCountCollectedTimesHasCollected = "select q, "
 			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
 			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount,"
-			+ " ( select qc2.id from QuestionCollected qc2 where qc2.question.id = q.id and qc2.user.id = :userId) as hasCollected "
-			+ "  from Question q where q.status is true order by q.modifyTime desc";
+			+ " ( select qc2.id from QuestionCollected qc2 where qc2.question.id = q.id and qc2.user.id = :userID) as hasCollected "
+			+ "  from Question q ";
 	
 	@Modifying
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(value= queryQuestionAnswerPumpCountCollectedTimesIsCollected,
+	@Query(value= queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.status is true order by q.modifyTime desc",
 	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Page<Object> findRecent(@Param("userId") Long userId, Pageable pageable);
+	public Page<Object> findRecent(@Param("userID") Long userId, Pageable pageable);
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
@@ -55,14 +50,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.status is true and q.id = :id group by q.id")//TODO: What does 'group by q.id' do?
+	@Query(queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.status is true and q.id = :id")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id) ;
+	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id, @Param("userID") Long userId) ;
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimes + " where q.id = :id group by q.id")//TODO: What does 'group by q.id' do?
+	@Query(queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.id = :id")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Object getQuesstionAndAnswersPumpCountByIdForAdmin(@Param("id") Long id) ;
+	public Object getQuesstionAndAnswersPumpCountByIdForAdmin(@Param("id") Long id, @Param("userID") Long userId) ;
 	
 	@Query("select t from Question as t left join fetch t.answers where t.id = :id")
 	public Question getQuesstionAndAnswersById(@Param("id") Long id);

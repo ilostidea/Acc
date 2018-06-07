@@ -127,13 +127,18 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 	}
 
 	@Override
-	public Question getQuesstionAndAnswersPumpCountById(Long id) {
-		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountById(id);
+	public Question getQuesstionAndAnswersPumpCountById(Long id, Long userId) {
+		Long curUserId = 0l;
+		if(userId != null)
+			curUserId = userId;
+		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountById(id, userId);
 		Question question = (Question) array[0];
 		Long answerCount = (Long) array[1];
 		Long collectedCount = (Long) array[2];
+		Boolean hasCollected = array[3]==null?Boolean.FALSE:Boolean.TRUE;
 		question.setAnswerCount(answerCount);
 		question.setCollectedCount(collectedCount);
+		question.setHasCollected(hasCollected);
 		List<Answer> answers = answerDao.findByQuestion(id); 
 		for(Answer answer : answers) {
 			answer.setPumpCount( (long) answer.getPumps().size() );
@@ -147,7 +152,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 	 */
 	@Override
 	public Question getQuesstionAndAnswersPumpCountByIdForAdmin(Long id) {
-		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountByIdForAdmin(id);
+		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountByIdForAdmin(id, 0l);//不用判断管理员是否已收藏问题，传入一个不存在的用户ID=0即可
 		Question question = (Question) array[0];
 		Long answerCount = (Long) array[1];
 		Long collectedCount = (Long) array[2];
