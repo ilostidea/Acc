@@ -40,13 +40,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
+	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID order by q.createTime desc")
 	public List<Question> findByUser(@Param("userID") Long userId);
 
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID order by q.createTime desc")
 	public List<Question> findByAnsweredUser(@Param("userID") Long userId);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID group by q.id order by q.createTime desc")//TODO: What does 'group by q.id' do?
+	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID order by q.createTime desc")
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )

@@ -18,7 +18,7 @@ import com.bit.acc.model.Question;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecificationExecutor<Answer> {
 	
-	@Query("select a from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID group by a.id order by a.createTime desc, p.createTime desc")
+	@Query("select a from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID order by a.createTime desc, p.createTime desc")
 	@EntityGraph(value = "answer.user" , type=EntityGraphType.FETCH)
 	public List<Answer> findByQuestion(@Param("questionID") Long questionId);
 	
@@ -27,7 +27,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecif
 	 * @param questionId
 	 * @return
 	 */
-	@Query("select a from Answer a left join fetch a.pumps p where a.question.id = :questionID group by a.id order by a.createTime desc, p.createTime desc")
+	@Query("select a from Answer a left join fetch a.pumps p where a.question.id = :questionID order by a.createTime desc, p.createTime desc")
 	@EntityGraph(value = "answer.user" , type=EntityGraphType.FETCH)
 	public List<Answer> findByQuestionForAdmin(@Param("questionID") Long questionId);
 	
