@@ -18,9 +18,13 @@ import com.bit.acc.model.Question;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecificationExecutor<Answer> {
 	
-	@Query("select a from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID order by a.createTime desc, p.createTime desc")
+	@Query("select a, " +
+			" ( select ac.id from AnswerCollected ac where ac.answer.id = a.id and ac.user.id = :userID) as hasCollected, " +
+            " ( select aa.id from AnswerApproved aa where aa.answer.id = a.id and aa.user.id = :userID) as hasApproved, " +
+            " ( select ad.id from AnswerDisapproved ad where ad.answer.id = a.id and ad.user.id = :userID) as hasDisapproved " +
+            " from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID order by a.createTime desc, p.createTime desc")
 	@EntityGraph(value = "answer.user" , type=EntityGraphType.FETCH)
-	public List<Answer> findByQuestion(@Param("questionID") Long questionId);
+	public List<Object> findByQuestion(@Param("questionID") Long questionId, @Param("userID") Long userId);
 	
 	/**
 	 * 管理员使用的方法，不根据状态过滤
@@ -33,11 +37,11 @@ public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecif
 	
 	public List<Answer> findByCondition(Specification<Answer> querySpecific);
 	
-	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, count(p.id), a.question.title ) "
+	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.title ) "
 			+ " from Answer a left join a.pumps p where a.status is true and a.user.id = :userID group by a.id order by a.createTime desc")
 	public List<Answer> findByUser(@Param("userID") Long userId);
 	
-	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, count(p.id), a.question.title ) "
+	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.title ) "
 			+ " from Answer a left join a.pumps p join a.answerCollecteds ac where a.status is true and ac.user.id = :userID group by a.id order by a.createTime desc")
 	public List<Answer> findByCollectedUser(@Param("userID") Long userId);
 	
@@ -56,10 +60,18 @@ public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecif
 	
 	@Modifying
 	@Query("update Answer a set a.approveCount = a.approveCount + 1 where a.id = :id")
-	public void approve(@Param("id") Long id);
+	public void approveAdd(@Param("id") Long id);
+
+	@Modifying
+	@Query("update Answer a set a.approveCount = a.approveCount - 1 where a.id = :id")
+	public void approveMinus(@Param("id") Long id);
 	
 	@Modifying
 	@Query("update Answer a set a.disapproveCount = a.disapproveCount + 1 where a.id = :id")
-	public void disapprove(@Param("id") Long id);
+	public void disapproveAdd(@Param("id") Long id);
+
+	@Modifying
+	@Query("update Answer a set a.disapproveCount = a.disapproveCount - 1 where a.id = :id")
+	public void disapproveMinus(@Param("id") Long id);
 
 }

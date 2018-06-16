@@ -1,29 +1,26 @@
 package com.bit.acc.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bit.acc.model.Answer;
+import com.bit.acc.model.AnswerApproved;
+import com.bit.acc.model.AnswerDisapproved;
 import com.bit.acc.model.Question;
+import com.bit.acc.service.intfs.AnswerApprovedService;
+import com.bit.acc.service.intfs.AnswerDisapprovedService;
 import com.bit.acc.service.intfs.AnswerService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * answer 问答模块的回答
@@ -36,7 +33,13 @@ public class AnswerRestController {
 
     @Resource(name="answerService")
     private AnswerService answerService;
-    
+
+    @Resource(name="answerApprovedService")
+    private AnswerApprovedService answerApprovedService;
+
+    @Resource(name="answerDisapprovedService")
+    private AnswerDisapprovedService answerDisapprovedService;
+
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Answer answer, BindingResult result) {
     	if(result.hasErrors()) {
@@ -109,8 +112,8 @@ public class AnswerRestController {
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过问题ID获得该问题的回答")
-    public Response queryByQuestion(@RequestParam("questionID") Long questionID) throws Exception{
-    	List<Answer> listAnswer = answerService.findByQuestion(questionID);
+    public Response queryByQuestion(@RequestParam("questionID") Long questionID, @RequestParam(value="userID", defaultValue = "0") Long userID) throws Exception{
+    	List<Answer> listAnswer = answerService.findByQuestion(questionID, userID);
         return new Response().success(listAnswer);
     }
     
@@ -135,26 +138,32 @@ public class AnswerRestController {
     	result.put("question", question);
         return new Response().success(result);
     }
-    
+
     /**
      * 点赞
      * @param answerID
+     * @param userID
      * @return
      */
     @RequestMapping(value="/approve",method=RequestMethod.POST)
-    public Response approve(@RequestParam("answerID") Long answerID){
-    	answerService.approve(answerID);
+    public Response approve(@RequestParam("answerID") Long answerID, @RequestParam(value="userID", defaultValue = "0") Long userID){
+        List<AnswerDisapproved> disapprovedList = answerDisapprovedService.findByUserAndAnswer(userID, answerID);
+        AnswerDisapproved answerDisapproved = disapprovedList.size()>0 ? disapprovedList.get(0) : null;
+    	answerService.approve(answerID, userID, answerDisapproved);
         return new Response().success();
     }
 
-    /**
+     /**
      * 踩
      * @param answerID
+     * @param userID
      * @return
      */
     @RequestMapping(value="/disapprove",method=RequestMethod.POST)
-    public Response disapprove(@RequestParam("answerID") Long answerID){
-    	answerService.disapprove(answerID);
+    public Response disapprove(@RequestParam("answerID") Long answerID, @RequestParam(value="userID", defaultValue = "0") Long userID){
+        List<AnswerApproved> approvedList = answerApprovedService.findByUserAndAnswer(userID, answerID);
+        AnswerApproved answerApproved = approvedList.size()>0? approvedList.get(0) : null;
+    	answerService.disapprove(answerID, userID, answerApproved);
         return new Response().success();
     }
 

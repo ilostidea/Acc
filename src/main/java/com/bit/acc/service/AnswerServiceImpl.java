@@ -1,29 +1,37 @@
 package com.bit.acc.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.bit.acc.dao.AnswerApprovedRepository;
+import com.bit.acc.dao.AnswerDisapprovedRepository;
+import com.bit.acc.dao.AnswerRepository;
+import com.bit.acc.model.Answer;
+import com.bit.acc.model.AnswerApproved;
+import com.bit.acc.model.AnswerDisapproved;
+import com.bit.acc.model.SysUser;
+import com.bit.acc.service.baseservice.AbstractService;
+import com.bit.acc.service.intfs.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import com.bit.acc.dao.AnswerRepository;
-import com.bit.acc.model.Answer;
-import com.bit.acc.model.Question;
-import com.bit.acc.service.baseservice.AbstractService;
-import com.bit.acc.service.intfs.AnswerService;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("answerService")
 public class AnswerServiceImpl extends AbstractService<Answer, Long> implements AnswerService {
 
 	@Autowired
 	private AnswerRepository dao;
+
+	@Autowired
+	private AnswerApprovedRepository approveDao;
+
+    @Autowired
+    private AnswerDisapprovedRepository disapproveDao;
 	
 	protected JpaRepository<Answer, Long> getDao() {
 		return dao;
@@ -43,8 +51,21 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
     }
 
 	@Override
-	public List<Answer> findByQuestion(Long questionId) {
-		return dao.findByQuestion(questionId);
+	public List<Answer> findByQuestion(Long questionId, Long userId) {
+        List<Object> answers = dao.findByQuestion(questionId, userId);
+        List result = new ArrayList<Answer>();
+        for(Object o : answers ) {
+            Object[] array = (Object[]) o;
+            Answer answer = (Answer) array[0];
+            Boolean answerHasCollected = array[1]==null?Boolean.FALSE:Boolean.TRUE;
+            Boolean answerHasApproved = array[2]==null?Boolean.FALSE:Boolean.TRUE;
+            Boolean answerHasDisapproved = array[3]==null?Boolean.FALSE:Boolean.TRUE;
+            answer.setHasCollected(answerHasCollected);
+            answer.setHasApproved(answerHasApproved);
+            answer.setHasDisapproved(answerHasDisapproved);
+            result.add(answer);
+        }
+        return result;
 	}
 
 	@Override
@@ -101,13 +122,37 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
     }
 
 	@Override
-	public void approve(Long id) {
-		dao.approve(id);
+	public void approve(Long id, Long userId, AnswerDisapproved answerDisapproved) {
+		dao.approveAdd(id);//增加点赞的次数，answer中的冗余字段approveCount加1
+        AnswerApproved answerApproved = new AnswerApproved();
+        SysUser user = new SysUser();
+        user.setId(userId);
+        answerApproved.setUser(user);
+        Answer answer = new Answer();
+        answer.setId(id);
+        answerApproved.setAnswer(answer);
+		approveDao.save(answerApproved);//增加用户对问题点赞的记录，重复点赞会抛出异常
+		if(answerDisapproved != null){//如果点过踩，需要取消踩
+            dao.disapproveMinus(id);//answer中的冗余字段disapproveCount减1
+            disapproveDao.delete(answerDisapproved);//删除用户对问题踩的记录，记录不存在时会抛出异常
+        }
 	}
 
 	@Override
-	public void disapprove(Long id) {
-		dao.disapprove(id);
+	public void disapprove(Long id, Long userId, AnswerApproved answerApproved) {
+		dao.disapproveAdd(id);
+        AnswerDisapproved answerDisapproved = new AnswerDisapproved();
+        SysUser user = new SysUser();
+        user.setId(userId);
+        answerDisapproved.setUser(user);
+        Answer answer = new Answer();
+        answer.setId(id);
+        answerDisapproved.setAnswer(answer);
+        disapproveDao.save(answerDisapproved);
+        if(answerApproved != null){
+            dao.approveMinus(id);
+            approveDao.delete(answerApproved);
+        }
 	}
 
 }

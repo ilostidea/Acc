@@ -132,7 +132,7 @@ public class QuestionRestController {
     @RequestMapping(value="/detail",method=RequestMethod.GET)
     public Response detail(@RequestParam("questionID") Long questionID,@RequestParam(value = "userID", defaultValue = "0") Long userId){
     	//Question question = questionService.getQuesstionAndAnswersById(questionID);
-    	Question question = questionService.getQuesstionAndAnswersPumpCountById( questionID, userId );
+    	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionID, userId );
         return new Response().success( question );
     }
     
@@ -156,7 +156,7 @@ public class QuestionRestController {
     @RequestMapping(value="/admin/detail",method=RequestMethod.GET)
     public Response detailForAdmin(@RequestParam("questionID") Long questionID){
     	//Question question = questionService.getQuesstionAndAnswersById(questionID);
-    	Question question = questionService.getQuesstionAndAnswersPumpCountByIdForAdmin( questionID );
+    	Question question = questionService.getQuesstionAndAnswersByIdAndUserForAdmin( questionID );
         return new Response().success( question );
     }
 

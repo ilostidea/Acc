@@ -60,11 +60,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 		for(Object o : list ) {
 			Object[] array = (Object[]) o;
 			Question question = (Question) array[0];
-			Long answerCount = (Long) array[1];
-			Long collectedCount = (Long) array[2];
-			Boolean hasCollected = array[3]==null?Boolean.FALSE:Boolean.TRUE;
-			question.setAnswerCount(answerCount);
-			question.setCollectedCount(collectedCount);
+			Boolean hasCollected = array[1]==null?Boolean.FALSE:Boolean.TRUE;
 			question.setHasCollected(hasCollected);
 			resultList.add(question);
 		}
@@ -127,23 +123,28 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 	}
 
 	@Override
-	public Question getQuesstionAndAnswersPumpCountById(Long id, Long userId) {
+	public Question getQuesstionAndAnswersByIdAndUser(Long id, Long userId) {
 		Long curUserId = 0l;
 		if(userId != null)
 			curUserId = userId;
-		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountById(id, userId);
+		Object[] array = (Object[]) dao.getQuesstionAnswersByIdAndUser(id, userId);
 		Question question = (Question) array[0];
-		Long answerCount = (Long) array[1];
-		Long collectedCount = (Long) array[2];
-		Boolean hasCollected = array[3]==null?Boolean.FALSE:Boolean.TRUE;
-		question.setAnswerCount(answerCount);
-		question.setCollectedCount(collectedCount);
+		Boolean hasCollected = array[1]==null?Boolean.FALSE:Boolean.TRUE;
 		question.setHasCollected(hasCollected);
-		List<Answer> answers = answerDao.findByQuestion(id); 
-		for(Answer answer : answers) {
-			answer.setPumpCount( (long) answer.getPumps().size() );
+		List<Object> answers = answerDao.findByQuestion(id, userId);
+		Set answerSet = new TreeSet<Answer>();
+		for(Object o : answers ) {
+			array = (Object[]) o;
+			Answer answer = (Answer) array[0];
+			Boolean answerHasCollected = array[1]==null?Boolean.FALSE:Boolean.TRUE;
+            Boolean answerHasApproved = array[2]==null?Boolean.FALSE:Boolean.TRUE;
+            Boolean answerHasDisapproved = array[3]==null?Boolean.FALSE:Boolean.TRUE;
+            answer.setHasCollected(answerHasCollected);
+            answer.setHasApproved(answerHasApproved);
+            answer.setHasDisapproved(answerHasDisapproved);
+            answerSet.add(answer);
 		}
-		question.setAnswers(new TreeSet<Answer>(answers) );
+		question.setAnswers( answerSet );
 		return question;
 	}
 
@@ -151,17 +152,10 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
 	 * 不管是启用还是禁用的都查出来了
 	 */
 	@Override
-	public Question getQuesstionAndAnswersPumpCountByIdForAdmin(Long id) {
-		Object[] array = (Object[]) dao.getQuesstionAndAnswersPumpCountByIdForAdmin(id, 0l);//不用判断管理员是否已收藏问题，传入一个不存在的用户ID=0即可
+	public Question getQuesstionAndAnswersByIdAndUserForAdmin(Long id) {
+		Object[] array = (Object[]) dao.getQuesstionAnswersByIdAndUserForAdmin(id, 0l);//不用判断管理员是否已收藏问题，传入一个不存在的用户ID=0即可
 		Question question = (Question) array[0];
-		Long answerCount = (Long) array[1];
-		Long collectedCount = (Long) array[2];
-		question.setAnswerCount(answerCount);
-		question.setCollectedCount(collectedCount);
-		List<Answer> answers = answerDao.findByQuestionForAdmin(id); 
-		for(Answer answer : answers) {
-			answer.setPumpCount( (long) answer.getPumps().size() );
-		}
+		List<Answer> answers = answerDao.findByQuestionForAdmin(id);
 		question.setAnswers(new TreeSet<Answer>(answers) );
 		return question;
 	}

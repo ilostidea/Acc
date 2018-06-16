@@ -52,6 +52,8 @@ public class Question implements java.io.Serializable, Comparable<Question> {
     private Boolean isAnonymous;
     private Integer approveCount;
     private Integer disapproveCount;
+    private Integer answerCount;
+    private Integer collectedCount;
     private Boolean isAccused;
     private Boolean status;
     private Date createTime;
@@ -60,46 +62,13 @@ public class Question implements java.io.Serializable, Comparable<Question> {
     private Long modifier;
     private Set<Answer> answers = new HashSet<Answer>(0);
     private Set<QuestionCollected> questionCollecteds = new HashSet<QuestionCollected>(0);
-    private Long answerCount;
-    private Long collectedCount;
     private Boolean hasCollected;//当前用户是否已关注该问题
 
     public Question() {
     }
 
-    public Question(Question qeustion, Long answerCount, Long collectedCount) {
-        this.id = qeustion.id;
-        this.user = qeustion.user;
-        this.title = qeustion.title;
-        this.question = qeustion.question;
-        this.tag = qeustion.tag;
-        this.isAnonymous = qeustion.isAnonymous;
-        this.approveCount = qeustion.approveCount;
-        this.disapproveCount = qeustion.disapproveCount;
-        this.isAccused = qeustion.isAccused;
-        this.status = qeustion.status;
-        this.createTime = qeustion.createTime;
-        this.creator = qeustion.creator;
-        this.modifyTime = qeustion.modifyTime;
-        this.modifier = qeustion.modifier;
-        this.answers = qeustion.answers;
-        this.questionCollecteds = qeustion.questionCollecteds;
-        this.answerCount = answerCount;
-        this.collectedCount = collectedCount;
-    }
-
-    public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Boolean isAccused) {
-        this.id = id;
-        this.user = user;
-        this.title = title;
-        this.question = question;
-        this.isAnonymous = isAnonymous;
-        this.isAccused = isAccused;
-    }
-
     public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Integer approveCount,
-                    Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-                    Long modifier, Long answerCount, Long collectedCount) {
+                    Integer disapproveCount, Integer answerCount, Integer collectedCount, Boolean isAccused) {
         this.id = id;
         this.user = user;
         this.title = title;
@@ -107,19 +76,34 @@ public class Question implements java.io.Serializable, Comparable<Question> {
         this.isAnonymous = isAnonymous;
         this.approveCount = approveCount;
         this.disapproveCount = disapproveCount;
+        this.answerCount = answerCount;
+        this.collectedCount = collectedCount;
+        this.isAccused = isAccused;
+    }
+
+    public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Integer approveCount,
+                    Integer disapproveCount, Integer answerCount, Integer collectedCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
+                    Long modifier) {
+        this.id = id;
+        this.user = user;
+        this.title = title;
+        this.question = question;
+        this.isAnonymous = isAnonymous;
+        this.approveCount = approveCount;
+        this.disapproveCount = disapproveCount;
+        this.answerCount = answerCount;
+        this.collectedCount = collectedCount;
         this.isAccused = isAccused;
         this.status = status;
         this.createTime = createTime;
         this.creator = creator;
         this.modifyTime = modifyTime;
         this.modifier = modifier;
-        this.answerCount = answerCount;
-        this.collectedCount = collectedCount;
     }
 
     public Question(Long id, SysUser user, String title, String question, Boolean isAnonymous, Integer approveCount,
-                    Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-                    Long modifier, List<Answer> answers/*, Set<QuestionCollected> questionCollecteds*/, Long answerCount, Long collectedCount) {
+                    Integer disapproveCount, Integer answerCount, Integer collectedCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
+                    Long modifier, List<Answer> answers/*, Set<QuestionCollected> questionCollecteds*/) {
         this.id = id;
         this.user = user;
         this.title = title;
@@ -135,8 +119,6 @@ public class Question implements java.io.Serializable, Comparable<Question> {
         this.modifier = modifier;
         this.answers = new HashSet<Answer>(answers);
         //this.questionCollecteds = questionCollecteds;
-        this.answerCount = answerCount;
-        this.collectedCount = collectedCount;
     }
 
     @Id
@@ -200,7 +182,7 @@ public class Question implements java.io.Serializable, Comparable<Question> {
         this.isAnonymous = isAnonymous;
     }
 
-    @Column(name = "ApproveCount")
+    @Column(name = "ApproveCount", nullable = false)
     public Integer getApproveCount() {
         return this.approveCount;
     }
@@ -209,13 +191,31 @@ public class Question implements java.io.Serializable, Comparable<Question> {
         this.approveCount = approveCount;
     }
 
-    @Column(name = "DisapproveCount")
+    @Column(name = "DisapproveCount", nullable = false)
     public Integer getDisapproveCount() {
         return this.disapproveCount;
     }
 
     public void setDisapproveCount(Integer disapproveCount) {
         this.disapproveCount = disapproveCount;
+    }
+
+    @Column(name = "AnswerCount", nullable = false)
+    public Integer getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(Integer answerCount) {
+        this.answerCount = answerCount;
+    }
+
+    @Column(name = "CollectedCount", nullable = false)
+    public Integer getCollectedCount() {
+        return collectedCount;
+    }
+
+    public void setCollectedCount(Integer collectedCount) {
+        this.collectedCount = collectedCount;
     }
 
     @Column(name = "IsAccused", nullable = false)
@@ -284,24 +284,6 @@ public class Question implements java.io.Serializable, Comparable<Question> {
 
     public void setAnswers(Set<Answer> answers) {
         this.answers = answers;
-    }
-
-    @Transient
-    public Long getAnswerCount() {
-        return answerCount;
-    }
-
-    public void setAnswerCount(Long answerCount) {
-        this.answerCount = answerCount;
-    }
-
-    @Transient
-    public Long getCollectedCount() {
-        return collectedCount;
-    }
-
-    public void setCollectedCount(Long collectedCount) {
-        this.collectedCount = collectedCount;
     }
 
     @Transient

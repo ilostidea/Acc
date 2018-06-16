@@ -28,7 +28,7 @@ import java.util.Set;
 	@NamedEntityGraph(name = "answer.userAndPumps",  
 	    attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode(value="pumps", subgraph = "pump")},
         subgraphs = {//subgraphs 来定义关联对象的属性
-                @NamedSubgraph(name = "pump", attributeNodes = @NamedAttributeNode("user"))
+                @NamedSubgraph(name = "pump", attributeNodes = @NamedAttributeNode("user"))//获得pump的user
         }
 	)
 })
@@ -45,6 +45,8 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 	private Boolean isAnonymous;
 	private Integer approveCount;
 	private Integer disapproveCount;
+	private Integer pumpCount;
+	private Integer collectedCount;
 	private Boolean isAccused;
 	private Boolean status;
 	private Date createTime;
@@ -55,22 +57,31 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 	private Set<AnswerCollected> answerCollecteds = new HashSet<AnswerCollected>(0);
 	
 	private String questionTitle;
-	private Long pumpCount;
+	private Boolean hasCollected;//当前用户是否已关注该问题
+	private Boolean hasApproved;//当前用户是否已关注该问题
+	private Boolean hasDisapproved;//当前用户是否已关注该问题
 
 	public Answer() {
 	}
 
-	public Answer(Long id, Question question, SysUser user, Boolean isAnonymous, Boolean isAccused) {
+	public Answer(Long id, Question question, SysUser user, String answer, Boolean isAnonymous, Integer approveCount,
+                  Integer disapproveCount, Integer pumpCount, Integer collectedCount, Boolean isAccused, Boolean status) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
+        this.answer = answer;
 		this.isAnonymous = isAnonymous;
+        this.approveCount = approveCount;
+        this.disapproveCount = disapproveCount;
+        this.pumpCount = pumpCount;
+        this.collectedCount = collectedCount;
 		this.isAccused = isAccused;
+        this.status = status;
 	}
 	
 	public Answer(Long id, Question question, SysUser user, String answer, Boolean isAnonymous, Integer approveCount,
-			Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-			Long modifier, Long pumpCount) {
+			    Integer disapproveCount, Integer pumpCount, Integer collectedCount, Boolean isAccused, Boolean status,
+                  Date createTime, Long creator, Date modifyTime, Long modifier) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
@@ -78,18 +89,19 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.isAnonymous = isAnonymous;
 		this.approveCount = approveCount;
 		this.disapproveCount = disapproveCount;
+		this.pumpCount = pumpCount;
+		this.collectedCount = collectedCount;
 		this.isAccused = isAccused;
 		this.status = status;
 		this.createTime = createTime;
 		this.creator = creator;
 		this.modifyTime = modifyTime;
 		this.modifier = modifier;
-		this.pumpCount = pumpCount;
 	}
 
 	public Answer(Long id, Question question, SysUser user, String answer, Boolean isAnonymous, Integer approveCount,
-			Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-			Long modifier, Long pumpCount, String questionTitle) {
+			Integer disapproveCount, Integer pumpCount, Integer collectedCount, Boolean isAccused, Boolean status,
+                  Date createTime, Long creator, Date modifyTime, Long modifier, String questionTitle) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
@@ -97,19 +109,20 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.isAnonymous = isAnonymous;
 		this.approveCount = approveCount;
 		this.disapproveCount = disapproveCount;
+		this.pumpCount = pumpCount;
+		this.collectedCount = collectedCount;
 		this.isAccused = isAccused;
 		this.status = status;
 		this.createTime = createTime;
 		this.creator = creator;
 		this.modifyTime =modifyTime;
 		this.modifier = modifier;
-		this.pumpCount = pumpCount;
 		this.questionTitle = questionTitle;
 	}
 
 	public Answer(Long id, Question question, SysUser user, String answer, Boolean isAnonymous, Integer approveCount,
-			Integer disapproveCount, Boolean isAccused, Boolean status, Date createTime, Long creator, Date modifyTime,
-			Long modifier, Set<Pump> pumps, Set<AnswerCollected> answerCollecteds) {
+			Integer disapproveCount, Integer pumpCount, Integer collectedCount, Boolean isAccused, Boolean status,
+                  Date createTime, Long creator, Date modifyTime, Long modifier, Set<Pump> pumps, Set<AnswerCollected> answerCollecteds) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
@@ -117,6 +130,8 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.isAnonymous = isAnonymous;
 		this.approveCount = approveCount;
 		this.disapproveCount = disapproveCount;
+		this.pumpCount = pumpCount;
+		this.collectedCount = collectedCount;
 		this.isAccused = isAccused;
 		this.status = status;
 		this.createTime = createTime;
@@ -181,7 +196,7 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.isAnonymous = isAnonymous;
 	}
 
-	@Column(name = "ApproveCount")
+	@Column(name = "ApproveCount", nullable = false)
 	public Integer getApproveCount() {
 		return this.approveCount;
 	}
@@ -190,13 +205,31 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.approveCount = approveCount;
 	}
 
-	@Column(name = "DisapproveCount")
+	@Column(name = "DisapproveCount", nullable = false)
 	public Integer getDisapproveCount() {
 		return this.disapproveCount;
 	}
 
 	public void setDisapproveCount(Integer disapproveCount) {
 		this.disapproveCount = disapproveCount;
+	}
+
+	@Column(name = "PumpCount", nullable = false)
+	public Integer getPumpCount() {
+		return pumpCount;
+	}
+
+	public void setPumpCount(Integer pumpCount) {
+		this.pumpCount = pumpCount;
+	}
+
+	@Column(name = "CollectedCount", nullable = false)
+	public Integer getCollectedCount() {
+		return collectedCount;
+	}
+
+	public void setCollectedCount(Integer collectedCount) {
+		this.collectedCount = collectedCount;
 	}
 
 	@Column(name = "IsAccused", nullable = false)
@@ -287,14 +320,32 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 	}
 
 	@Transient
-	public Long getPumpCount() {
-		return pumpCount;
+	public Boolean isHasCollected() {
+		return hasCollected;
 	}
 
-	public void setPumpCount(Long pumpCount) {
-		this.pumpCount = pumpCount;
+	public void setHasCollected(Boolean hasCollected) {
+		this.hasCollected = hasCollected;
 	}
-	
+
+	@Transient
+	public Boolean isHasApproved() {
+		return hasApproved;
+	}
+
+	public void setHasApproved(Boolean hasApproved) {
+		this.hasApproved = hasApproved;
+	}
+
+	@Transient
+	public Boolean isHasDisapproved() {
+		return hasDisapproved;
+	}
+
+	public void setHasDisapproved(Boolean hasDisapproved) {
+		this.hasDisapproved = hasDisapproved;
+	}
+
 	@Override
 	public int compareTo(Answer a) {
 		if(this.createTime == null)

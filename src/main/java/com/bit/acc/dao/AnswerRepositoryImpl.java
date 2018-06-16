@@ -1,22 +1,19 @@
 package com.bit.acc.dao;
 
-import java.util.Date;
-import java.util.List;
+import com.bit.acc.model.Answer;
+import com.bit.acc.model.Question;
+import com.bit.acc.model.SysUser;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
-
-import org.springframework.data.jpa.domain.Specification;
-
-import com.bit.acc.model.Answer;
-import com.bit.acc.model.Question;
-import com.bit.acc.model.SysUser;
+import java.util.Date;
+import java.util.List;
 
 public class AnswerRepositoryImpl {
 
@@ -37,14 +34,16 @@ public class AnswerRepositoryImpl {
 				root.get( answerModel.getSingularAttribute( "answer", String.class ) ), 
 				root.get( answerModel.getSingularAttribute( "isAnonymous", Boolean.class ) ), 
 				root.get( answerModel.getSingularAttribute( "approveCount", Integer.class ) ), 
-				root.get( answerModel.getSingularAttribute( "disapproveCount", Integer.class ) ), 
+				root.get( answerModel.getSingularAttribute( "disapproveCount", Integer.class ) ),
+				root.get( answerModel.getSingularAttribute( "pumpCount", Integer.class ) ),
+				root.get( answerModel.getSingularAttribute( "collectedCount", Integer.class ) ),
 				root.get( answerModel.getSingularAttribute( "isAccused", Boolean.class ) ),
 				root.get( answerModel.getSingularAttribute( "status", Boolean.class ) ), 
 				root.get( answerModel.getSingularAttribute( "createTime", Date.class ) ), 
 				root.get( answerModel.getSingularAttribute( "creator", Long.class ) ), 
 				root.get( answerModel.getSingularAttribute( "modifyTime", Date.class ) ), 
 				root.get( answerModel.getSingularAttribute( "modifier", Long.class ) ),
-				criteriaBuilder.count( root.join( answerModel.getSet( "pumps" ), JoinType.LEFT ) ),
+				/*criteriaBuilder.count( root.join( answerModel.getSet( "pumps" ), JoinType.LEFT ) ),*/
 				root.get( answerModel.getSingularAttribute( "question", Question.class ) ).get("title")
 				) );
 

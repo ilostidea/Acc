@@ -18,14 +18,9 @@ import com.bit.acc.model.Question;
 
 public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSpecificationExecutor<Question> {
 	
-	public static final String queryQuestionAnswerCountCollectedTimes = "select new Question( q, "
-			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
-			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount"
-			+ "  ) from Question q";
+	public static final String queryQuestion = "select q from Question q";
 
-	public static final String queryQuestionAnswerPumpCountCollectedTimesHasCollected = "select q, "
-			+ " ( select count(a1.id) from Answer a1 where a1.question.id = q.id ) as answerCount, "
-			+ " ( select count(qc1.id) from QuestionCollected qc1 where qc1.question.id = q.id) as  collectedCount,"
+	public static final String queryQuestionAnswersHasCollected = "select q, "
 			+ " ( select qc2.id from QuestionCollected qc2 where qc2.question.id = q.id and qc2.user.id = :userID) as hasCollected "
 			+ "  from Question q ";
 	
@@ -33,31 +28,31 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
 	
-	@Query(value= queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.status is true order by q.modifyTime desc",
+	@Query(value= queryQuestionAnswersHasCollected + " where q.status is true order by q.modifyTime desc",
 	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public Page<Object> findRecent(@Param("userID") Long userId, Pageable pageable);
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " where q.status is true and q.user.id = :userID order by q.createTime desc")
+	@Query(queryQuestion + " where q.status is true and q.user.id = :userID order by q.createTime desc")
 	public List<Question> findByUser(@Param("userID") Long userId);
 
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.answers a where q.status is true and a.user.id = :userID order by q.createTime desc")
+	@Query(queryQuestion + " join q.answers a where q.status is true and a.user.id = :userID order by q.createTime desc")
 	public List<Question> findByAnsweredUser(@Param("userID") Long userId);
 	
-	@Query(queryQuestionAnswerCountCollectedTimes + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID order by q.createTime desc")
+	@Query(queryQuestion + " join q.questionCollecteds qc where q.status is true and qc.user.id = :userID order by q.createTime desc")
 	public List<Question> findByCollectedUser(@Param("userID") Long userId);
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.status is true and q.id = :id")
+	@Query(queryQuestionAnswersHasCollected + " where q.status is true and q.id = :id")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Object getQuesstionAndAnswersPumpCountById(@Param("id") Long id, @Param("userID") Long userId) ;
+	public Object getQuesstionAnswersByIdAndUser(@Param("id") Long id, @Param("userID") Long userId) ;
 	
 	//@QueryHints( { @QueryHint( name = org.hibernate.annotations.QueryHints.FETCHGRAPH, value="question.user") } )
-	@Query(queryQuestionAnswerPumpCountCollectedTimesHasCollected + " where q.id = :id")
+	@Query(queryQuestionAnswersHasCollected + " where q.id = :id")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
-	public Object getQuesstionAndAnswersPumpCountByIdForAdmin(@Param("id") Long id, @Param("userID") Long userId) ;
+	public Object getQuesstionAnswersByIdAndUserForAdmin(@Param("id") Long id, @Param("userID") Long userId) ;
 	
 	@Query("select t from Question as t left join fetch t.answers where t.id = :id")
 	public Question getQuesstionAndAnswersById(@Param("id") Long id);
