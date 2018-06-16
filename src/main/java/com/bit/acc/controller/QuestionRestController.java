@@ -130,9 +130,9 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("questionID") Long questionID,@RequestParam(value = "userID", defaultValue = "0") Long userId){
+    public Response detail(@RequestParam("questionId") Long questionId,@RequestParam(value = "userId", defaultValue = "0") Long userId){
     	//Question question = questionService.getQuesstionAndAnswersById(questionID);
-    	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionID, userId );
+    	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionId, userId );
         return new Response().success( question );
     }
     
