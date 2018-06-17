@@ -14,30 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/file")
 public class FileUploadRestController {
 
-    private final String IMG = "/upload/img";
-    private final String OTHER = "/upload/other";
+    private final String IMG = File.separator + "upload" + File.separator + "img";
+    private final String OTHER = File.separator + "upload" + File.separator + "other";
 
     @RequestMapping(value = "/uploadImg", consumes = "multipart/form-data", method = RequestMethod.POST)
     public Response picture(@RequestParam("fileUpload") CommonsMultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception{
         if ( !file.isEmpty() ) {
-            String path = saveFile(IMG, file, request, response);
-            return new Response().success( path );
+            Map originalNameAndSavedUrl = saveFile(IMG, file, request, response);
+            return new Response().success( originalNameAndSavedUrl );
         }
         return new Response().failure("请选择上传的文件！");
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     public Response upload(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        List<String> savedPath = new ArrayList<>();
+        List<Map> savedPath = new ArrayList<>();
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver( request.getSession().getServletContext() );
         //判断request是否有文件需要上传
         if( multipartResolver.isMultipart( request ) ){
@@ -49,8 +46,8 @@ public class FileUploadRestController {
                     String fileName = file.getOriginalFilename();
                     //如果名称不为""，说明该文件存在，否则说明文件不存在。
                     if( fileName.trim().length() != 0 ) {
-                        String path = saveFile(OTHER, file, request, response);
-                        savedPath.add( path );
+                        Map originalNameAndSavedUrl = saveFile(OTHER, file, request, response);
+                        savedPath.add( originalNameAndSavedUrl );
                     }
                 }
             }
@@ -59,18 +56,27 @@ public class FileUploadRestController {
         return new Response().failure("请选择上传的文件！");
     }
 
-    private String saveFile( String rootDir, MultipartFile file, HttpServletRequest request, HttpServletResponse response ) throws Exception {
+    private Map saveFile( String rootDir, MultipartFile file, HttpServletRequest request, HttpServletResponse response ) throws Exception {
         //重命名上传后的文件
-        String path = rootDir + "/" + new SimpleDateFormat("yyyyMMdd").format(new Date() ) + "/";
-        path = request.getServletContext().getRealPath( path );
+        String path = rootDir + File.separator + new SimpleDateFormat("yyyyMMdd").format(new Date() ) + File.separator;
+        path = request.getServletContext().getRealPath("/") + path;
         File dir = new File( path );
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        path += File.separator + file.getOriginalFilename();
+        String originalName = file.getOriginalFilename();
+        String savedName = String.valueOf(System.currentTimeMillis());
+        path += File.separator + savedName;
+        int dot = originalName.lastIndexOf('.');
+        if ( (dot > -1) && (dot < (originalName.length() - 1)) ) {//获取文件扩展名
+            path += "." + originalName.substring(dot + 1);
+        }
         File localFile = new File(path);
         file.transferTo(localFile);
-        return path;
+        Map originalNameAndSavedUrl = new HashMap<String, String>();
+        originalNameAndSavedUrl.put("originalName", originalName);
+        originalNameAndSavedUrl.put("savedUrl", path);
+        return originalNameAndSavedUrl;
     }
 
 }
