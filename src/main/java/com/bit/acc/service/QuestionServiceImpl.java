@@ -37,6 +37,8 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	if (entity.getId() == null) {
         	entity.setApproveCount(0);
         	entity.setDisapproveCount(0);
+            entity.setAnswerCount(0);
+            entity.setCollectedCount(0);
         	entity.setIsAccused(false);
         	if(entity.isIsAnonymous() == null)
         		entity.setIsAnonymous(false);
@@ -44,9 +46,15 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	}
     	return super.save(entity);
     }
-    
+
+    @Override
     public void switchStatus(Long id, Boolean status) {
     	dao.switchStatus(id, status);
+    }
+
+    @Override
+    public void answerCountAdd(Long id, int count){
+        dao.answerCountAdd(id, count);
     }
     
 	@Override

@@ -11,6 +11,8 @@ public interface QuestionService extends Service<Question, Long> {
 	
 	public void switchStatus(Long id, Boolean status);
 
+	public void answerCountAdd(Long id, int count);
+
 	public Map<String, Object> findRecent( Long userId, Pageable pageable );
 	
 	public List<Question> findByCondition(String userName, String question, Boolean status, Boolean accused);

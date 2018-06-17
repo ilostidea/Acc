@@ -1,19 +1,5 @@
 package com.bit.acc.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bit.acc.model.AnswerCollected;
 import com.bit.acc.service.intfs.AnswerCollectedService;
 import com.bit.common.log.ControllerLog;
@@ -21,6 +7,13 @@ import com.bit.common.model.Response;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * answerCollected 问答模块的回答收藏
@@ -61,9 +54,25 @@ public class AnswerCollectedRestController {
     	answerCollectedService.deleteById(answerCollectedID);
         return new Response().success();
     }
+
+    @RequestMapping(value="/concern",method=RequestMethod.POST)
+    public Response concern(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerCollected answerCollected, BindingResult result) {
+        if(result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            ObjectError error = errors.get(0);
+            return new Response().failure(error.getDefaultMessage());
+        }
+        answerCollectedService.save(answerCollected);
+        return new Response().success();
+    }
     
     @RequestMapping(value="/unconcern",method=RequestMethod.POST)
     public Response unconcern(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerCollected answerCollected, BindingResult result) {
+        if(result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            ObjectError error = errors.get(0);
+            return new Response().failure(error.getDefaultMessage());
+        }
     	answerCollectedService.delete(answerCollected);
         return new Response().success();
     }

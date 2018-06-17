@@ -23,10 +23,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	public static final String queryQuestionAnswersHasCollected = "select q, "
 			+ " ( select qc2.id from QuestionCollected qc2 where qc2.question.id = q.id and qc2.user.id = :userID) as hasCollected "
 			+ "  from Question q ";
-	
+
 	@Modifying
 	@Query("update Question set status = ?2 where id = ?1")
 	public void switchStatus(Long id, Boolean status);
+
+	@Modifying
+	@Query("update Question set answerCount = answerCount + ?2 where id = ?1")
+	public void answerCountAdd(Long id, int count);
 	
 	@Query(value= queryQuestionAnswersHasCollected + " where q.status is true order by q.modifyTime desc",
 	       countQuery = " select count(q.id) from Question q where q.status is true ")

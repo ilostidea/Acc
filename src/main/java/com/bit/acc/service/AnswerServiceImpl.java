@@ -3,6 +3,7 @@ package com.bit.acc.service;
 import com.bit.acc.dao.AnswerApprovedRepository;
 import com.bit.acc.dao.AnswerDisapprovedRepository;
 import com.bit.acc.dao.AnswerRepository;
+import com.bit.acc.dao.QuestionRepository;
 import com.bit.acc.model.Answer;
 import com.bit.acc.model.AnswerApproved;
 import com.bit.acc.model.AnswerDisapproved;
@@ -32,6 +33,9 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
 
     @Autowired
     private AnswerDisapprovedRepository disapproveDao;
+
+    @Autowired
+    private QuestionRepository questionDao;
 	
 	protected JpaRepository<Answer, Long> getDao() {
 		return dao;
@@ -42,15 +46,31 @@ public class AnswerServiceImpl extends AbstractService<Answer, Long> implements 
     	if (entity.getId() == null) {
         	entity.setApproveCount(0);
         	entity.setDisapproveCount(0);
+        	entity.setPumpCount(0);
+            entity.setCollectedCount(0);
         	entity.setIsAccused(false);
         	if(entity.isIsAnonymous() == null)
         		entity.setIsAnonymous(false);
         	entity.setStatus(true);
+            questionDao.answerCountAdd(entity.getQuestion().getId(), 1);
     	}
     	return super.save(entity);
     }
 
-	@Override
+    @Override
+    public void delete(Answer entity) {
+        super.delete(entity);
+        questionDao.answerCountAdd(entity.getQuestion().getId(), -1);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+	    Answer answer = super.getOne(id);
+        super.deleteById(id);
+        questionDao.answerCountAdd(answer.getQuestion().getId(), -1);
+    }
+
+    @Override
 	public List<Answer> findByQuestion(Long questionId, Long userId) {
         List<Object> answers = dao.findByQuestion(questionId, userId);
         List result = new ArrayList<Answer>();
