@@ -1,9 +1,6 @@
 package com.bit.acc.controller;
 
-import com.bit.acc.model.Answer;
-import com.bit.acc.model.AnswerApproved;
-import com.bit.acc.model.AnswerDisapproved;
-import com.bit.acc.model.Question;
+import com.bit.acc.model.*;
 import com.bit.acc.service.intfs.AnswerApprovedService;
 import com.bit.acc.service.intfs.AnswerDisapprovedService;
 import com.bit.acc.service.intfs.AnswerService;
@@ -69,7 +66,7 @@ public class AnswerRestController {
     	answerService.deleteById(answerID);
         return new Response().success();
     }
-    
+
     @RequestMapping(value="/list",method=RequestMethod.GET)
     @ControllerLog(value = "获得全部回答")
     public Response queryAll() throws Exception{
@@ -141,29 +138,35 @@ public class AnswerRestController {
 
     /**
      * 点赞
-     * @param answerID
-     * @param userID
+     * @param answerApproved
+     * {
+     *  "answer": {"id": },
+     *  "user" : {"id": }
+     *  }
      * @return
      */
     @RequestMapping(value="/approve",method=RequestMethod.POST)
-    public Response approve(@RequestParam("answerID") Long answerID, @RequestParam(value="userID", defaultValue = "0") Long userID){
-        List<AnswerDisapproved> disapprovedList = answerDisapprovedService.findByUserAndAnswer(userID, answerID);
+    public Response approve(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerApproved answerApproved, BindingResult result){
+        List<AnswerDisapproved> disapprovedList = answerDisapprovedService.findByUserAndAnswer(answerApproved.getUser().getId(), answerApproved.getAnswer().getId());
         AnswerDisapproved answerDisapproved = disapprovedList.size()>0 ? disapprovedList.get(0) : null;
-    	answerService.approve(answerID, userID, answerDisapproved);
+    	answerService.approve(answerApproved.getAnswer().getId(), answerApproved.getUser().getId(), answerDisapproved);
         return new Response().success();
     }
 
      /**
      * 踩
-     * @param answerID
-     * @param userID
+     * @param
+      *  {
+      *     "answer": {"id": },
+      *     "user" : {"id": }
+      *  }
      * @return
      */
     @RequestMapping(value="/disapprove",method=RequestMethod.POST)
-    public Response disapprove(@RequestParam("answerID") Long answerID, @RequestParam(value="userID", defaultValue = "0") Long userID){
-        List<AnswerApproved> approvedList = answerApprovedService.findByUserAndAnswer(userID, answerID);
+    public Response disapprove(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerDisapproved answerDisapproved, BindingResult result){
+        List<AnswerApproved> approvedList = answerApprovedService.findByUserAndAnswer(answerDisapproved.getUser().getId(), answerDisapproved.getAnswer().getId());
         AnswerApproved answerApproved = approvedList.size()>0? approvedList.get(0) : null;
-    	answerService.disapprove(answerID, userID, answerApproved);
+    	answerService.disapprove(answerDisapproved.getAnswer().getId(), answerDisapproved.getUser().getId(), answerApproved);
         return new Response().success();
     }
 
