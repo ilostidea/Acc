@@ -61,6 +61,10 @@ public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecif
 	@Modifying
 	@Query("update Answer set pumpCount = pumpCount + ?2 where id = ?1")
 	public void pumpCountAdd(Long id, int count);
+
+	@Modifying
+	@Query("update Answer set collectedCount = collectedCount + ?2 where id = ?1")
+	public void collectedCountAdd(Long id, int count);
 	
 	@Modifying
 	@Query("update Answer a set a.approveCount = a.approveCount + 1 where a.id = :id")

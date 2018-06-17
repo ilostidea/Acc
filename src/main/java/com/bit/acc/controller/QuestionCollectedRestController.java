@@ -1,19 +1,5 @@
 package com.bit.acc.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bit.acc.model.QuestionCollected;
 import com.bit.acc.service.intfs.QuestionCollectedService;
 import com.bit.common.log.ControllerLog;
@@ -21,6 +7,13 @@ import com.bit.common.model.Response;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * questionCollected 问答模块的问题收藏
@@ -61,7 +54,13 @@ public class QuestionCollectedRestController {
     	questionCollectedService.deleteById(questionCollectedID);
         return new Response().success();
     }
-    
+
+
+    @RequestMapping(value="/concern",method=RequestMethod.POST)
+    public Response concern(@Validated({First.class, Second.class, Third.class}) @RequestBody QuestionCollected questionCollected, BindingResult result) {
+        return add(questionCollected, result);
+    }
+
     @RequestMapping(value="/unconcern",method=RequestMethod.POST)
     public Response unconcern(@Validated({First.class, Second.class, Third.class}) @RequestBody QuestionCollected questionCollected, BindingResult result) {
     	questionCollectedService.delete(questionCollected);

@@ -57,13 +57,7 @@ public class AnswerCollectedRestController {
 
     @RequestMapping(value="/concern",method=RequestMethod.POST)
     public Response concern(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerCollected answerCollected, BindingResult result) {
-        if(result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            ObjectError error = errors.get(0);
-            return new Response().failure(error.getDefaultMessage());
-        }
-        answerCollectedService.save(answerCollected);
-        return new Response().success();
+        return add(answerCollected, result);
     }
     
     @RequestMapping(value="/unconcern",method=RequestMethod.POST)
