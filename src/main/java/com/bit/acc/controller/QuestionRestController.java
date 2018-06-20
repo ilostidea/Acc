@@ -137,7 +137,7 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/profile",method=RequestMethod.GET)
-    public Response profile(@RequestParam("userID") Long userID){
+    public Response profile(@RequestParam("userId") Long userID){
     	Map<String, Long> questionProfile = questionService.getQuestionProfileById(userID);
         return new Response().success( questionProfile );
     }
