@@ -352,6 +352,6 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 			return -1;
 		if(a.getCreateTime() == null)
 			return 1;
-		return createTime.compareTo( a.getCreateTime() );
+		return -createTime.compareTo( a.getCreateTime() );
 	}
 }
