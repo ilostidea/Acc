@@ -8,6 +8,7 @@ import org.hibernate.annotations.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.HashSet;
@@ -292,6 +293,7 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "answer")
 	@Fetch(FetchMode.SUBSELECT)
+	@OrderBy("createTime asc")
 	public Set<Pump> getPumps() {
 		return this.pumps;
 	}

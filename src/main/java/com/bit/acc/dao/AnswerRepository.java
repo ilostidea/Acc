@@ -17,12 +17,13 @@ import com.bit.acc.model.Answer;
 import com.bit.acc.model.Question;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecificationExecutor<Answer> {
-	
+
+	//query里面的order by有等于没有，不影响结果，question里面的方法对answer使用compare方法又排序了一下，子对象集合pump根据@OrderBy注解排序
 	@Query("select a, " +
 			" ( select ac.id from AnswerCollected ac where ac.answer.id = a.id and ac.user.id = :userID) as hasCollected, " +
             " ( select aa.id from AnswerApproved aa where aa.answer.id = a.id and aa.user.id = :userID) as hasApproved, " +
             " ( select ad.id from AnswerDisapproved ad where ad.answer.id = a.id and ad.user.id = :userID) as hasDisapproved " +
-            " from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID order by a.createTime desc, p.createTime desc")
+            " from Answer a left join fetch a.pumps p where a.status is true and a.question.id = :questionID order by a.createTime desc, p.createTime asc")
 	@EntityGraph(value = "answer.user" , type=EntityGraphType.FETCH)
 	public List<Object> findByQuestion(@Param("questionID") Long questionId, @Param("userID") Long userId);
 	
