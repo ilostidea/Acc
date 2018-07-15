@@ -12,7 +12,8 @@ import com.bit.acc.model.AccountingStandard;
 
 public interface AccountingStandardRepository extends JpaRepository<AccountingStandard, Long> {
 	
-	@Query("select t from AccountingStandard t where t.status is true")
+//	@Query("select t from AccountingStandard t where t.status is true")
+	@Query("select t from AccountingStandard t")
 	@QueryHints({ @QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value ="true") })
 	 <S extends AccountingStandard> List<S> findAllStatusTrue( );
 	
