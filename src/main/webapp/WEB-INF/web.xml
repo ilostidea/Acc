@@ -144,6 +144,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<!-- 拦截匹配的请求，这里所有请求采用名字为mvc-dispatcher的DispatcherServlet处理 -->
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
+        <url-pattern>/api/*</url-pattern>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
