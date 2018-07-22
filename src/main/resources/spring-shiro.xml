@@ -95,9 +95,7 @@
 	    <property name="sessionIdCookie" ref="sessionIdCookie"/>
 	</bean>
 	
-	<bean id="securityManager"
-		  class="org.apache.shiro.web.mgt.DefaultWebSecurityManager"
-	>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 	    <!-- 可设置一个Realm，也可设置多个Realm
 		<property name="realm" ref="dbRealm" />-->
 		<property name="realms">

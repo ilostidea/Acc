@@ -1,9 +1,5 @@
 package com.bit.common.auth;
 
-import java.io.Serializable;
-
-import javax.servlet.ServletRequest;
-
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.SessionKey;
@@ -11,6 +7,9 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.session.mgt.WebSessionKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletRequest;
+import java.io.Serializable;
 
 /**
  *
@@ -34,6 +33,7 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
      * Modify By Goma
      */
     protected Session retrieveSession(SessionKey sessionKey) throws UnknownSessionException {
+
 		Serializable sessionId = getSessionId(sessionKey);
 		if (sessionId == null) {
 			log.debug("Unable to resolve session ID from SessionKey [{}].  Returning null to indicate a "

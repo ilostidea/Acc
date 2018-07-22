@@ -4,16 +4,10 @@
  */
 package com.bit.common.auth;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import com.bit.acc.model.SysUser;
+import com.bit.acc.service.intfs.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -21,8 +15,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bit.acc.model.SysUser;
-import com.bit.acc.service.intfs.UserService;
+import javax.annotation.Resource;
+import java.util.List;
 
 public class DbRealm extends AuthorizingRealm {
 	private Logger logger = LoggerFactory.getLogger(DbRealm.class);
@@ -66,6 +60,7 @@ public class DbRealm extends AuthorizingRealm {
 					getName()
 					);
 		}
+		SecurityUtils.getSubject().getSession().setAttribute("currentUser", sysUser);
 		//this.setSession("currentUser", sysUser);
 		return authcInfo;
 	}

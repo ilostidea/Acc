@@ -9,6 +9,10 @@ import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,8 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/sysUser")
+//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserRestController {
 
     @Resource(name="sysUserService")
@@ -115,5 +121,42 @@ public class UserRestController {
     	//测试异常处理 if(true) throw new SQLException("SQL异常");
         List<SysUser> userList = userService.findAll();//throw new SQLException("What ?");
         return new Response().success(userList);
+    }
+
+    //@Scope(WebApplicationContext.SCOPE_SESSION)
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    @ControllerLog(value = "用户登录")
+    public SysUser login(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Subject subject = SecurityUtils.getSubject();
+        if ( subject.isAuthenticated() )
+            return (SysUser) subject.getSession().getAttribute("currentUser");//如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
+
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        token.setRememberMe(true);
+        subject.login(token);
+        token.clear();
+        return (SysUser) subject.getSession().getAttribute("currentUser");
+    }
+
+    //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @RequestMapping(value="/getUser",method=RequestMethod.GET)
+    @ControllerLog(value = "获得登录用户信息")
+    public SysUser getLoginUser(){
+        Subject subject = SecurityUtils.getSubject();
+        if (!subject.isAuthenticated())
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        return (SysUser) subject.getSession().getAttribute("currentUser");
+
+    }
+
+    //@Scope(WebApplicationContext.SCOPE_SESSION)
+    @RequestMapping(value="/logout", method=RequestMethod.POST)
+    @ControllerLog(value = "用户退出登录")
+    public String logout() {
+        Subject user = SecurityUtils.getSubject();
+        if (user.isAuthenticated()) {
+            user.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
+        }
+        return user.getPrincipal().toString();//返回到根目录
     }
 }

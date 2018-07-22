@@ -39,6 +39,7 @@
 	<a href="<%=request.getContextPath()%>/user/logout">点击退出</a>
 	<br />
 	<a href="<%=request.getContextPath()%>/user/admin/list">点击查看用户列表</a>
+	<a href="<%=request.getContextPath()%>/sysUser/getUser">点击查看用户信息</a>
 	<%
 		}
 	%>

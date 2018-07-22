@@ -1,12 +1,15 @@
 package com.bit.acc.controller;
 
 import com.bit.acc.model.Question;
+import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.QuestionService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
@@ -138,8 +141,11 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/profile",method=RequestMethod.GET)
-    public Response profile(@RequestParam("userId") Long userID){
-    	Map<String, Long> questionProfile = questionService.getQuestionProfileById(userID);
+    public Response profile( ){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute("currentUser");
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+    	Map<String, Long> questionProfile = questionService.getQuestionProfileById( user.getId() );
         return new Response().success( questionProfile );
     }
 
