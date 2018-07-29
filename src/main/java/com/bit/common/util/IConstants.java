@@ -7,6 +7,11 @@ package com.bit.common.util;
 public interface IConstants {
 
 	/**
+	 * 保存在session中的user信息对应的key的名称
+	 */
+	public static String CURRENT_USER_SESSION_KEY = "currentUser";
+
+	/**
 	 * 密碼校驗次數
 	 */
 	public static int PASSWORD_RETRY_LIMIT_TIMES = 5;

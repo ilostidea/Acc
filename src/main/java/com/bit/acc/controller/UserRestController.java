@@ -131,7 +131,7 @@ public class UserRestController {
     public SysUser login(@RequestParam("username") String username, @RequestParam("password") String password) {
         Subject subject = SecurityUtils.getSubject();
         if ( subject.isAuthenticated() )
-            return (SysUser) subject.getSession().getAttribute("currentUser");//如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
+            return (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);//如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
 
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
@@ -155,7 +155,7 @@ public class UserRestController {
         Subject subject = SecurityUtils.getSubject();
         if (!subject.isAuthenticated())
             throw new AuthenticationException("您未登录，获取不到用户信息！");
-        return (SysUser) subject.getSession().getAttribute("currentUser");
+        return (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
 
     }
 

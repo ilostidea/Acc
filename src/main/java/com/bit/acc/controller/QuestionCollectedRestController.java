@@ -1,12 +1,16 @@
 package com.bit.acc.controller;
 
 import com.bit.acc.model.QuestionCollected;
+import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.QuestionCollectedService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
+import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +33,10 @@ public class QuestionCollectedRestController {
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody QuestionCollected questionCollected, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        questionCollected.setUser(user);
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get(0);
@@ -40,6 +48,10 @@ public class QuestionCollectedRestController {
     
     @RequestMapping(value="/update",method=RequestMethod.POST)
     public Response update(@Validated({First.class, Second.class, Third.class}) @RequestBody QuestionCollected questionCollected, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        questionCollected.setUser(user);
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get(0);
@@ -77,14 +89,17 @@ public class QuestionCollectedRestController {
     
     /**
      * 通过用户ID获得该用户收藏的问题
-     * @param userID
+     * //@param userID
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的问题")
-    public Response queryByUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<QuestionCollected> listQuestionCollected = questionCollectedService.findByUser(userID);
+    public Response queryByUser(/*@RequestParam("userID") Long userID*/) throws Exception{
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+    	List<QuestionCollected> listQuestionCollected = questionCollectedService.findByUser(user.getId());
         return new Response().success( listQuestionCollected );
     }
     
