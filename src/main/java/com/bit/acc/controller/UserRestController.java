@@ -11,6 +11,8 @@ import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.http.HttpStatus;
@@ -124,7 +126,7 @@ public class UserRestController {
     }
 
     //@Scope(WebApplicationContext.SCOPE_SESSION)
-    @RequestMapping(value="/login", method=RequestMethod.POST)
+    @RequestMapping(value="/login", method=RequestMethod.GET)
     @ControllerLog(value = "用户登录")
     public SysUser login(@RequestParam("username") String username, @RequestParam("password") String password) {
         Subject subject = SecurityUtils.getSubject();
@@ -133,9 +135,17 @@ public class UserRestController {
 
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
-        subject.login(token);
-        token.clear();
-        return (SysUser) subject.getSession().getAttribute("currentUser");
+        try {
+            subject.login(token);
+            token.clear();
+            return (SysUser) subject.getSession().getAttribute("currentUser");
+        } catch (IncorrectCredentialsException ice) {
+            throw ice;
+        } catch (LockedAccountException lae) {
+            throw lae;
+        } catch (AuthenticationException ae) {
+            throw ae;
+        }
     }
 
     //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
