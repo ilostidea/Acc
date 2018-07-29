@@ -6,9 +6,12 @@ import com.bit.acc.service.intfs.AnswerDisapprovedService;
 import com.bit.acc.service.intfs.AnswerService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
+import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +42,10 @@ public class AnswerRestController {
 
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Answer answer, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        answer.setUser(user);
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get(0);
@@ -140,13 +147,16 @@ public class AnswerRestController {
      * 点赞
      * @param answerApproved
      * {
-     *  "answer": {"id": },
-     *  "user" : {"id": }
+     *  "answer": {"id": }
      *  }
      * @return
      */
     @RequestMapping(value="/approve",method=RequestMethod.POST)
     public Response approve(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerApproved answerApproved, BindingResult result){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        answerApproved.setUser(user);
         List<AnswerDisapproved> disapprovedList = answerDisapprovedService.findByUserAndAnswer(answerApproved.getUser().getId(), answerApproved.getAnswer().getId());
         AnswerDisapproved answerDisapproved = disapprovedList.size()>0 ? disapprovedList.get(0) : null;
     	answerService.approve(answerApproved.getAnswer().getId(), answerApproved.getUser().getId(), answerDisapproved);
@@ -157,13 +167,16 @@ public class AnswerRestController {
      * 踩
      * @param
       *  {
-      *     "answer": {"id": },
-      *     "user" : {"id": }
+      *     "answer": {"id": }
       *  }
      * @return
      */
     @RequestMapping(value="/disapprove",method=RequestMethod.POST)
     public Response disapprove(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerDisapproved answerDisapproved, BindingResult result){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        answerDisapproved.setUser(user);
         List<AnswerApproved> approvedList = answerApprovedService.findByUserAndAnswer(answerDisapproved.getUser().getId(), answerDisapproved.getAnswer().getId());
         AnswerApproved answerApproved = approvedList.size()>0? approvedList.get(0) : null;
     	answerService.disapprove(answerDisapproved.getAnswer().getId(), answerDisapproved.getUser().getId(), answerApproved);

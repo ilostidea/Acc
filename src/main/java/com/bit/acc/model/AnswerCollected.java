@@ -78,7 +78,7 @@ public class AnswerCollected implements java.io.Serializable {
 	/*@JsonBackReference
 	@JsonIgnore*/
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SysUserID", nullable = false)
+	@JoinColumn(name = "SysUserID")
 	public SysUser getUser() {
 		return this.user;
 	}

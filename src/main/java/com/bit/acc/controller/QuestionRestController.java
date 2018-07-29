@@ -5,6 +5,7 @@ import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.QuestionService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
+import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
@@ -37,6 +38,10 @@ public class QuestionRestController {
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Question question, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        question.setUser(user);
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get(0);
@@ -75,7 +80,7 @@ public class QuestionRestController {
     
     @RequestMapping(value="/recent",method=RequestMethod.GET)
     @ControllerLog(value = "获得最近问题及问题概况")
-    public Response queryRecent(@RequestParam(value = "userId", defaultValue = "0") Long userId, @RequestParam(value = "page", defaultValue = "0") Integer page,
+    public Response queryRecent(/*@RequestParam(value = "userId", defaultValue = "0") Long userId, */@RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
         if(page > 0)//前端传入page的值，从1开始，后端是从0开始计数
             page--;
@@ -83,6 +88,10 @@ public class QuestionRestController {
             page = 0;
         if(size <= 0)
             size = 15;
+        Long userId = 0l;
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user != null)
+            userId = user.getId();
         Pageable pageable = PageRequest.of(page, size);
         Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
         return new Response().success( listQuestion );
@@ -90,40 +99,40 @@ public class QuestionRestController {
     
     /**
      * 通过用户ID获得该用户的提问
-     * @param userID
+     * @param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的提问")
-    public Response queryByUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<Question> listQuestion = questionService.findByUser(userID);
+    public Response queryByUser(@RequestParam("userId") Long userId) throws Exception{
+    	List<Question> listQuestion = questionService.findByUser(userId);
         return new Response().success( listQuestion );
     }
     
     /**
      * 通过用户ID获得该用户回答的问题
-     * @param userID
+     * @param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByAnsweredUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户回答的问题")
-    public Response queryByAnsweredUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<Question> listQuestion = questionService.findByAnsweredUser(userID);
+    public Response queryByAnsweredUser(@RequestParam("userID") Long userId) throws Exception{
+    	List<Question> listQuestion = questionService.findByAnsweredUser(userId);
         return new Response().success( listQuestion );
     }
     
     /**
      * 通过用户ID获得该用户收藏的问题
-     * @param userID
+     * //@param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的问题")
-    public Response queryByCollectedUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<Question> listQuestion = questionService.findByCollectedUser(userID);
+    public Response queryByCollectedUser(@RequestParam("userID") Long userId) throws Exception{
+    	List<Question> listQuestion = questionService.findByCollectedUser(userId);
         return new Response().success( listQuestion );
     }
     
@@ -134,15 +143,19 @@ public class QuestionRestController {
     }
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
-    public Response detail(@RequestParam("questionId") Long questionId,@RequestParam(value = "userId", defaultValue = "0") Long userId){
-    	//Question question = questionService.getQuesstionAndAnswersById(questionID);
+    public Response detail(@RequestParam("questionId") Long questionId/*,@RequestParam(value = "userId", defaultValue = "0") Long userId*/){
+        Long userId = 0l;
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user != null)
+            userId = user.getId();
+        //Question question = questionService.getQuesstionAndAnswersById(questionId);
     	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionId, userId );
         return new Response().success( question );
     }
     
     @RequestMapping(value="/profile",method=RequestMethod.GET)
     public Response profile( ){
-        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute("currentUser");
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
         if(user == null)
             throw new AuthenticationException("您未登录，获取不到用户信息！");
     	Map<String, Long> questionProfile = questionService.getQuestionProfileById( user.getId() );

@@ -6,6 +6,7 @@ package com.bit.common.auth;
 
 import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.UserService;
+import com.bit.common.util.IConstants;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -60,8 +61,8 @@ public class DbRealm extends AuthorizingRealm {
 					getName()
 					);
 		}
-		SecurityUtils.getSubject().getSession().setAttribute("currentUser", sysUser);
-		//this.setSession("currentUser", sysUser);
+		SecurityUtils.getSubject().getSession().setAttribute(IConstants.CURRENT_USER_SESSION_KEY, sysUser);
+		//this.setSession(IConstants.CURRENT_USER_SESSION_KEY, sysUser);
 		return authcInfo;
 	}
 	

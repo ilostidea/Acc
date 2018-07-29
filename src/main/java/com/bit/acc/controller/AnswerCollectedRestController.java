@@ -1,12 +1,16 @@
 package com.bit.acc.controller;
 
 import com.bit.acc.model.AnswerCollected;
+import com.bit.acc.model.SysUser;
 import com.bit.acc.service.intfs.AnswerCollectedService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
+import com.bit.common.util.IConstants;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +33,10 @@ public class AnswerCollectedRestController {
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerCollected answerCollected, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        answerCollected.setUser( user );
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get( 0 );
@@ -62,6 +70,10 @@ public class AnswerCollectedRestController {
     
     @RequestMapping(value="/unconcern",method=RequestMethod.POST)
     public Response unconcern(@Validated({First.class, Second.class, Third.class}) @RequestBody AnswerCollected answerCollected, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        answerCollected.setUser( user );
         if(result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             ObjectError error = errors.get(0);
