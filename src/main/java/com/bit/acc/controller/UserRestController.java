@@ -128,12 +128,12 @@ public class UserRestController {
     //@Scope(WebApplicationContext.SCOPE_SESSION)
     @RequestMapping(value="/login", method=RequestMethod.GET)
     @ControllerLog(value = "用户登录")
-    public SysUser login(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public SysUser login(@RequestParam("mobile") String mobile, @RequestParam("password") String password) {
         Subject subject = SecurityUtils.getSubject();
         if ( subject.isAuthenticated() )
             return (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);//如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
 
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(mobile, password);
         token.setRememberMe(true);
 //        try {
             subject.login(token);
