@@ -135,17 +135,17 @@ public class UserRestController {
 
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
-        try {
+//        try {
             subject.login(token);
             token.clear();
             return (SysUser) subject.getSession().getAttribute("currentUser");
-        } catch (IncorrectCredentialsException ice) {
-            throw ice;
-        } catch (LockedAccountException lae) {
-            throw lae;
-        } catch (AuthenticationException ae) {
-            throw ae;
-        }
+//        } catch (IncorrectCredentialsException ice) {
+//            throw ice;
+//        } catch (LockedAccountException lae) {
+//            throw lae;
+//        } catch (AuthenticationException ae) {
+//            throw ae;
+//        }
     }
 
     //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
