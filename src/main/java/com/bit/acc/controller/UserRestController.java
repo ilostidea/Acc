@@ -128,35 +128,34 @@ public class UserRestController {
     //@Scope(WebApplicationContext.SCOPE_SESSION)
     @RequestMapping(value="/login", method=RequestMethod.GET)
     @ControllerLog(value = "用户登录")
-    public SysUser login(@RequestParam("mobile") String mobile, @RequestParam("password") String password) {
+    public Response login(@RequestParam("mobile") String mobile, @RequestParam("password") String password) {
         Subject subject = SecurityUtils.getSubject();
-        if ( subject.isAuthenticated() )
-            return (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);//如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
+        if ( subject.isAuthenticated() ) {
+            //如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
+            SysUser user = (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+            return new Response().success(user);
+        }
 
         UsernamePasswordToken token = new UsernamePasswordToken(mobile, password);
         token.setRememberMe(true);
-//        try {
-            subject.login(token);
-            token.clear();
-            return (SysUser) subject.getSession().getAttribute("currentUser");
-//        } catch (IncorrectCredentialsException ice) {
-//            throw ice;
-//        } catch (LockedAccountException lae) {
-//            throw lae;
-//        } catch (AuthenticationException ae) {
-//            throw ae;
-//        }
+
+        subject.login(token);
+        token.clear();
+        SysUser user = (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        return new Response().success(user);
     }
 
     //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @RequestMapping(value="/getUser",method=RequestMethod.GET)
     @ControllerLog(value = "获得登录用户信息")
-    public SysUser getLoginUser(){
+    public Response getLoginUser(){
         Subject subject = SecurityUtils.getSubject();
+
         if (!subject.isAuthenticated())
             throw new AuthenticationException("您未登录，获取不到用户信息！");
-        return (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
 
+        SysUser user = (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        return new Response().success(user);
     }
 
     //@Scope(WebApplicationContext.SCOPE_SESSION)
