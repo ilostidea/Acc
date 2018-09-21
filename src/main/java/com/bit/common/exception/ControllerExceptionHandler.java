@@ -3,18 +3,19 @@
  */
 package com.bit.common.exception;
 
-import java.sql.SQLException;
-
-import javax.validation.ConstraintViolationException;
-
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 
 /**
  * @author Zhou Liang
@@ -35,7 +36,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({SQLException.class})
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView handleSQLException(NativeWebRequest request, SQLException e) {
-        logger.error( "SQLException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "SQLException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -50,7 +51,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ModelAndView handleConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
-        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "ConstraintViolationException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -64,7 +65,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ModelAndView handleUnauthorizedException(NativeWebRequest request, UnauthorizedException e) {
-        logger.error( "UnauthorizedException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "UnauthorizedException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");
@@ -78,7 +79,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ModelAndView handleUnauthenticatedException(NativeWebRequest request, AuthenticationException e) {
-        logger.error( "AuthenticationException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "AuthenticationException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         ModelAndView mv = new ModelAndView();
         mv.addObject("error", e);
         mv.setViewName("error");

@@ -50,7 +50,7 @@
 	
 	<!-- configure admin and its password-->
 	<bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">  
-        <constructor-arg name="resourcePath"  value="classpath:/realm.ini"></constructor-arg>  
+        <constructor-arg name="resourcePath"  value="classpath:realm.ini"></constructor-arg>
     </bean>
 	
 	<!-- Session id generator  -->

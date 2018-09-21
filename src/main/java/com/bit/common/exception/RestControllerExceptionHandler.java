@@ -38,7 +38,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleIllegalParamException(MethodArgumentNotValidException e) {
-        logger.error( "MethodArgumentNotValidException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "MethodArgumentNotValidException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         String tips = "参数不合法";
         if (errors.size() > 0) {
@@ -54,7 +54,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({FileNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response handleNotFoundException(FileNotFoundException e) {
-        logger.error( "FileNotFoundException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "FileNotFoundException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，请求的界面不存在！");
     }
 	
@@ -65,14 +65,14 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({NullPointerException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleSQLException(NullPointerException e) {
-        logger.error( "NullPointerException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "NullPointerException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了空指针异常！");
     }
 
     @ExceptionHandler({ArrayIndexOutOfBoundsException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleSQLException(ArrayIndexOutOfBoundsException e) {
-        logger.error( "NullPointerException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "NullPointerException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了数组越界异常！");
     }
 
@@ -85,7 +85,7 @@ public class RestControllerExceptionHandler {
     @ResponseBody
     public Response handleSQLException(SQLException e) {
 //        Throwables.getRootCause(e).getMessage();
-        logger.error( "SQLException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "SQLException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，出现了SQL异常！");
     }
 
@@ -96,7 +96,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleConstraintViolationException(NativeWebRequest request, ConstraintViolationException e) {
-        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "ConstraintViolationException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据校验未通过！");
     }
 
@@ -107,7 +107,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleConstraintViolationException(NativeWebRequest request, org.hibernate.exception.ConstraintViolationException e) {
-        logger.error( "ConstraintViolationException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "ConstraintViolationException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，数据已被引用！");
     }
     
@@ -118,7 +118,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Response handleUnauthenticatedException(UnauthorizedException e) {
-        logger.error( "UnauthorizedException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "UnauthorizedException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，您没有权限！");
     }
     
@@ -129,7 +129,7 @@ public class RestControllerExceptionHandler {
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response handleEntityNotFoundException(EntityNotFoundException e) {
-        logger.error( "EntityNotFoundException:\r\n\t{}",  e.getStackTrace() );
+        logger.error( "EntityNotFoundException:\r\n\t{}",  String.valueOf(e.getStackTrace()) );
         return new Response().failure(e.getMessage() != null? e.getMessage() : "对不起，实体不存在！");
     }
     
