@@ -42,6 +42,16 @@ public class QuestionCollectedServiceImpl extends AbstractService<QuestionCollec
         }
         questionDao.collectedCountAdd(questionCollected.getQuestion().getId(), -1);
 	}
+
+	/**
+	 * 根据用户id取消收藏
+	 * @param questionCollected
+	 * @param userId
+	 */
+	public void deleteByUserId(QuestionCollected questionCollected, Long userId) {
+		dao.deleteAllByQuestionIdAndUserId(questionCollected.getQuestion().getId(), userId);
+		questionDao.collectedCountAdd(questionCollected.getQuestion().getId(), -1);
+	}
 	
 	@Override
 	public List<QuestionCollected> findByUser(Long userId) {

@@ -161,11 +161,12 @@ public class UserRestController {
     //@Scope(WebApplicationContext.SCOPE_SESSION)
     @RequestMapping(value="/logout", method=RequestMethod.POST)
     @ControllerLog(value = "用户退出登录")
-    public String logout() {
+    public Response logout() {
         Subject user = SecurityUtils.getSubject();
         if (user.isAuthenticated()) {
-            user.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
+            user.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓
         }
-        return user.getPrincipal().toString();//返回到根目录
+//        return user.getPrincipal().toString();//返回到根目录
+        return new Response().success();
     }
 }

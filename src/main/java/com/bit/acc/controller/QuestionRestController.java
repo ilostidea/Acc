@@ -93,8 +93,12 @@ public class QuestionRestController {
         if(user != null)
             userId = user.getId();
         Pageable pageable = PageRequest.of(page, size);
-        Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
-        return new Response().success( listQuestion );
+        try {
+            Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
+            return new Response().success( listQuestion );
+        } catch (Exception e) {
+            throw e;
+        }
     }
     
     /**

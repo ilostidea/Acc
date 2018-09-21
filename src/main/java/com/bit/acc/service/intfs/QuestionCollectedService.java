@@ -8,5 +8,6 @@ import com.bit.acc.service.baseservice.Service;
 public interface QuestionCollectedService extends Service<QuestionCollected, Long> {
 
 	public List<QuestionCollected> findByUser(Long userId);
-	
+
+	void deleteByUserId(QuestionCollected questionCollected, Long id);
 }

@@ -11,6 +11,7 @@ import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.subject.Subject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -75,7 +76,15 @@ public class QuestionCollectedRestController {
 
     @RequestMapping(value="/unconcern",method=RequestMethod.POST)
     public Response unconcern(@Validated({First.class, Second.class, Third.class}) @RequestBody QuestionCollected questionCollected, BindingResult result) {
-    	questionCollectedService.delete(questionCollected);
+
+        Subject subject = SecurityUtils.getSubject();
+
+        if (!subject.isAuthenticated())
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+
+        SysUser user = (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+
+        questionCollectedService.deleteByUserId(questionCollected, user.getId());
         return new Response().success();
     }
     
