@@ -301,7 +301,7 @@
 			         <username>admin</username>                                <!--tomcat的管理员账号-->
 			         <password>admin</password>
 			         <port>8080</port>
-			         <path>/Acc</path>                                          <!--部署路径-->
+			         <path>/</path>                                          <!--部署路径-->
 			         <charset>UTF-8</charset>
 			         <!--<encoding>UTF-8</encoding>-->
 			         <!--运行redeploy命令前，要能正常访问http://localhost:8080/manager-->
