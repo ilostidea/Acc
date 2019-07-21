@@ -38,11 +38,11 @@ public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecif
 	
 	public List<Answer> findByCondition(Specification<Answer> querySpecific);
 	
-	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.title ) "
+	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.id, a.question.title ) "
 			+ " from Answer a left join a.pumps p where a.status is true and a.user.id = :userID group by a.id order by a.createTime desc")
 	public List<Answer> findByUser(@Param("userID") Long userId);
 	
-	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.title ) "
+	@Query("select new Answer( a.id, a.question, a.user, a.answer, a.isAnonymous, a.approveCount, a.disapproveCount, a.pumpCount, a.collectedCount, a.isAccused, a.status, a.createTime, a.creator, a.modifyTime, a.modifier, a.question.id, a.question.title ) "
 			+ " from Answer a left join a.pumps p join a.answerCollecteds ac where a.status is true and ac.user.id = :userID group by a.id order by a.createTime desc")
 	public List<Answer> findByCollectedUser(@Param("userID") Long userId);
 	

@@ -122,7 +122,7 @@ public class QuestionRestController {
      */
     @RequestMapping(value="/queryByAnsweredUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户回答的问题")
-    public Response queryByAnsweredUser(@RequestParam("userID") Long userId) throws Exception{
+    public Response queryByAnsweredUser(@RequestParam("userId") Long userId) throws Exception{
     	List<Question> listQuestion = questionService.findByAnsweredUser(userId);
         return new Response().success( listQuestion );
     }
@@ -135,7 +135,7 @@ public class QuestionRestController {
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的问题")
-    public Response queryByCollectedUser(@RequestParam("userID") Long userId) throws Exception{
+    public Response queryByCollectedUser(@RequestParam("userId") Long userId) throws Exception{
     	List<Question> listQuestion = questionService.findByCollectedUser(userId);
         return new Response().success( listQuestion );
     }

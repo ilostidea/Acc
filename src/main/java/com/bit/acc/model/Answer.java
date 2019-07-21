@@ -56,7 +56,8 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 	private Long modifier;
 	private Set<Pump> pumps = new HashSet<Pump>(0);
 	private Set<AnswerCollected> answerCollecteds = new HashSet<AnswerCollected>(0);
-	
+
+	private Long questionId;
 	private String questionTitle;
 	private Boolean hasCollected;//当前用户是否已关注该问题
 	private Boolean hasApproved;//当前用户是否已关注该问题
@@ -102,7 +103,7 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 
 	public Answer(Long id, Question question, SysUser user, String answer, Boolean isAnonymous, Integer approveCount,
 			Integer disapproveCount, Integer pumpCount, Integer collectedCount, Boolean isAccused, Boolean status,
-                  Date createTime, Long creator, Date modifyTime, Long modifier, String questionTitle) {
+                  Date createTime, Long creator, Date modifyTime, Long modifier, Long questionId, String questionTitle) {
 		this.id = id;
 		this.question = question;
 		this.user = user;
@@ -118,6 +119,7 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 		this.creator = creator;
 		this.modifyTime =modifyTime;
 		this.modifier = modifier;
+		this.questionId = questionId;
 		this.questionTitle = questionTitle;
 	}
 
@@ -310,6 +312,15 @@ public class Answer implements java.io.Serializable, Comparable<Answer> {
 
 	public void setAnswerCollecteds(Set<AnswerCollected> answerCollecteds) {
 		this.answerCollecteds = answerCollecteds;
+	}
+
+	@Transient
+	public Long getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(Long questionId) {
+		this.questionId = questionId;
 	}
 
 	@Transient

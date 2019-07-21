@@ -90,21 +90,21 @@ public class AnswerRestController {
      */
     @RequestMapping(value="/queryByUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的回答")
-    public Response queryByUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<Answer> listQuestion = answerService.findByUser(userID);
+    public Response queryByUser(@RequestParam("userId") Long userId) throws Exception{
+    	List<Answer> listQuestion = answerService.findByUser(userId);
         return new Response().success( listQuestion );
     }
     
     /**
      * 通过用户ID获得该用户收藏的回答
-     * @param userID
+     * @param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的回答")
-    public Response queryByCollectedUser(@RequestParam("userID") Long userID) throws Exception{
-    	List<Answer> listQuestion = answerService.findByCollectedUser(userID);
+    public Response queryByCollectedUser(@RequestParam("userId") Long userId) throws Exception{
+    	List<Answer> listQuestion = answerService.findByCollectedUser(userId);
         return new Response().success( listQuestion );
     }
     
