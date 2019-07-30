@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
@@ -29,6 +30,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	public void switchStatus(Long id, Boolean status);
 
 	@Modifying
+	@Query("update Question set readTimes = readTimes + ?2 where id = ?1")
+	public void readTimesAdd(Long id, int times);
+
+	@Modifying
 	@Query("update Question set answerCount = answerCount + ?2 where id = ?1")
 	public void answerCountAdd(Long id, int count);
 
@@ -40,6 +45,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 	       countQuery = " select count(q.id) from Question q where q.status is true ")
 	@EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
 	public Page<Object> findRecent(@Param("userID") Long userId, Pageable pageable);
+
+	public  List<Question> findTop10ByStatus( Boolean status, Sort sort );
+
+    @Query(value= queryQuestionAnswersHasCollected + " where q.status is true and (q.title like CONCAT('%', :questionKeyword, '%') or q.question like CONCAT('%', :questionKeyword, '%') ) order by q.modifyTime desc",
+            countQuery = " select count(q.id) from Question q where q.status is true and (q.title like CONCAT('%', :questionKeyword, '%') or q.question like CONCAT('%', :questionKeyword, '%') ) ")
+    @EntityGraph(value = "question.user" , type=EntityGraphType.FETCH)
+    public Page<Object> findByQuestion(@Param("userID") Long userId, @Param("questionKeyword") String questionKeyword, Pageable pageable);
 	
 	public List<Question> findByCondition(Specification<Question> querySpecific);
 	

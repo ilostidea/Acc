@@ -303,7 +303,7 @@
 			         <port>8080</port>
 			         <path>/</path>                                          <!--部署路径-->
 			         <charset>UTF-8</charset>
-			         <!--<encoding>UTF-8</encoding>-->
+			         <uriEncoding>UTF-8</uriEncoding>
 			         <!--运行redeploy命令前，要能正常访问http://localhost:8080/manager-->
 			     </configuration>
                  <!--<executions>

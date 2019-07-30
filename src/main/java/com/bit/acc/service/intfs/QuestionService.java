@@ -11,11 +11,17 @@ public interface QuestionService extends Service<Question, Long> {
 	
 	public void switchStatus(Long id, Boolean status);
 
+	public void readTimesAdd(Long id, int times);
+
 	public void answerCountAdd(Long id, int count);
 
 	public Map<String, Object> findRecent( Long userId, Pageable pageable );
+
+	public Map<String, Object> findByQuestion( Long userId, String questionKeyword, Pageable pageable );
 	
 	public List<Question> findByCondition(String userName, String question, Boolean status, Boolean accused);
+
+	public List<Question> findTop10( );
 
 	public List<Question> findByUser(Long userId);
 

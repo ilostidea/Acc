@@ -50,6 +50,7 @@ public class Question implements java.io.Serializable, Comparable<Question> {
     private String question;
     private String[] tag;
     private Boolean isAnonymous;
+    private Integer readTimes;
     private Integer approveCount;
     private Integer disapproveCount;
     private Integer answerCount;
@@ -180,6 +181,15 @@ public class Question implements java.io.Serializable, Comparable<Question> {
 
     public void setIsAnonymous(Boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
+    }
+
+    @Column(name = "ReadTimes", nullable = false)
+    public Integer getReadTimes() {
+        return readTimes;
+    }
+
+    public void setReadTimes(Integer readTimes) {
+        this.readTimes = readTimes;
     }
 
     @Column(name = "ApproveCount", nullable = false)

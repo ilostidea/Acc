@@ -9,6 +9,7 @@ import com.bit.acc.service.intfs.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     @Override
     public <S extends Question> S save(S entity) {
     	if (entity.getId() == null) {
+    		entity.setReadTimes(0);
         	entity.setApproveCount(0);
         	entity.setDisapproveCount(0);
             entity.setAnswerCount(0);
@@ -52,7 +54,12 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	dao.switchStatus(id, status);
     }
 
-    @Override
+	@Override
+	public void readTimesAdd(Long id, int times) {
+		dao.readTimesAdd(id, times);
+	}
+
+	@Override
     public void answerCountAdd(Long id, int count){
         dao.answerCountAdd(id, count);
     }
@@ -63,18 +70,33 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     	if(userId != null)
 			curUserId = userId;
 		Page<Object> list = dao.findRecent(curUserId, pageable );
+		Map<String, Object> resultMap = processResultPage(list);
+		return resultMap;
+	}
+
+	@Override
+	public Map<String, Object> findByQuestion( Long userId, String questionKeyword, Pageable pageable ){
+		Long curUserId = 0l;
+		if(userId != null)
+			curUserId = userId;
+		Page<Object> list = dao.findByQuestion(curUserId, questionKeyword, pageable );
+		Map<String, Object> resultMap = processResultPage(list);
+		return resultMap;
+	}
+
+	private Map<String, Object> processResultPage(Page<Object>  pageList) {
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Question> resultList = new ArrayList<>();
-		for(Object o : list ) {
+		for(Object o : pageList ) {
 			Object[] array = (Object[]) o;
 			Question question = (Question) array[0];
-			Boolean hasCollected = array[1]==null?Boolean.FALSE:Boolean.TRUE;
+			Boolean hasCollected = array[1]==null ? Boolean.FALSE : Boolean.TRUE;
 			question.setHasCollected(hasCollected);
 			resultList.add(question);
 		}
 		resultMap.put("list", resultList);
-		resultMap.put("total", list.getTotalElements());
-		resultMap.put("totalPages", list.getTotalPages());
+		resultMap.put("total", pageList.getTotalElements());
+		resultMap.put("totalPages", pageList.getTotalPages());
 		return resultMap;
 	}
 
@@ -93,7 +115,8 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
     						criteriaBuilder.equal( root.get( "user" ).get("nickName"), userName ) ) );
                 }
                 if( question != null && question.length() > 0 ){
-                    predicates.add( criteriaBuilder.like( root.get( "question" ), "%" + question + "%") );
+                    predicates.add( criteriaBuilder.or( criteriaBuilder.like( root.get( "question" ), "%" + question + "%"),
+                            criteriaBuilder.like( root.get( "title" ), "%" + question + "%") ) );
                 }
                 if( status != null ){
                     predicates.add( status ? criteriaBuilder.isTrue( root.get("status") ) : criteriaBuilder.isFalse( root.get("status") ) );
@@ -108,6 +131,11 @@ public class QuestionServiceImpl extends AbstractService<Question, Long> impleme
         resultList =  dao.findByCondition(querySpecifi);
         return resultList;
 		//return dao.queryForAdmin(userName, question, status, accused);
+	}
+
+	public List<Question> findTop10( ) {
+		Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"readTimes"));
+		return dao.findTop10ByStatus( true, sort );
 	}
 
 	@Override

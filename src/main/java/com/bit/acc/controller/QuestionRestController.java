@@ -82,23 +82,72 @@ public class QuestionRestController {
     @ControllerLog(value = "获得最近问题及问题概况")
     public Response queryRecent(/*@RequestParam(value = "userId", defaultValue = "0") Long userId, */@RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
-        if(page > 0)//前端传入page的值，从1开始，后端是从0开始计数
-            page--;
-        if(page < 0)
-            page = 0;
-        if(size <= 0)
-            size = 15;
         Long userId = 0l;
         SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
         if(user != null)
             userId = user.getId();
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = dealWithPage(page, size);
         try {
             Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
             return new Response().success( listQuestion );
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    /**
+     * 搜索问题
+     * @param question
+     * @return Response
+     * @throws Exception
+     */
+    @RequestMapping(value="/queryByCondition",method=RequestMethod.GET)
+    @ControllerLog(value = "通过内容搜索问题")
+    public Response queryByCondition(@RequestParam("question") String question,
+                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                     @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
+        Long userId = 0l;
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user != null)
+            userId = user.getId();
+        Pageable pageable = dealWithPage(page, size);
+        try {
+            Map<String, Object> listQuestion = questionService.findByQuestion(userId, question, pageable);
+            return new Response().success( listQuestion );
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /**
+     * 根据字段获得排名靠前的10条问题
+     * @return Response
+     * @throws Exception
+     */
+    @RequestMapping(value="/queryTop10",method=RequestMethod.GET)
+    @ControllerLog(value = "通过内容搜索问题")
+    public Response queryTop10( ) throws Exception{
+        Long userId = 0l;
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user != null)
+            userId = user.getId();
+        try {
+            List<Question> listQuestion = questionService.findTop10( );
+            return new Response().success( listQuestion );
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private Pageable dealWithPage(Integer page, Integer size ) {
+        if(page > 0)//前端传入page的值，从1开始，后端是从0开始计数
+            page--;
+        if(page < 0)
+            page = 0;
+        if(size <= 0)
+            size = 15;
+        Pageable pageable = PageRequest.of(page, size);
+        return pageable;
     }
     
     /**
@@ -152,6 +201,7 @@ public class QuestionRestController {
         SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
         if(user != null)
             userId = user.getId();
+        questionService.readTimesAdd(questionId, 1);
         //Question question = questionService.getQuesstionAndAnswersById(questionId);
     	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionId, userId );
         return new Response().success( question );

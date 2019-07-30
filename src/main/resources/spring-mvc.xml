@@ -93,6 +93,12 @@
 		<property name="objectMapper">
 			<bean class="com.bit.common.jackson.HibernateAwareObjectMapper" />
 		</property>
+		<!--<property name="supportedMediaTypes">-->
+			<!--<list>-->
+				<!--<value>text/html;charset=UTF-8</value>-->
+				<!--<value>application/json;charset=UTF-8</value>-->
+			<!--</list>-->
+		<!--</property>-->
     </bean>
     
     <!-- web.xml设置detectAllHandlerExceptionResolvers为false，取消spring自动注册的异常解析器，自定义异常解析器。
