@@ -6,6 +6,7 @@ import com.bit.acc.service.intfs.QuestionService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.util.IConstants;
+import com.bit.common.util.SessionUtil;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
@@ -82,10 +83,7 @@ public class QuestionRestController {
     @ControllerLog(value = "获得最近问题及问题概况")
     public Response queryRecent(/*@RequestParam(value = "userId", defaultValue = "0") Long userId, */@RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
-        Long userId = 0l;
-        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
-        if(user != null)
-            userId = user.getId();
+        Long userId = SessionUtil.getCurrentUser();
         Pageable pageable = dealWithPage(page, size);
         try {
             Map<String, Object> listQuestion = questionService.findRecent(userId, pageable);
@@ -106,10 +104,8 @@ public class QuestionRestController {
     public Response queryByCondition(@RequestParam("question") String question,
                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
                                      @RequestParam(value = "size", defaultValue = "15") Integer size) throws Exception{
-        Long userId = 0l;
-        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
-        if(user != null)
-            userId = user.getId();
+
+        Long userId = SessionUtil.getCurrentUser();
         Pageable pageable = dealWithPage(page, size);
         try {
             Map<String, Object> listQuestion = questionService.findByQuestion(userId, question, pageable);
@@ -127,10 +123,7 @@ public class QuestionRestController {
     @RequestMapping(value="/queryTop10",method=RequestMethod.GET)
     @ControllerLog(value = "通过内容搜索问题")
     public Response queryTop10( ) throws Exception{
-        Long userId = 0l;
-        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
-        if(user != null)
-            userId = user.getId();
+        Long userId = SessionUtil.getCurrentUser();
         try {
             List<Question> listQuestion = questionService.findTop10( );
             return new Response().success( listQuestion );
@@ -152,13 +145,13 @@ public class QuestionRestController {
     
     /**
      * 通过用户ID获得该用户的提问
-     * @param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryBy",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的提问")
-    public Response queryByUser(@RequestParam("userId") Long userId) throws Exception{
+    public Response queryByUser( ) throws Exception{
+        Long userId = SessionUtil.getCurrentUser();
     	List<Question> listQuestion = questionService.findByUser(userId);
         return new Response().success( listQuestion );
     }
@@ -178,13 +171,13 @@ public class QuestionRestController {
     
     /**
      * 通过用户ID获得该用户收藏的问题
-     * //@param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的问题")
-    public Response queryByCollectedUser(@RequestParam("userId") Long userId) throws Exception{
+    public Response queryByCollectedUser( ) throws Exception{
+        Long userId = SessionUtil.getCurrentUser();
     	List<Question> listQuestion = questionService.findByCollectedUser(userId);
         return new Response().success( listQuestion );
     }
@@ -197,10 +190,7 @@ public class QuestionRestController {
     
     @RequestMapping(value="/detail",method=RequestMethod.GET)
     public Response detail(@RequestParam("questionId") Long questionId/*,@RequestParam(value = "userId", defaultValue = "0") Long userId*/){
-        Long userId = 0l;
-        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
-        if(user != null)
-            userId = user.getId();
+        Long userId = SessionUtil.getCurrentUser();
         questionService.readTimesAdd(questionId, 1);
         //Question question = questionService.getQuesstionAndAnswersById(questionId);
     	Question question = questionService.getQuesstionAndAnswersByIdAndUser( questionId, userId );

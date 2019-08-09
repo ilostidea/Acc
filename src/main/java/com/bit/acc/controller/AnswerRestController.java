@@ -7,6 +7,7 @@ import com.bit.acc.service.intfs.AnswerService;
 import com.bit.common.log.ControllerLog;
 import com.bit.common.model.Response;
 import com.bit.common.util.IConstants;
+import com.bit.common.util.SessionUtil;
 import com.bit.common.validation.First;
 import com.bit.common.validation.Second;
 import com.bit.common.validation.Third;
@@ -84,26 +85,26 @@ public class AnswerRestController {
     
     /**
      * 通过用户ID获得该用户的回答
-     * @param userID
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户的回答")
-    public Response queryByUser(@RequestParam("userId") Long userId) throws Exception{
+    public Response queryByUser( ) throws Exception{
+        Long userId = SessionUtil.getCurrentUser();
     	List<Answer> listQuestion = answerService.findByUser(userId);
         return new Response().success( listQuestion );
     }
     
     /**
      * 通过用户ID获得该用户收藏的回答
-     * @param userId
      * @return Response
      * @throws Exception
      */
     @RequestMapping(value="/queryByCollectedUser",method=RequestMethod.GET)
     @ControllerLog(value = "通过用户ID获得该用户收藏的回答")
-    public Response queryByCollectedUser(@RequestParam("userId") Long userId) throws Exception{
+    public Response queryByCollectedUser( ) throws Exception{
+        Long userId = SessionUtil.getCurrentUser();
     	List<Answer> listQuestion = answerService.findByCollectedUser(userId);
         return new Response().success( listQuestion );
     }

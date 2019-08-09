@@ -2,10 +2,15 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+DROP SCHEMA IF EXISTS `acc` ;
+CREATE SCHEMA IF NOT EXISTS `acc` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `acc` ;
 
 -- -----------------------------------------------------
 -- Table `acc`.`SysUser`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`SysUser` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`SysUser` (
   `ID` BIGINT NOT NULL,
   `Mobile` VARCHAR(16) NOT NULL,
@@ -27,6 +32,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`SysLog`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`SysLog` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`SysLog` (
   `ID` BIGINT NOT NULL,
   `IP` VARCHAR(16) NOT NULL,
@@ -50,6 +57,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`UserSetting`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`UserSetting` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`UserSetting` (
   `ID` BIGINT NOT NULL,
   `UserID` BIGINT NOT NULL,
@@ -73,6 +82,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Course`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Course` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Course` (
   `ID` BIGINT NOT NULL COMMENT '		',
   `SeqNo` INT NOT NULL,
@@ -89,6 +100,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Chapter`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Chapter` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Chapter` (
   `ID` BIGINT NOT NULL,
   `CourseID` BIGINT NOT NULL,
@@ -112,6 +125,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Exercise`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Exercise` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Exercise` (
   `ID` BIGINT NOT NULL COMMENT '	',
   `ChapterID` BIGINT NOT NULL,
@@ -139,6 +154,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`ExerciseQuestion`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`ExerciseQuestion` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`ExerciseQuestion` (
   `ID` BIGINT NOT NULL,
   `ExerciseID` BIGINT NOT NULL,
@@ -163,6 +180,8 @@ COMMENT = 'For non-choice questions, there are several sub-questions. ';
 -- -----------------------------------------------------
 -- Table `acc`.`ExcerciseChoice`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`ExcerciseChoice` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`ExcerciseChoice` (
   `ID` BIGINT NOT NULL,
   `ExerciseID` BIGINT NOT NULL,
@@ -185,6 +204,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Doubt`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Doubt` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Doubt` (
   `ID` BIGINT NOT NULL,
   `UserID` BIGINT NOT NULL,
@@ -216,6 +237,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`DoubtAnswer`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`DoubtAnswer` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`DoubtAnswer` (
   `ID` BIGINT NOT NULL,
   `UserID` BIGINT NOT NULL,
@@ -247,6 +270,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`ExcerciseCollected`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`ExcerciseCollected` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`ExcerciseCollected` (
   `ID` VARCHAR(45) NOT NULL,
   `UserID` BIGINT NOT NULL,
@@ -274,6 +299,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`ExerciseScore`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`ExerciseScore` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`ExerciseScore` (
   `ID` BIGINT NOT NULL,
   `ChapterID` BIGINT NOT NULL,
@@ -296,6 +323,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Question`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Question` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Question` (
   `ID` BIGINT NOT NULL,
   `UserID` BIGINT NOT NULL,
@@ -304,6 +333,7 @@ CREATE TABLE IF NOT EXISTS `acc`.`Question` (
   `Tag` VARCHAR(500) NULL,
   `IsAnonymous` TINYINT(1) NOT NULL,
   `ApproveCount` INT NOT NULL,
+  `ReadTimes` INT NOT NULL,
   `DisapproveCount` INT NOT NULL,
   `AnswerCount` INT NOT NULL,
   `CollectedCount` INT NOT NULL,
@@ -326,6 +356,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Answer`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Answer` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Answer` (
   `ID` BIGINT NOT NULL,
   `QuestionID` BIGINT NOT NULL,
@@ -361,6 +393,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Pump`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Pump` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Pump` (
   `ID` BIGINT NOT NULL,
   `AnswerID` BIGINT NOT NULL,
@@ -392,6 +426,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`QuestionCollected`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`QuestionCollected` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`QuestionCollected` (
   `ID` BIGINT NOT NULL,
   `QuestionID` BIGINT NOT NULL,
@@ -420,6 +456,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`AnswerCollected`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AnswerCollected` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AnswerCollected` (
   `ID` BIGINT NOT NULL,
   `AnswerID` BIGINT NOT NULL,
@@ -448,6 +486,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`AccountingStandard`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AccountingStandard` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AccountingStandard` (
   `ID` BIGINT NOT NULL,
   `Name` VARCHAR(50) NOT NULL,
@@ -466,6 +506,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`FinancialReport`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`FinancialReport` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`FinancialReport` (
   `ID` BIGINT NOT NULL,
   `AccountingStandardID` BIGINT NOT NULL,
@@ -489,6 +531,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`COA`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`COA` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`COA` (
   `ID` BIGINT NOT NULL,
   `AccountingStandardID` BIGINT NOT NULL,
@@ -513,6 +557,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`AccUsage`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AccUsage` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AccUsage` (
   `ID` BIGINT NOT NULL,
   `COAID` BIGINT NOT NULL,
@@ -535,6 +581,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`GeneralPrinciple`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`GeneralPrinciple` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`GeneralPrinciple` (
   `ID` BIGINT NOT NULL,
   `AccountingStandardID` BIGINT NOT NULL,
@@ -558,6 +606,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`SpecificStandard`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`SpecificStandard` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`SpecificStandard` (
   `ID` BIGINT NOT NULL,
   `AccountingStandardID` BIGINT NOT NULL,
@@ -582,6 +632,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Policy`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Policy` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Policy` (
   `ID` BIGINT NOT NULL,
   `Type` INT NOT NULL COMMENT '1:Policy\n2:Explain\n3:Notice',
@@ -600,6 +652,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Comment`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Comment` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Comment` (
   `ID` BIGINT NOT NULL,
   `PolicyID` BIGINT NOT NULL,
@@ -626,6 +680,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Rejoinder`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Rejoinder` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Rejoinder` (
   `ID` BIGINT NOT NULL,
   `CommentID` BIGINT NOT NULL,
@@ -650,6 +706,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`PolicyCollected`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`PolicyCollected` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`PolicyCollected` (
   `ID` BIGINT NOT NULL,
   `PolicyID` BIGINT NOT NULL,
@@ -677,6 +735,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`Message`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`Message` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`Message` (
   `ID` BIGINT NOT NULL,
   `Type` INT NOT NULL COMMENT '1:system\n2:personal',
@@ -707,6 +767,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`AccElement`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AccElement` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AccElement` (
   `ID` BIGINT NOT NULL,
   `AccountingStandardID` BIGINT NOT NULL,
@@ -730,6 +792,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`QuestionApproved`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`QuestionApproved` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`QuestionApproved` (
   `ID` BIGINT NOT NULL,
   `SysUserID` BIGINT NOT NULL,
@@ -758,6 +822,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`QuestionDisapproved`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`QuestionDisapproved` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`QuestionDisapproved` (
   `ID` BIGINT NOT NULL,
   `SysUserID` BIGINT NOT NULL,
@@ -786,6 +852,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `acc`.`AnswerApproved`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AnswerApproved` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AnswerApproved` (
   `ID` BIGINT NOT NULL,
   `SysUserID` BIGINT NOT NULL,
@@ -812,8 +880,10 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `acc`.`AnswerDispproved`
+-- Table `acc`.`AnswerDisapproved`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `acc`.`AnswerDisapproved` ;
+
 CREATE TABLE IF NOT EXISTS `acc`.`AnswerDisapproved` (
   `ID` BIGINT NOT NULL,
   `SysUserID` BIGINT NOT NULL,
