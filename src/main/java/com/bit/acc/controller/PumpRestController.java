@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bit.acc.model.SysUser;
+import com.bit.common.util.IConstants;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +40,10 @@ public class PumpRestController {
     
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public Response add(@Validated({First.class, Second.class, Third.class}) @RequestBody Pump pump, BindingResult result) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);
+        if(user == null)
+            throw new AuthenticationException("您未登录，获取不到用户信息！");
+        pump.setUser( user );
     	if(result.hasErrors()) {
     		List<ObjectError> errors = result.getAllErrors();
     		ObjectError error = errors.get(0);
