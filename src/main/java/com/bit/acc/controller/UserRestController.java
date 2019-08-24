@@ -129,7 +129,7 @@ public class UserRestController {
     @RequestMapping(value="/login", method=RequestMethod.GET)
     @ControllerLog(value = "用户登录")
     public Response login(@RequestParam("mobile") String mobile, @RequestParam("password") String password) {
-        Subject subject = SecurityUtils.getSubject();
+        Subject subject = SecurityUtils.getSubject();//new Subject.Builder().buildSubject();
         if ( subject.isAuthenticated() ) {
             //如果已经登录过，再次登录的时候，不需要进行验证，参见DeRealm.java
             SysUser user = (SysUser) subject.getSession().getAttribute(IConstants.CURRENT_USER_SESSION_KEY);

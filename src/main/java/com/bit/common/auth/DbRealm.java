@@ -44,7 +44,7 @@ public class DbRealm extends AuthorizingRealm {
         String username = String.valueOf( token.getUsername() );
         List<SysUser> userList = sysUserService.findByAccount( username );
         if (userList == null || userList.size() == 0 || userList.get(0) == null) {
-            throw new UnknownAccountException();
+            throw new UnknownAccountException("用户不存在，请先注册！");
         }
         
 		SysUser sysUser = userList.get(0);

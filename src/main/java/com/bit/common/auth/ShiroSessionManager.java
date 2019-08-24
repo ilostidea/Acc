@@ -35,13 +35,16 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
     protected Session retrieveSession(SessionKey sessionKey) throws UnknownSessionException {
 
 		Serializable sessionId = getSessionId(sessionKey);
+
 		if (sessionId == null) {
 			log.debug("Unable to resolve session ID from SessionKey [{}].  Returning null to indicate a "
 					+ "session could not be found.", sessionKey);
 			return null;
 		}
+		System.out.println("ShiroSessionManager:retrieveSession has got sessionId -> " + sessionId);
 
 		// ***************Add By Goma****************
+		System.out.println("ShiroSessionManager:retrieveSession will retrive sesion from request. sessionId -> " + sessionId);
 		ServletRequest request = null;
 		if (sessionKey instanceof WebSessionKey) {
 			request = ((WebSessionKey) sessionKey).getServletRequest();
@@ -50,21 +53,26 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
 		if (request != null) {
 			Object s = request.getAttribute(sessionId.toString());
 			if (s != null) {
+				System.out.println("ShiroSessionManager:retrieveSession got request session -> " + ((Session)s).getId() + " : " + s.toString() );
 				return (Session) s;
 			}
 		}
+		System.out.println("ShiroSessionManager:retrieveSession request == null ");
+
 		// ***************Add By Goma****************
 
+		System.out.println("ShiroSessionManager:retrieveSession will retrieve session from cache or redis. sessionId -> " + sessionId);
 		Session s = retrieveSessionFromDataSource(sessionId);
 		if (s == null) {
-			// session ID was provided, meaning one is expected to be found, but
-			// we couldn't find one:
+			// session ID was provided, meaning one is expected to be found, but we couldn't find one:
 			String msg = "Could not find session with ID [" + sessionId + "]";
 			throw new UnknownSessionException(msg);
 		}
+		System.out.println("ShiroSessionManager:retrieveSession got cache or redis session -> " + s.getId() + " : " + s.toString() );
 
 		// ***************Add By Goma****************
 		if (request != null) {
+			System.out.println("ShiroSessionManager:retrieveSession put session -> " + s.getId() + " : " + s.toString() + " into request." );
 			request.setAttribute(sessionId.toString(), s);
 		}
 		// ***************Add By Goma****************

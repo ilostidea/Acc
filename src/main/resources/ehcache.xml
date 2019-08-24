@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
-        name="shirocache">
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         name="shirocache">
 
     <diskStore path="java.io.tmpdir/ehcache"/>
-    
-	<defaultCache maxElementsInMemory="1000" 
-			eternal="false"
-			timeToIdleSeconds="3600"
-			timeToLiveSeconds="0"
-			overflowToDisk="false"
-			memoryStoreEvictionPolicy="LRU" />
+
+    <defaultCache maxElementsInMemory="1000"
+                  eternal="false"
+                  timeToIdleSeconds="3600"
+                  timeToLiveSeconds="0"
+                  overflowToDisk="false"
+                  memoryStoreEvictionPolicy="LRU" />
 
     <!-- 登录记录缓存 锁定60分钟 -->
     <cache name="passwordRetryCache"
@@ -49,13 +49,13 @@
            statistics="true">
     </cache>
 
-	<cache name="accStandardCache"
-	           maxElementsInMemory="1000"
-	           eternal="true"
-	           timeToIdleSeconds="120"
-	           timeToLiveSeconds="120"
-	           overflowToDisk="false"
-	           memoryStoreEvictionPolicy="LRU" 
-	   />
+    <cache name="accStandardCache"
+           maxElementsInMemory="1000"
+           eternal="true"
+           timeToIdleSeconds="120"
+           timeToLiveSeconds="120"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+    />
 
 </ehcache>
