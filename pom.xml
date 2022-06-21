@@ -27,7 +27,7 @@
 		<druid.version>1.1.9</druid.version>
 		<mchange.commons.version>0.2.14</mchange.commons.version>
 		<jstl.version>1.2</jstl.version>
-		<mysql.connector.version>5.1.38</mysql.connector.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
 		<javassit.version>3.22.0-GA</javassit.version>
 		<commons.collections.version>4.1</commons.collections.version>
 		<!-- <project.tomcat.version>9.0</project.tomcat.version> -->
