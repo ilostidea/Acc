@@ -18,7 +18,7 @@
 		<google.guava.version>21.0</google.guava.version>
 		<javax.el.version>3.0.0</javax.el.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<shiro.version>1.4.0</shiro.version>
+		<shiro.version>1.9.1</shiro.version>
 		<aspectj.version>1.8.10</aspectj.version>
 		<jackson.vsersion>2.9.2</jackson.vsersion>
 		<project.servlet.version>4.0.0</project.servlet.version>
